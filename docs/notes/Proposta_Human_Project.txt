@@ -1,0 +1,157 @@
+- Ospitare le Olimpiadi non porta miglioramenti nelle performance dei Paesi, ma il miglioramento deriva da altri fattori esterni.
+- La letteratura esistente fa uso di regressioni che tengono conto del rendimento medio dei Paesi nei vari sport, della Popolazione, del GDP e della passata appartenenza al blocco comunista (eredità sportiva positiva e problemi nei dati dovuti a reciproci boicottaggi tra USA e blocco sovietico).
+- Usano distribuzioni binomiali negative e distribuzioni di Poisson (per grandi quantità di zeri dovuti alla presenza di molti Paesi che non vincono medaglie).
+
+- La nostra proposta: studio dei Paesi limitrofi al Paese ospitante per isolare il fattore ambientale (jet-lag, clima, alternanza stagionale tra emisfero boreale e australe, vicinanza geografica per tifosi e atleti, conoscenza strutture sportive e terreni di gioco.)
+- Nuovi dati rispetto a studi passati
+	- The less obvious effect of hosting the Olympics on sporting performance (Csurilla/Fertő)
+	- How big is home advantage at the Olympic Games? (Carl Singleton, J. James Reade, Johan Rewilak, Dominik Schreyer)
+	- Success at the Summer Olympics: How Much Do Economic Factors Explain? Pravin K. Trivedi and David M. Zimmer
+
+METODI:
+- Granger Causality/ANOVA/t-test/Pearson&PartialCorrelation, per correlazione performance GDP/Popolazione/Medagliere medio.
+	- Granger, t-test e Pearson misurano correlazioni tra due serie
+	- Per Granger Causality testare la stazionarietà delle serie
+	- PartialCorrelation misura la relazione tra due variabili controllandone altre
+	- ANOVA misura più serie 
+- Bayesian Changepoint Detection per verificare se boom economici -> boom nel medagliere
+- p-value per validazione ipotesi
+- regressione
+
+
+RISPOSTA CHATGPT
+
+---
+
+Definisci bene la domanda
+Prima di tutto formalizza:
+
+Outcome (Y): performance olimpica
+
+es: numero totale di medaglie, medaglie per atleta, o punteggio pesato (oro=3, argento=2, bronzo=1)
+
+Attenzione: potresti voler includere anche anni prima e dopo (effetto anticipazione e legacy)
+
+---
+
+Analisi esplorativa (fondamentale)
+
+Prima dei test:
+
+	- trend temporali per Paese
+	- confronto host vs non-host
+	- distribuzioni
+
+Questo ti aiuta a capire:
+	- se c’è un “boost visivo”
+	- se il dataset è rumoroso o stabile
+
+---
+
+Correlazione (Pearson & Partial)
+
+Pearson Correlation
+
+Misura relazione lineare tra:
+	- hosting (0/1)
+	- medaglie
+
+Problema: **non controlla confondenti**
+
+---
+
+Partial Correlation
+Molto più interessante:
+
+* controlli per:
+
+  * PIL
+  * popolazione
+  * trend temporale
+  * investimenti sportivi (se disponibili)
+
+Domanda: hosting è ancora correlato alle medaglie a parità di altri fattori?
+
+---
+
+t-test
+
+- t-test
+	Confronta medaglie medie quando:
+		- host = 1
+		- host = 0
+
+Versione più interessante: confronto stesso Paese in anni normali vs nell'anno di hosting
+
+---
+
+ANOVA
+Se vuoi più livelli:
+	- pre-host
+	- host
+	- post-host
+
+Serve per capire se l’effetto è temporaneo o persistente
+
+---
+
+Regressione (IL CUORE dell’analisi)
+Qui inizi a parlare di causalità (con cautela).
+
+Modello base:
+
+	[Medals = beta_0 + beta_1 Host + epsilon]
+
+Modello migliore:
+
+	[Medals_{it} = beta_0 + beta_1 Host_{it} + beta_2 GDP_{it} + beta_3 Population_{it} + gamma_i + delta_t + epsilon_{it}]
+
+* (gamma_i): effetti fissi per Paese
+* (delta_t): effetti temporali (trend globali)
+
+Questo è quasi un difference-in-differences
+
+---
+
+Interpretazione:
+(beta_1 > 0) significativo → evidenza di effetto hosting
+usa:
+  - p-value
+  - intervalli di confidenza
+
+---
+
+Bayesian Changepoint Detection
+
+Questo è potentissimo nel tuo caso
+Idea:
+	- vedere se c’è un cambio strutturale nella performance quando un Paese ospita
+
+Cerca changepoint vicino all’anno di hosting
+Interpretazione: se il changepoint coincide con hosting → evidenza forte
+
+---
+
+p-value (come usarlo bene)
+
+Non limitarti a p < 0.05
+
+Ma valuta:
+
+	- dimensione effetto (quanto aumenta?)
+	- robustezza tra modelli
+	- significatività economica, non solo statistica
+
+---
+
+# 🧩 11. Strategia consigliata (combinazione ottimale)
+
+Ti suggerisco questa pipeline:
+
+1. **EDA + grafici**
+2. **t-test / ANOVA**
+3. **Correlazione (Pearson + Partial)**
+4. **Regressione con controlli (core)**
+5. **Changepoint detection**
+
+---

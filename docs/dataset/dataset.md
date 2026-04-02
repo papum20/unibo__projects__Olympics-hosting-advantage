@@ -5,6 +5,14 @@
 ### country-medals-by-year.csv
 Generato con `convert_athletes_to_countries.py`.  
 
+### country-medals-by-year_missing_2018-2026.csv
+Creato manualmente, per gli anni mancanti nel dataset (2018-2026).  
+https://en.wikipedia.org/wiki/2018_Winter_Olympics_medal_table#Medal_table  
+https://en.wikipedia.org/wiki/2020_Summer_Olympics_medal_table#Medal_table  
+https://en.wikipedia.org/wiki/2022_Winter_Olympics_medal_table#Medal_table  
+https://en.wikipedia.org/wiki/2024_Summer_Olympics_medal_table#Medal_table  
+https://en.wikipedia.org/wiki/2026_Winter_Olympics_medal_table#Medal_table  
+
 ### hosts.csv
 
 Creato manualmente (https://en.wikipedia.org/wiki/List_of_Olympic_Games_host_cities).  
@@ -49,3 +57,7 @@ Per exploratory data analysis.
 https://data.worldbank.org/  
 World Bank Open Data  
 GDP 1960-2025  
+Columns: "Country Name","Country Code","Indicator Name","Indicator Code", years "1960"-"2025"  
+"Data Source","World Development Indicators",  
+"Last Updated Date","2026-02-24",  
+

@@ -15,7 +15,7 @@ PLOT_OUT_PATH = 'out/plot/'
 def print_usage():
 	print("""
 	   Usage:
-		python granger_calculator.py <S|W|B> [NOC] [0|1]
+		python adf.py <S|W|B> [NOC] [0|1]
 		- S|W|B: flag to indicate the type of medals (Summer, Winter, or Both).
 		- NOC: Optional country code (NOC) to filter by. If not provided, defaults to 'USA'.
 		- 0|1: Optional flag to indicate whether save the plot to file (default 0)

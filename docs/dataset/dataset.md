@@ -1,7 +1,46 @@
 # DATA
 
+## Our own
+
+### country-medals-by-year.csv
+Generato con `athletes_to_countries.py`.  
+
+### hosts.csv
+
+Creato manualmente (https://en.wikipedia.org/wiki/List_of_Olympic_Games_host_cities).  
+
+## External
+
+### rgiffin_athletes.csv
+
 https://www.kaggle.com/datasets/heesoo37/120-years-of-olympic-history-athletes-and-results  
-Dataset principale Olimpiadi.  
+Dataset principale Olimpiadi, per ogni atleta.  
+
+#### Content
+
+The file athlete_events.csv contains 271116 rows and 15 columns. Each row corresponds to an individual athlete competing in an individual Olympic event (athlete-events). The columns are:
+* ID - Unique number for each athlete
+* Name - Athlete's name
+* Sex - M or F
+* Age - Integer
+* Height - In centimeters
+* Weight - In kilograms
+* Team - Team name
+* NOC - National Olympic Committee 3-letter code
+* Games - Year and season
+* Year - Integer
+* Season - Summer or Winter
+* City - Host city
+* Sport - Sport
+* Event - Event
+* Medal - Gold, Silver, Bronze, or NA
+
+#### Limitations
+
+- 1896-2016
+- for team sports, a country will appear with multiple athletes
+
+### Exploratory Data Analysis
 
 https://www.kaggle.com/code/joshuaswords/does-hosting-the-olympics-improve-performance  
 Per exploratory data analysis.  

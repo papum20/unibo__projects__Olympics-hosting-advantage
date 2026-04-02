@@ -44,3 +44,8 @@ The file athlete_events.csv contains 271116 rows and 15 columns. Each row corres
 
 https://www.kaggle.com/code/joshuaswords/does-hosting-the-olympics-improve-performance  
 Per exploratory data analysis.  
+
+### worldBankOpenData_GDP_USA 
+https://data.worldbank.org/  
+World Bank Open Data  
+GDP 1960-2025  

@@ -3,7 +3,7 @@
 ## Our own
 
 ### country-medals-by-year.csv
-Generato con `athletes_to_countries.py`.  
+Generato con `convert_athletes_to_countries.py`.  
 
 ### hosts.csv
 

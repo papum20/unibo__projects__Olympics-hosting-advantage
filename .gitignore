@@ -1,1 +1,8 @@
+# config
 .vscode/
+
+# binary outputs
+out/**/**.png
+
+# cache
+__pycache__/

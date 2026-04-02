@@ -9,6 +9,10 @@ Test di stazionarietà:
 - DF (Dickey-Fuller)
 - ADF (Augmented Dickey-Fuller)
 
+## Relazione
+
+Spiegare come funzionano le implementazioni usate, parametri usati etc. (eg ADF di libreria python statsmodels).  
+
 ## Ref
 
 ritvikmath ADF:  

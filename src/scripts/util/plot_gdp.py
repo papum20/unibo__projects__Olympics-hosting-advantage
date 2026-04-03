@@ -3,11 +3,11 @@ import sys
 
 import matplotlib.pyplot as plt
 from matplotlib.ticker import AutoMinorLocator
-import pandas as pd
+
+from util.load_ds import load_gdp_series
 
 
 
-DS_PATH = 'dataset/worldBankOpenData_GDP_USA.csv'
 PLOT_OUT_PATH = 'out/plot/'
 
 
@@ -15,48 +15,12 @@ PLOT_OUT_PATH = 'out/plot/'
 def print_usage():
 	print("""
 	   Usage:
-		python plot_gdp.py <Country_Code> [0|1]
+		python plot_gdp.py <Country_Code> [0|1] [START_YEAR] [END_YEAR]
 		- Country_Code: Mandatory country code (e.g., USA, GBR, CHN, etc.)
 		- 0|1: Optional flag to indicate whether save the plot to file (default 0)
+		- START_YEAR: Optional start year for the plot (default 1960)
+		- END_YEAR: Optional end year for the plot (default 2025)
 	""")
-
-
-def load_gdp_series(country_code):
-	"""@param country_code: Mandatory country code to filter by.
-	@return: A pandas Series indexed by Year with GDP values.
-	"""
-
-	# Load the dataset
-	df = pd.read_csv(DS_PATH)
-	
-	# Filter for specific country
-	country_df = df[df['Country Code'] == country_code]
-	
-	if country_df.empty:
-		raise ValueError(f"Country code '{country_code}' not found in dataset")
-	
-	# Get the first row (should be unique by country code and indicator)
-	country_data = country_df.iloc[0]
-	
-	# Extract year columns (1960-2025) and create a series
-	years		= [str(year) for year in range(1960, 2026)]
-	gdp_values	= []
-	valid_years	= []
-	
-	for year in years:
-		if year in country_data.index:
-			value = country_data[year]
-			if pd.notna(value):  # Skip NaN values
-				try:
-					gdp_values.append(float(value))
-					valid_years.append(int(year))
-				except (ValueError, TypeError):
-					pass
-	
-	# Create pandas Series with Year as index
-	gdp_series = pd.Series(gdp_values, index=valid_years, name='GDP')
-	
-	return gdp_series, country_data['Country Name']
 
 
 def save_plot(fig, country_code, out_file_tag=None):
@@ -124,9 +88,13 @@ if __name__ == "__main__":
 		print("Invalid save_plot flag. Use '0' for no save, '1' to save the plot.")
 		sys.exit(1)
 
+	# Get start and end years from command line arguments, default to 1960 and 2025
+	year_start	= int(sys.argv[3]) if len(sys.argv) > 3 else 1960
+	year_end	= int(sys.argv[4]) if len(sys.argv) > 4 else 2025
+
 	# Load the GDP series
 	try:
-		gdp_series, country_name = load_gdp_series(country_code)
+		gdp_series, country_name = load_gdp_series(country_code, year_start=year_start, year_end=year_end)
 		print(f"Loaded GDP series for {country_name} ({country_code}):")
 		print(gdp_series.head())
 	except ValueError as e:

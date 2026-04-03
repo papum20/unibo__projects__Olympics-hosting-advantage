@@ -2,11 +2,11 @@ import os
 import sys
 
 import matplotlib.pyplot as plt
-import pandas as pd
+
+from util.load_ds import load_medals_series
 
 
 
-DS_PATH = 'dataset/country-medals-by-year.csv'
 PLOT_OUT_PATH = 'out/plot/'
 
 
@@ -14,60 +14,36 @@ PLOT_OUT_PATH = 'out/plot/'
 def print_usage():
 	print("""
 	   Usage:
-		python granger_calculator.py <S|W|B> [NOC] [0|1]
-		- S|W|B: flag to indicate the type of medals (Summer, Winter, or Both).
+		python plot_medals.py <S|W|B> [NOC] [0|1] [START_YEAR] [END_YEAR]
+		- S|W|B: flag to indicate the season of medals (Summer, Winter, or Both).
 		- NOC: Optional country code (NOC) to filter by. If not provided, defaults to 'USA'.
 		- 0|1: Optional flag to indicate whether save the plot to file (default 0)
+		- START_YEAR: Optional start year for the plot (default 1896)
+		- END_YEAR: Optional end year for the plot (default 2026)
 	""")
 
 
-def load_medals_series(country=None, medals_type='S'):
-	"""@param country: Optional country code (NOC) to filter by. If None, aggregates across all countries.
-	@param medals_type: Type of medals to include (S for Summer, W for Winter, B for Both).
-	@return: A pandas Series indexed by Year with total medals as values.
-	"""
-
-	# Load the dataset with specified columns
-	df = pd.read_csv(DS_PATH, usecols=['Year', 'Season', 'NOC', 'Total_Medals', 'Gold', 'Silver', 'Bronze', 'Men_Medals', 'Women_Medals', 'Is_Host'])
-	
-	# Filter by medals type
-	if medals_type == 'S':
-		df = df[df['Season'] == 'Summer']
-	elif medals_type == 'W':
-		df = df[df['Season'] == 'Winter']
-	elif medals_type == 'B':
-		df = df[df['Season'].isin(['Summer', 'Winter'])]
-	
-	if country is None:
-		# Aggregate total medals by year (summing across all countries)
-		medals_by_year = df.groupby('Year')['Total_Medals'].sum()
-	else:
-		# Filter for specific country and aggregate by year
-		country_df = df[df['NOC'] == country]
-		medals_by_year = country_df.groupby('Year')['Total_Medals'].sum()
-	
-	# Convert to pandas Series with Year as index
-	medals_series = pd.Series(medals_by_year.values, index=medals_by_year.index, name='Total_Medals')
-	
-	return medals_series
-
-
-def save_plot(fig, noc, medals_type='S'):
+def save_plot(fig, noc, medals_season='S', out_file_tag=None):
 	"""Save the plot with a timestamp in the filename."""
 	os.makedirs(PLOT_OUT_PATH, exist_ok=True)
 	#timestamp	= datetime.now().strftime('%Y%m%d-%H%M%S')
-	#filename	= f"{PLOT_OUT_PATH}medals_{noc}_{medals_type}_{timestamp}.png"
-	filename	= f"{PLOT_OUT_PATH}medals_{noc}_{medals_type}.png"
+	#filename	= f"{PLOT_OUT_PATH}medals_{noc}_{medals_season}_{timestamp}.png"
+	if out_file_tag is not None:
+		filename	= f"{PLOT_OUT_PATH}medals_{noc}_{medals_season}_{out_file_tag}.png"
+	else:
+		filename	= f"{PLOT_OUT_PATH}medals_{noc}_{medals_season}.png"
 	fig.savefig(filename, dpi=100, bbox_inches='tight')
 	print(f"Plot saved to {filename}")
 	return filename
 
 
-def plot_medals(medals_series, noc, medals_type='S', save=False):
+def plot_medals(medals_series, noc, medals_season='S', y_min: float|None=0, out_file_tag=None, save=False):
 	"""Plot the medals series and optionally save to file.
 	@param medals_series: pandas Series with medals data indexed by year
 	@param noc: Country code (NOC)
-	@param medals_type: Type of medals ('S' for Summer, 'W' for Winter, 'B' for Both)
+	@param medals_season: Season of medals ('S' for Summer, 'W' for Winter, 'B' for Both)
+	@param y_min: Minimum value for the y-axis
+	@param out_file_tag: Optional tag to append to the output filename
 	@param save: Boolean flag to save the plot to file (default False)
 	"""
 	fig, ax = plt.subplots(figsize=(12, 6))
@@ -77,10 +53,10 @@ def plot_medals(medals_series, noc, medals_type='S', save=False):
 	ax.set_title(f'{noc} Total Medals by Year', fontsize=14)
 	
 	# Generate x-axis ticks based on medal type
-	if medals_type == 'S':
+	if medals_season == 'S':
 		# Summer Olympics: every 4 years starting from 1896
 		x_ticks = list(range(1896, 2028, 4))
-	elif medals_type == 'W':
+	elif medals_season == 'W':
 		# Winter Olympics: 1896-1992 every 4 years, then 1994 onwards every 4 years
 		x_ticks = list(range(1896, 1996, 4)) + list(range(1994, 2028, 4))
 		x_ticks = sorted(set(x_ticks))  # Remove duplicates and sort
@@ -92,7 +68,7 @@ def plot_medals(medals_series, noc, medals_type='S', save=False):
 	ax.set_xticklabels([str(year) for year in x_ticks], rotation=45)
 	
 	# Set y-axis to start from 0
-	ax.set_ylim(bottom=0)
+	ax.set_ylim(bottom=y_min)
 	ax.yaxis.set_major_locator(plt.MaxNLocator(nbins=10, min_n_ticks=1))	# type: ignore
 	
 	# Add gridlines only on x (every 4 years) and y
@@ -103,7 +79,7 @@ def plot_medals(medals_series, noc, medals_type='S', save=False):
 	
 	# Save the plot if requested
 	if save:
-		save_plot(fig, noc, medals_type=medals_type)
+		save_plot(fig, noc, medals_season=medals_season, out_file_tag=out_file_tag)
 
 
 
@@ -128,10 +104,14 @@ if __name__ == "__main__":
 		print("Invalid save_plot flag. Use '0' for no save, '1' to save the plot.")
 		sys.exit(1)
 
+	# Get start and end years from command line arguments, default to 1896 and 2026
+	year_start = int(sys.argv[4]) if len(sys.argv) > 4 else 1896
+	year_end = int(sys.argv[5]) if len(sys.argv) > 5 else 2026
+
 	# Load the medals series
-	medals_series = load_medals_series(country=noc, medals_type=medals_type)
+	medals_series = load_medals_series(country=noc, medals_season=medals_type, year_start=year_start, year_end=year_end)
 	print(f"Loaded medals series for {noc} (printing head):")
 	print(medals_series.head())
 
 	# Plot the medals
-	plot_medals(medals_series, noc, medals_type=medals_type, save=(save_plot_flag == '1'))
+	plot_medals(medals_series, noc, medals_season=medals_type, save=(save_plot_flag == '1'))

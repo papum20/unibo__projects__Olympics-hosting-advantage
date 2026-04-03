@@ -2,7 +2,11 @@
 
 ## Prerequisiti
 
-Serie stazionarie.  
+**(assenza di) fattori esterni - confounding variable**  
+Una terza variabile che influenzi sia X che Y potrebbe falsare il test.  
+Nel paper: discutere possibili confounding variable (presenza/assenza).  
+
+**Serie stazionarie**  
 **stazionaria** = media e varianza costanti nel tempo.  
 
 Test di stazionarietà:

@@ -19,6 +19,12 @@ Creato manualmente (https://en.wikipedia.org/wiki/List_of_Olympic_Games_host_cit
 
 ## External
 
+# maddison
+
+Maddison Project Database provides information on comparative economic growth and income levels over the very long run.  
+https://www.rug.nl/ggdc/historicaldevelopment/maddison/releases/maddison-project-database-2023  
+Citation: MPD version 2023: Bolt, Jutta and Jan Luiten van Zanden (2024), "Maddison style estimates of the evolution of the world economy: A new 2023 update", Journal of Economic Surveys, 1–41. DOI: 10.1111/joes.12618”  
+
 ### rgiffin_athletes.csv
 
 https://www.kaggle.com/datasets/heesoo37/120-years-of-olympic-history-athletes-and-results  
@@ -53,7 +59,7 @@ The file athlete_events.csv contains 271116 rows and 15 columns. Each row corres
 https://www.kaggle.com/code/joshuaswords/does-hosting-the-olympics-improve-performance  
 Per exploratory data analysis.  
 
-### worldBankOpenData_GDP_USA 
+### worldBankOpenData_GDP_USD 
 https://data.worldbank.org/  
 World Bank Open Data  
 GDP 1960-2025  

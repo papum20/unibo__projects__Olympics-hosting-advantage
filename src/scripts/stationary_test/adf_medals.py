@@ -6,7 +6,7 @@ from statsmodels.tsa.stattools import adfuller
 
 from util.load_ds import load_medals_series, get_series_log_diff, DsMedalsDataType
 from util.plot_medals import plot_medals
-from util.util import print_ds
+from util.common import print_ds
 
 
 
@@ -107,8 +107,8 @@ if __name__ == "__main__":
 	perform_adf_test(medals_series)
 
 	# Plot the medals
-	plot_medals(medals_series, noc, medals_season=medals_season,
-			out_file_tag=f'{year_start}-{year_end}', save=save_plot_flag)
+	plot_medals(medals_series, noc, year_start, year_end, medals_season=medals_season,
+			save=save_plot_flag)
 
 
 	#
@@ -122,8 +122,8 @@ if __name__ == "__main__":
 		print(f"\nPerforming ADF test on {noc} medals series (log-differenced):")
 		perform_adf_test(medals_log_diff)
 
-		plot_medals(medals_log_diff, noc, medals_season=medals_season, y_min=None,
-			out_file_tag=f'{year_start}-{year_end}_log_diff', save=save_plot_flag)
+		plot_medals(medals_log_diff, noc, year_start, year_end, medals_season=medals_season, y_min=None,
+			out_file_tag='log_diff', save=save_plot_flag)
 
 
 	#
@@ -138,7 +138,7 @@ if __name__ == "__main__":
 		print(f"\nPerforming ADF test on {noc} medals series (percentage):")
 		perform_adf_test(medals_percentage)
 
-		plot_medals(medals_percentage, noc, medals_season=medals_season,
-			out_file_tag=f'{year_start}-{year_end}_perc', save=save_plot_flag)
+		plot_medals(medals_percentage, noc, year_start, year_end, medals_season=medals_season,
+			out_file_tag='perc', save=save_plot_flag)
 
 	

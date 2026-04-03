@@ -16,6 +16,10 @@ Stazionarietà:
     - e.g. USA, ITA
   - **growth rate (log differenced)**: sì
     - tested: USA, ITA
+  - taken every 4 years (to do Granger with Olympics): no
+  - **GDPpc (Madison)**: same
+    - every 4 years: often yes, depends on the taken period
+      - e.g. ITA up to 2020 no, but in 2020 there was a significant drop, and apparently ending like this makes it non-stationary
 
 
 Parameter - regression:  

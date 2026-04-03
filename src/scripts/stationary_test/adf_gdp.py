@@ -6,7 +6,7 @@ from statsmodels.tsa.stattools import adfuller
 
 from util.load_ds import load_gdp_series, get_series_log_diff
 from util.plot_gdp import load_gdp_series, plot_gdp
-from util.util import print_ds
+from util.common import print_ds
 
 
 
@@ -100,8 +100,8 @@ if __name__ == "__main__":
 	perform_adf_test(gdp_series)
 
 	# Plot the GDP
-	plot_gdp(gdp_series, country_code, country_name,
-		out_file_tag=f'{year_start}-{year_end}', save=save_plot_flag)
+	plot_gdp(gdp_series, country_code, country_name, year_start, year_end,
+		save=save_plot_flag)
 
 
 	#
@@ -114,7 +114,7 @@ if __name__ == "__main__":
 	print(f"\nPerforming ADF test on {country_code} GDP series (log-differenced):")
 	perform_adf_test(gdp_ln_diff)
 
-	plot_gdp(gdp_ln_diff, country_code, country_name, y_min=None,
-		out_file_tag=f'{year_start}-{year_end}_log_diff', save=save_plot_flag)
+	plot_gdp(gdp_ln_diff, country_code, country_name, year_start, year_end, y_min=None,
+		out_file_tag='log_diff', save=save_plot_flag)
 
 

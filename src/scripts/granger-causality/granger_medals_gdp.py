@@ -5,37 +5,69 @@ import argparse
 import os
 
 import matplotlib.pyplot as plt
+import pandas as pd
 import statsmodels.api as sm
 from statsmodels.tsa.stattools import adfuller, grangercausalitytests
 
 from util.load_ds import (
 	load_gdp_series,
 	load_medals_series,
+	load_medals_and_gdp_aligned,
 	merge_series,
 	DsGdpDataType,
 	DsMedalsDataType
 )
 from util.plot_gdp import plot_gdp
 from util.plot_medals import plot_medals
-from util.util import print_ds
+from util.common import print_ds
 
 
 
 PLOT_OUT_PATH = 'out/plot/'
 
+COL_GDP		= 'GDP'
+COL_MEDALS	= 'Medals'
 
+
+
+def perform_granger_manual(merged_df: pd.DataFrame):
+	"""
+	Do Granger manually, without lag, possibly using an already lagged dataset.
+	Granger wouldn't allow to not use lags, so we need to use a standard OLS regression.
+	"""
+
+	# ADF GDP
+	result = adfuller(merged_df[COL_GDP], regression='c')
+	print(f'ADF Statistic: {result[0]}')
+	print(f'p-value: {result[1]}')
+
+	# ADF medals
+	result = adfuller(merged_df[COL_MEDALS], regression='c')
+	print(f'ADF Statistic: {result[0]}')
+	print(f'p-value: {result[1]}')
+
+	# Granger (manual)
+	# Equation: Medal_Share = intercept + coefficient * ln_GDP_Lag_2
+	X = merged_df[COL_GDP]
+	Y = merged_df[COL_MEDALS]
+
+	# Add a constant (intercept) to the model
+	X = sm.add_constant(X)
+
+	model = sm.OLS(Y, X).fit()
+	print(model.summary())
 
 
 
 def perform_tests(merged_df):
 	
 	# ADF GDP
-	result = adfuller(merged_df['GDP'], regression='c')
+	result = adfuller(merged_df[COL_GDP], regression='c')
 	print(f'ADF Statistic: {result[0]}')
 	print(f'p-value: {result[1]}')
 
 	# ADF medals
-	result = adfuller(merged_df['Medals'], regression='c')
+	result = adfuller(merged_df[COL_MEDALS], regression='c')
 	print(f'ADF Statistic: {result[0]}')
 	print(f'p-value: {result[1]}')
 
@@ -203,16 +235,13 @@ if __name__ == "__main__":
 	verbose			= args.verbose
 
 
-	COL_GDP		= 'GDP'
-	COL_MEDALS	= 'Medals'
-
-
 	#
-	# Default
+	# Granger
 	#
-
+	
 	gdp_series, country_name = load_gdp_series(noc, year_start=year_start, year_end=year_end,
 									data_type=DsGdpDataType.LN_DIFF)
+
 	medals_series = load_medals_series(country=noc, medals_season=medals_season,
 						year_start=year_start, year_end=year_end, data_type=DsMedalsDataType.PERCENTAGE)
 
@@ -228,12 +257,52 @@ if __name__ == "__main__":
 	perform_tests(merged_df)
 
 	# Plot
-	plot_gdp(gdp_series, noc, country_name, y_min=None,
-		out_file_tag=f'{actual_year_start}-{actual_year_end}_log_diff', save=save_plot_flag)
+	plot_gdp(gdp_series, noc, country_name, actual_year_start, actual_year_end, y_min=None,
+		out_file_tag='log_diff', save=save_plot_flag)
 
-	plot_medals(medals_series, noc, medals_season=medals_season,
-		out_file_tag=f'{actual_year_start}-{actual_year_end}_perc', save=save_plot_flag)
+	plot_medals(medals_series, noc, actual_year_start, actual_year_end, medals_season=medals_season,
+		out_file_tag='perc', save=save_plot_flag)
 	
 	plot_merged_series2(merged_df[COL_MEDALS], merged_df[COL_GDP], noc, country_name,
 			out_file_tag=f'{actual_year_start}-{actual_year_end}', save=save_plot_flag)
+
+
+	#
+	# Granger (manual)
+	#
+
+	for shift in range(1, 8):
+		print(f"\nGranger causality test (manual) with lag {shift}:")
+
+		merged_df, country_name = load_medals_and_gdp_aligned(
+			noc,
+			medals_season		= medals_season,
+			year_start			= year_start,
+			year_end			= year_end,
+			gdp_year_shift		= shift,
+			medals_data_type	= DsMedalsDataType.PERCENTAGE,
+			gdp_data_type		= DsGdpDataType.LN_DIFF
+		)
+
+		gdp_series		= pd.Series(merged_df[COL_GDP],		name='GDP')
+		medals_series	= pd.Series(merged_df[COL_MEDALS],	name='Medals')
+
+		actual_year_start	= max(merged_df.index.min(), year_start)
+		actual_year_end		= min(merged_df.index.max(), year_end)
+		print(f"Using data from {actual_year_start} to {actual_year_end} (requested: {year_start}-{year_end})")
+
+		print_ds(merged_df[COL_GDP],	f"{country_name} GDP series",	verbose)
+		print_ds(merged_df[COL_MEDALS],	f"{noc} medals series",			verbose)
+
+		perform_granger_manual(merged_df)
+
+		# Plot
+		plot_gdp(gdp_series, noc, country_name, actual_year_start, actual_year_end, y_min=None,
+			out_file_tag=f'log_diff_shift{shift}', save=save_plot_flag)
+
+		plot_medals(medals_series, noc, actual_year_start, actual_year_end, medals_season=medals_season,
+			out_file_tag='perc', save=save_plot_flag)
+		
+		plot_merged_series2(merged_df[COL_MEDALS], merged_df[COL_GDP], noc, country_name,
+				out_file_tag=f'{actual_year_start}-{actual_year_end}_shift{shift}', save=save_plot_flag)
 

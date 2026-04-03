@@ -1,10 +1,12 @@
-import os
 import sys
+sys.path.append('src/scripts/')
+
+import os
 
 import matplotlib.pyplot as plt
 from matplotlib.ticker import AutoMinorLocator
 
-from util.load_ds import load_gdp_series
+from util.load_ds import load_gdp_series, GDP_MADDISON_YEAR_START_DFLT, GDP_MADDISON_YEAR_END_DFLT
 
 
 
@@ -13,33 +15,50 @@ PLOT_OUT_PATH = 'out/plot/'
 
 
 def print_usage():
-	print("""
+	print(f"""
 	   Usage:
 		python plot_gdp.py <Country_Code> [0|1] [START_YEAR] [END_YEAR]
 		- Country_Code: Mandatory country code (e.g., USA, GBR, CHN, etc.)
 		- 0|1: Optional flag to indicate whether save the plot to file (default 0)
-		- START_YEAR: Optional start year for the plot (default 1960)
-		- END_YEAR: Optional end year for the plot (default 2025)
+		- START_YEAR: Optional start year for the plot (default {GDP_MADDISON_YEAR_START_DFLT})
+		- END_YEAR: Optional end year for the plot (default {GDP_MADDISON_YEAR_END_DFLT})
 	""")
 
 
-def save_plot(fig, country_code, out_file_tag=None):
+def save_plot(
+	fig,
+	country_code,
+	year_start,
+	year_end,
+	out_file_tag=None
+):
 	"""Save the plot to file."""
 	os.makedirs(PLOT_OUT_PATH, exist_ok=True)
 	if out_file_tag is not None:
-		filename = f"{PLOT_OUT_PATH}gdp_{country_code}_{out_file_tag}.png"
+		filename = f"{PLOT_OUT_PATH}gdp_{country_code}_{year_start}-{year_end}_{out_file_tag}.png"
 	else:
-		filename = f"{PLOT_OUT_PATH}gdp_{country_code}.png"
+		filename = f"{PLOT_OUT_PATH}gdp_{country_code}_{year_start}-{year_end}.png"
 	fig.savefig(filename, dpi=100, bbox_inches='tight')
 	print(f"Plot saved to {filename}")
 	return filename
 
 
-def plot_gdp(gdp_series, country_code, country_name, y_min: float|None=0, out_file_tag=None, save=False):
+def plot_gdp(
+	gdp_series,
+	country_code,
+	country_name,
+	year_start,
+	year_end,
+	y_min: float|None	= 0,
+	out_file_tag		= None,
+	save				= False
+):
 	"""Plot the GDP series and optionally save to file.
 	@param gdp_series: pandas Series with GDP data indexed by year
 	@param country_code: Country code
 	@param country_name: Country name for title
+	@param year_start: Start year for the plot
+	@param year_end: End year for the plot
 	@param y_min: Minimum value for y-axis (default 0)
 	@param out_file_tag: Tag for the output file name
 	@param save: Boolean flag to save the plot to file (default False)
@@ -50,8 +69,8 @@ def plot_gdp(gdp_series, country_code, country_name, y_min: float|None=0, out_fi
 	ax.set_ylabel('GDP (USD)', fontsize=12)
 	ax.set_title(f'{country_name} ({country_code}) GDP Over Time', fontsize=14)
 	
-	# Generate x-axis ticks every 5 years starting from 1960
-	x_ticks = list(range(1960, 2026, 5))
+	# Generate x-axis ticks every 5 years starting from year_start
+	x_ticks = list(range(year_start, year_end + 1, 5))
 	ax.set_xticks(x_ticks)
 	ax.set_xticklabels([str(year) for year in x_ticks], rotation=45)
 	
@@ -69,7 +88,7 @@ def plot_gdp(gdp_series, country_code, country_name, y_min: float|None=0, out_fi
 	
 	# Save the plot if requested
 	if save:
-		save_plot(fig, country_code, out_file_tag=out_file_tag)
+		save_plot(fig, country_code, year_start, year_end, out_file_tag=out_file_tag)
 	
 
 
@@ -89,8 +108,8 @@ if __name__ == "__main__":
 		sys.exit(1)
 
 	# Get start and end years from command line arguments, default to 1960 and 2025
-	year_start	= int(sys.argv[3]) if len(sys.argv) > 3 else 1960
-	year_end	= int(sys.argv[4]) if len(sys.argv) > 4 else 2025
+	year_start	= int(sys.argv[3]) if len(sys.argv) > 3 else GDP_MADDISON_YEAR_START_DFLT
+	year_end	= int(sys.argv[4]) if len(sys.argv) > 4 else GDP_MADDISON_YEAR_END_DFLT
 
 	# Load the GDP series
 	try:
@@ -102,4 +121,4 @@ if __name__ == "__main__":
 		sys.exit(1)
 
 	# Plot the GDP
-	plot_gdp(gdp_series, country_code, country_name, save=(save_plot_flag == '1'))
+	plot_gdp(gdp_series, country_code, country_name, year_start, year_end, save=(save_plot_flag == '1'))

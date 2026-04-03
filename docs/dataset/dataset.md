@@ -19,11 +19,13 @@ Creato manualmente (https://en.wikipedia.org/wiki/List_of_Olympic_Games_host_cit
 
 ## External
 
-# maddison
+# maddisonProjectDatabase_GDPpc_2023.csv
 
 Maddison Project Database provides information on comparative economic growth and income levels over the very long run.  
 https://www.rug.nl/ggdc/historicaldevelopment/maddison/releases/maddison-project-database-2023  
 Citation: MPD version 2023: Bolt, Jutta and Jan Luiten van Zanden (2024), "Maddison style estimates of the evolution of the world economy: A new 2023 update", Journal of Economic Surveys, 1–41. DOI: 10.1111/joes.12618”  
+GDPpc (per capita), measured in 2011 international dollars.  
+The paper (_The less obvious effect of hosting the Olympics on sporting performance._) also used GDPpc.  
 
 ### rgiffin_athletes.csv
 
@@ -66,4 +68,4 @@ GDP 1960-2025
 Columns: "Country Name","Country Code","Indicator Name","Indicator Code", years "1960"-"2025"  
 "Data Source","World Development Indicators",  
 "Last Updated Date","2026-02-24",  
-
+Measure unit: current US dollars (i.e. the value of the dollar in each year it is measured, not adjusted for inflation, meaning that GDP can vary just because of inflation, even if the actual economic output is the same)  

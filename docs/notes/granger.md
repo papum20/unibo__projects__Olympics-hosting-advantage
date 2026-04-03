@@ -62,6 +62,10 @@ Before writing the code, you must handle a major time-series rule: **Time steps 
 The Olympics happen every 4 years, but they were cancelled in 1916, 1940, and 1944. If you leave these gaps in a standard time-series index, Granger Causality will calculate incorrectly. 
 *The fix:* Treat the "Olympiad number" as the time index (1, 2, 3...) rather than the calendar year, skipping the cancelled years entirely, so the data is just a sequence of continuous games.
 
+### Fix for 0/inf
+
+`0`/`inf`/etc. with logs (error): do `ln(x + 1)` instead of `ln(x)`.  
+
 #### How to Interpret the Output for your Project:
 
 1.  **The ADF Output:** If both p-values are below 0.05, you have successfully proven to your professor that you transformed the data correctly and it is safe to run time-series models.

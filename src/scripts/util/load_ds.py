@@ -6,6 +6,7 @@ import pandas as pd
 
 # World Bank Open Data
 DS_GDP_WBOD_PATH		= 'dataset/worldBankOpenData_GDP_USD.csv'
+DS_GDPPC_PERC_WBOD_PATH	= 'dataset/worldBankOpenData_GDPpc_perc.csv'
 # Maddison Project Database
 DS_GDPPC_MADDISON_PATH	= 'dataset/maddisonProjectDatabase_GDPpc_2023.csv'
 DS_MEDALS_PATH			= 'dataset/country-medals-by-year.csv'
@@ -13,10 +14,15 @@ DS_MEDALS_FULL_PATH		= 'dataset/country-medals-by-year_full.csv'
 
 GDP_WBOD_YEAR_FIRST				= 1960
 GDP_WBOD_YEAR_LAST				= 2025
+GDPPC_PERC_WBOD_YEAR_LAST		= 2024
 GDP_MADDISON_YEAR_START_DFLT	= 1800
 GDP_MADDISON_YEAR_END_DFLT		= 2025
+GDP_MADDISON_YEAR_LAST			= 2022
 MEDALS_FULL_YEAR_FIRST			= 1896
 MEDALS_FULL_YEAR_LAST			= 2026
+
+YEAR_BOYCOTT_URS	= 1980	# hosted by URS, boycotted by USA bloc
+YEAR_BOYCOTT_USA	= 1984
 
 
 
@@ -125,6 +131,78 @@ def load_gdppc_maddison_series(
 	return gdppc_series, country_name
 
 
+def load_gdppc_extended_series(
+	country_code	: str,
+	year_start		: int			= GDP_MADDISON_YEAR_START_DFLT,
+	year_end		: int			= GDPPC_PERC_WBOD_YEAR_LAST,
+	dataset_path	: str			= DS_GDPPC_PERC_WBOD_PATH,
+	data_type		: DsGdpDataType = DsGdpDataType.DEFAULT
+) -> tuple[pd.Series, str]:
+	"""Load GDP per capita from Maddison (until 2022) and extend with WBOD percentage changes (2023-2024).
+	@param country_code: Mandatory country code (3-letter) to filter by.
+	@param year_start: Starting year for the data
+	@param year_end: Ending year for the data (up to 2024)
+	@param dataset_path: Path to the WBOD percentage changes CSV file
+	@param data_type: Type of transformation to apply (DEFAULT or LN_DIFF)
+	@return: A pandas Series indexed by Year with GDP per capita values and the country name.
+	"""
+	
+	# Load Maddison data (1800-2022)
+	gdppc_series, country_name = load_gdppc_maddison_series(
+		country_code=country_code,
+		year_start=year_start,
+		year_end=GDP_MADDISON_YEAR_LAST,
+		data_type=DsGdpDataType.DEFAULT  # Don't apply transformation yet
+	)
+	
+	# If year_end <= 2022, just return the Maddison data
+	if year_end <= GDP_MADDISON_YEAR_LAST:
+		if data_type == DsGdpDataType.LN_DIFF:
+			gdppc_series = get_series_log_diff(gdppc_series)
+		return gdppc_series, country_name
+	
+	# Load percentage changes from WBOD for years 2023-2024
+	df_perc = pd.read_csv(dataset_path)
+	
+	# Filter for specific country
+	country_df = df_perc[df_perc['Country Code'] == country_code]
+	
+	if country_df.empty:
+		# If no percentage data available, just return Maddison data
+		if data_type == DsGdpDataType.LN_DIFF:
+			gdppc_series = get_series_log_diff(gdppc_series)
+		return gdppc_series, country_name
+	
+	country_perc_data	= country_df.iloc[0]
+	last_gdppc_value	= gdppc_series.iloc[-1]  # Last value from Maddison (2022)
+	
+	# Extend with percentage changes
+	extended_values	= dict(gdppc_series)  # Convert to dict
+	current_value	= last_gdppc_value
+	
+	for year in range(GDP_MADDISON_YEAR_LAST + 1, year_end + 1):
+		year_str = str(year)
+		if year_str in country_perc_data.index:
+			perc_change = country_perc_data[year_str]
+			if pd.notna(perc_change):
+				try:
+					# Percentage change (multiply by 1 + percentage/100)
+					perc_change_float		= float(perc_change) / 100.0
+					current_value			= current_value * (1 + perc_change_float)
+					extended_values[year]	= current_value
+				except (ValueError, TypeError):
+					pass
+	
+	# Create extended Series
+	gdppc_series = pd.Series(extended_values, name='GDP_per_capita')
+	gdppc_series = gdppc_series.sort_index()
+	
+	if data_type == DsGdpDataType.LN_DIFF:
+		gdppc_series = get_series_log_diff(gdppc_series)
+	
+	return gdppc_series, country_name
+
+
 def load_gdp_wbod_series(
 	country_code	: str,
 	year_start		: int			= GDP_WBOD_YEAR_FIRST,
@@ -191,7 +269,12 @@ def load_gdp_series(
 	if dataset_path == DS_GDP_WBOD_PATH:
 		return load_gdp_wbod_series(country_code, year_start, year_end, dataset_path, data_type)
 	elif dataset_path == DS_GDPPC_MADDISON_PATH:
-		return load_gdppc_maddison_series(country_code, year_start, year_end, dataset_path, data_type)
+		# Use extended version that includes WBOD data for 2023-2024
+		if year_end > GDP_MADDISON_YEAR_LAST:
+			return load_gdppc_extended_series(country_code, year_start, year_end, data_type=data_type)
+		else:
+			return load_gdppc_maddison_series(country_code, year_start, year_end, dataset_path, data_type)
+
 	else:
 		raise ValueError(f"Unsupported dataset path: {dataset_path}")
 
@@ -204,6 +287,7 @@ def load_medals_and_gdp_aligned(
 	gdp_year_shift		: int				= 0,
 	medals_data_type	: DsMedalsDataType	= DsMedalsDataType.DEFAULT,
 	gdp_data_type		: DsGdpDataType		= DsGdpDataType.DEFAULT,
+	remove_boycott		: bool				= False,
 	medals_dataset_path	: str				= DS_MEDALS_FULL_PATH,
 	gdp_dataset_path	: str				= DS_GDPPC_MADDISON_PATH
 ) -> tuple[pd.DataFrame, str]:
@@ -216,6 +300,7 @@ def load_medals_and_gdp_aligned(
 							E.g., 2 means match Olympics year with GDP from 2 years prior
 	@param medals_data_type: Type of transformation for medals (DEFAULT, LN_DIFF, PERCENTAGE)
 	@param gdp_data_type: Type of transformation for GDP (DEFAULT, LN_DIFF)
+	@param remove_boycott: Whether to remove years affected by boycotts (1980 and 1984)
 	@param medals_dataset_path: Path to medals CSV
 	@param gdp_dataset_path: Path to GDP CSV
 	@return: tuple of (DataFrame with aligned 'Medals' and 'GDP' columns indexed by Olympics year, country_name)
@@ -259,6 +344,10 @@ def load_medals_and_gdp_aligned(
 	
 	# Drop rows with NaN values
 	merged_df = merged_df.dropna()
+
+	# Optionally remove years affected by boycotts
+	if remove_boycott:
+		merged_df = merged_df[~merged_df.index.isin([YEAR_BOYCOTT_URS, YEAR_BOYCOTT_USA])]
 	
 	return merged_df, country_name
 

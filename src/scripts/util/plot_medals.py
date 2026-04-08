@@ -101,6 +101,8 @@ def plot_medals(
 	if save:
 		save_plot(fig, noc, medals_season=medals_season, out_file_tag=out_file_tag, year_start=year_start, year_end=year_end)
 
+	plt.close(fig)
+
 
 
 if __name__ == "__main__":

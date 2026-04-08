@@ -69,3 +69,10 @@ Columns: "Country Name","Country Code","Indicator Name","Indicator Code", years 
 "Data Source","World Development Indicators",  
 "Last Updated Date","2026-02-24",  
 Measure unit: current US dollars (i.e. the value of the dollar in each year it is measured, not adjusted for inflation, meaning that GDP can vary just because of inflation, even if the actual economic output is the same)  
+
+### worldBankOpenData_GDPpc_perc
+
+https://data.worldbank.org/indicator/NY.GDP.PCAP.KD.ZG  
+GDP per capita increase (annual %) from the previous year, 1960-2024  
+"Data Source","World Development Indicators",  
+"Last Updated Date","2026-02-24",  

@@ -89,6 +89,8 @@ def plot_gdp(
 	# Save the plot if requested
 	if save:
 		save_plot(fig, country_code, year_start, year_end, out_file_tag=out_file_tag)
+
+	plt.close(fig)
 	
 
 

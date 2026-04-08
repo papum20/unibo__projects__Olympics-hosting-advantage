@@ -174,6 +174,8 @@ def plot_merged_series2(medals_series, gdp_series, country_code, country_name, o
 	if save:
 			save_plot(fig, country_code, out_file_tag=out_file_tag)
 
+	plt.close(fig)
+
 
 
 if __name__ == "__main__":
@@ -212,6 +214,12 @@ if __name__ == "__main__":
 		default=2026,
 		help='Ending year for the data - default: 2026'
 	)
+
+	parser.add_argument(
+		'--exclude-boycott',
+		action='store_true',
+		help='Exclude boycott years from the analysis (flag, no value needed)'
+	)
 	
 	parser.add_argument(
 		'--save',
@@ -232,6 +240,7 @@ if __name__ == "__main__":
 	save_plot_flag	= args.save
 	year_start		= args.start_year
 	year_end		= args.end_year
+	exclude_boycott	= args.exclude_boycott
 	verbose			= args.verbose
 
 
@@ -280,6 +289,7 @@ if __name__ == "__main__":
 			year_start			= year_start,
 			year_end			= year_end,
 			gdp_year_shift		= shift,
+			remove_boycott		= exclude_boycott,
 			medals_data_type	= DsMedalsDataType.PERCENTAGE,
 			gdp_data_type		= DsGdpDataType.LN_DIFF
 		)
@@ -297,12 +307,14 @@ if __name__ == "__main__":
 		perform_granger_manual(merged_df)
 
 		# Plot
+		tag_boycott = f'boycott{"N" if exclude_boycott else "Y"}'
+		
 		plot_gdp(gdp_series, noc, country_name, actual_year_start, actual_year_end, y_min=None,
-			out_file_tag=f'log_diff_shift{shift}', save=save_plot_flag)
+			out_file_tag=f'log_diff_{tag_boycott}_shift{shift}', save=save_plot_flag)
 
 		plot_medals(medals_series, noc, actual_year_start, actual_year_end, medals_season=medals_season,
-			out_file_tag='perc', save=save_plot_flag)
+			out_file_tag=f'perc_{tag_boycott}', save=save_plot_flag)
 		
 		plot_merged_series2(merged_df[COL_MEDALS], merged_df[COL_GDP], noc, country_name,
-				out_file_tag=f'{actual_year_start}-{actual_year_end}_shift{shift}', save=save_plot_flag)
+				out_file_tag=f'{actual_year_start}-{actual_year_end}__shift{shift}_{tag_boycott}', save=save_plot_flag)
 

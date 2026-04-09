@@ -77,9 +77,29 @@ The Olympics happen every 4 years, but they were cancelled in 1916, 1940, and 19
 The original authors say, *"GDP is associated with medals."* But their model only looks at the data cross-sectionally (matching 2012 GDP with 2012 Medals). By adding a Granger Causality test on the historical data, you are answering a much cooler question: *"Does an economic boom today actually predict a sports boom four years from now?"*
 
 
+## Tecniche
+
+**GDP geometric mean over 4 years (previous 3)**:  
+* like the paper
+
+_Why the previous 3 years?_  
+The Olympic cycle is called a "quadrennium" (a 4-year period). Government sports budgets, athlete training programs, and facility construction don't happen in a single year; they happen continuously over that 4-year cycle. By taking the average of all 4 years leading up to the Games, you capture the entire funding environment the athletes experienced while training.  
+_Why a Geometric Mean instead of an Arithmetic (normal) average?_  
+Because GDP compounds over time (like interest in a bank account). If a country has a massive economic crash one year but recovers the next, a standard arithmetic average gets skewed heavily by the extreme outlier. The geometric mean is mathematically designed for growth rates—it smooths out extreme 1-year spikes or crashes, giving you the "true" baseline wealth of the country over that 4-year period.  
+(Bonus Math Fact: When you take the Natural Log (ln) of a Geometric Mean, it is mathematically identical to taking the normal average of the logs!)  
+
+**OLS in più variabili (di controllo)**:  
+* attraverso derivate parziali, si può capire l'effetto di una variabile (GDP) tenendo costante l'altra (host/boicottaggio)
+* previene _Omitted Variable Bias (OVB)_: se ometti una variabile che influenza sia X che Y, potresti erroneamente attribuire a X tutto l'effetto di quella variabile omessa
+* quindi, è diverso da fare 3 regressioni separate, perché tiene conto di tutte le variabili contemporaneamente, isolando l'effetto di ciascuna
+
 ## Relazione
 
 Spiegare come funzionano le implementazioni usate, parametri usati etc. (eg ADF di libreria python statsmodels).  
+
+Come fa il paper, mostrare 2 regressioni/modelli:
+* `Medals ~ Host` o `Medals ~ Host + Boycott` : solo con _Host_ ritorna risultati positivi (basso p-value)
+* `Medals ~ Host + Boycott + ln_GDP_4yr_mean` :  ma, aggiungendo le variabili di controllo, l'effetto di _Host_ scompare (alto p-value) e passa a _GDP_
 
 ## Ref
 

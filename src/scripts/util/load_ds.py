@@ -24,6 +24,12 @@ MEDALS_FULL_YEAR_LAST			= 2026
 YEAR_BOYCOTT_URS	= 1980	# hosted by URS, boycotted by USA bloc
 YEAR_BOYCOTT_USA	= 1984
 
+# Columns names in returned DataFrames
+DF_COL_GDP			= 'GDP'
+DF_COL_IS_BOYCOTT	= 'Is_Boycott'
+DF_COL_IS_HOST		= 'Is_Host'
+DF_COL_MEDALS		= 'Medals'
+
 
 
 class DsGdpDataType(Enum):
@@ -279,83 +285,63 @@ def load_gdp_series(
 		raise ValueError(f"Unsupported dataset path: {dataset_path}")
 
 
-def load_medals_and_gdp_aligned(
-	country				: str,
-	year_start			: int				= MEDALS_FULL_YEAR_FIRST,
-	year_end			: int				= MEDALS_FULL_YEAR_LAST,
-	medals_season		: str				= 'S',
-	gdp_year_shift		: int				= 0,
-	medals_data_type	: DsMedalsDataType	= DsMedalsDataType.DEFAULT,
-	gdp_data_type		: DsGdpDataType		= DsGdpDataType.DEFAULT,
-	remove_boycott		: bool				= False,
-	medals_dataset_path	: str				= DS_MEDALS_FULL_PATH,
-	gdp_dataset_path	: str				= DS_GDPPC_MADDISON_PATH
-) -> tuple[pd.DataFrame, str]:
-	"""Load Olympic medals and GDP per capita data with year alignment/shift.
-	@param country: Country code (NOC for medals, 3-letter for GDP)
-	@param year_start: Starting year for medals data
-	@param year_end: Ending year for medals data
-	@param medals_season: Season of medals ('S' for Summer, 'W' for Winter, 'B' for Both)
-	@param gdp_year_shift: Number of years to shift GDP backwards. 
-							E.g., 2 means match Olympics year with GDP from 2 years prior
-	@param medals_data_type: Type of transformation for medals (DEFAULT, LN_DIFF, PERCENTAGE)
-	@param gdp_data_type: Type of transformation for GDP (DEFAULT, LN_DIFF)
-	@param remove_boycott: Whether to remove years affected by boycotts (1980 and 1984)
-	@param medals_dataset_path: Path to medals CSV
-	@param gdp_dataset_path: Path to GDP CSV
-	@return: tuple of (DataFrame with aligned 'Medals' and 'GDP' columns indexed by Olympics year, country_name)
-	"""
-	
-	# Load medals data
-	medals_series = load_medals_series(
-		country=country,
-		year_start=year_start,
-		year_end=year_end,
-		medals_season=medals_season,
-		dataset_path=medals_dataset_path,
-		data_type=medals_data_type
-	)
-	
-	# Load GDP per capita data with extended range to account for shift
-	gdp_year_start	= year_start	- gdp_year_shift
-	gdp_year_end	= year_end		- gdp_year_shift
-	
-	gdp_series, country_name = load_gdp_series(
-		country_code=country,
-		year_start=gdp_year_start,
-		year_end=gdp_year_end,
-		dataset_path=gdp_dataset_path,
-		data_type=gdp_data_type
-	)
-	
-	# Create a shifted GDP series indexed by Olympics year
-	# If gdp_year_shift=2, GDP from year 1998 becomes indexed as 2000
-	gdp_shifted = pd.Series(
-		gdp_series.values,
-		index=gdp_series.index + gdp_year_shift,
-		name='GDP'
-	)
-	
-	# Merge the two series
-	merged_df = pd.DataFrame({
-		'Medals'	: medals_series,
-		'GDP'		: gdp_shifted
-	})
-	
-	# Drop rows with NaN values
-	merged_df = merged_df.dropna()
-
-	# Optionally remove years affected by boycotts
-	if remove_boycott:
-		merged_df = merged_df[~merged_df.index.isin([YEAR_BOYCOTT_URS, YEAR_BOYCOTT_USA])]
-	
-	return merged_df, country_name
-
-
 
 #
 # Medals
 #
+
+
+def load_medals(
+	country			: str|None			= None,
+	year_start		: int				= MEDALS_FULL_YEAR_FIRST,
+	year_end		: int				= MEDALS_FULL_YEAR_LAST,
+	medals_season	: str				= 'S',
+	dataset_path	: str				= DS_MEDALS_FULL_PATH,
+	data_type		: DsMedalsDataType	= DsMedalsDataType.DEFAULT
+) -> pd.DataFrame:
+	"""Load medals data with Is_Host and Is_Boycott columns.
+	@param country: Optional country code (NOC) to filter by.
+	@param medals_season: Season of medals to include (S for Summer, W for Winter, B for Both).
+	@param data_type: Type of transformation to apply to the medals series (DEFAULT, LN_DIFF, PERCENTAGE)
+	@return: DataFrame indexed by Year with Total_Medals, Is_Host, and Is_Boycott columns.
+	"""
+	
+	# Load the dataset
+	df = pd.read_csv(dataset_path, usecols=['Year', 'Season', 'NOC', 'Total_Medals', 'Is_Host'])
+	
+	# Filter by year range
+	medals_df = df[(df['Year'] >= year_start) & (df['Year'] <= year_end)]
+	
+	# Filter by medals season
+	if medals_season == 'S':
+		medals_df = medals_df[medals_df['Season'] == 'Summer']
+	elif medals_season == 'W':
+		medals_df = medals_df[medals_df['Season'] == 'Winter']
+	elif medals_season == 'B':
+		medals_df = medals_df[medals_df['Season'].isin(['Summer', 'Winter'])]
+	
+	# Filter for specific country if provided
+	if country:
+		medals_df = medals_df[medals_df['NOC'] == country]
+	
+	# Group by year and aggregate
+	medals_df = medals_df.groupby('Year').agg({
+		'Total_Medals'	: 'sum',
+		'Is_Host'		: 'any'  # True if any entry for that year is a host
+	}).reset_index()
+	
+	# Add Is_Boycott column
+	medals_df['Is_Boycott'] = medals_df['Year'].isin([YEAR_BOYCOTT_URS, YEAR_BOYCOTT_USA])
+	
+	# Set Year as index
+	medals_df = medals_df.set_index('Year')
+
+	if data_type == DsMedalsDataType.LN_DIFF:
+		medals_df['Total_Medals'] = get_series_log_diff(medals_df['Total_Medals'])
+	elif data_type == DsMedalsDataType.PERCENTAGE:
+		medals_df['Total_Medals'] = get_medal_series_percentage(medals_df['Total_Medals'], df)
+	
+	return medals_df
 
 
 def load_medals_series(
@@ -368,6 +354,7 @@ def load_medals_series(
 ) -> pd.Series:
 	"""@param country: Optional country code (NOC) to filter by. If None, aggregates across all countries.
 	@param medals_season: Season of medals to include (S for Summer, W for Winter, B for Both).
+	@param data_type: Type of transformation to apply to the medals series (DEFAULT, LN_DIFF, PERCENTAGE).
 	@return: A pandas Series indexed by Year with total medals as values.
 	"""
 
@@ -434,3 +421,91 @@ def merge_series(
 	merged_df = merged_df.dropna()
 	
 	return merged_df
+
+
+GDP_MEAN_WINDOW_SIZE = 4
+
+def load_medals_and_gdp_aligned(
+	country				: str,
+	year_start			: int				= MEDALS_FULL_YEAR_FIRST,
+	year_end			: int				= MEDALS_FULL_YEAR_LAST,
+	medals_season		: str				= 'S',
+	gdp_year_shift		: int				= 0,
+	use_gdp_mean		: bool				= False,
+	medals_data_type	: DsMedalsDataType	= DsMedalsDataType.DEFAULT,
+	gdp_data_type		: DsGdpDataType		= DsGdpDataType.DEFAULT,
+	remove_boycott		: bool				= False,
+	medals_dataset_path	: str				= DS_MEDALS_FULL_PATH,
+	gdp_dataset_path	: str				= DS_GDPPC_MADDISON_PATH
+) -> tuple[pd.DataFrame, str]:
+	"""Load Olympic medals and GDP per capita data with year alignment/shift.
+	@param country: Country code (NOC for medals, 3-letter for GDP)
+	@param year_start: Starting year for medals data
+	@param year_end: Ending year for medals data
+	@param medals_season: Season of medals ('S' for Summer, 'W' for Winter, 'B' for Both)
+	@param gdp_year_shift: Number of years to shift GDP backwards. 
+							E.g., 2 means match Olympics year with GDP from 2 years prior
+	@param use_gdp_mean: Whether to use 4-year arithmetic mean of GDP instead of raw values (applied after data type transformation). 
+							Note: arithmetic mean of logs is equal to log of geometric mean.
+	@param medals_data_type: Type of transformation for medals (DEFAULT, LN_DIFF, PERCENTAGE)
+	@param gdp_data_type: Type of transformation for GDP (DEFAULT, LN_DIFF)
+	@param remove_boycott: Whether to remove years affected by boycotts (1980 and 1984)
+	@param medals_dataset_path: Path to medals CSV
+	@param gdp_dataset_path: Path to GDP CSV
+	@return: tuple of (DataFrame with aligned 'Medals' and 'GDP' columns indexed by Olympics year, country_name)
+	"""
+	
+	# Load medals data
+	medals_df = load_medals(
+		country=country,
+		year_start=year_start,
+		year_end=year_end,
+		medals_season=medals_season,
+		dataset_path=medals_dataset_path,
+		data_type=medals_data_type
+	)
+	
+	# Load GDP per capita data with extended range to account for shift
+	gdp_year_start	= year_start	- gdp_year_shift
+	gdp_year_end	= year_end		- gdp_year_shift
+	if use_gdp_mean:
+		gdp_year_start -= GDP_MEAN_WINDOW_SIZE - 1
+	
+	gdp_series, country_name = load_gdp_series(
+		country_code=country,
+		year_start=gdp_year_start,
+		year_end=gdp_year_end,
+		dataset_path=gdp_dataset_path,
+		data_type=gdp_data_type
+	)
+	
+	# Create a shifted GDP series indexed by Olympics year
+	# If gdp_year_shift=2, GDP from year 1998 becomes indexed as 2000
+	gdp_shifted = pd.Series(
+		gdp_series.values,
+		index=gdp_series.index + gdp_year_shift,
+		name='GDP'
+	)
+
+	if use_gdp_mean:
+		# Calculate 4-year geometric mean of GDP to smooth out fluctuations
+		# arithmetic mean of log = log of geometric mean
+		gdp_shifted = gdp_shifted.rolling(window=GDP_MEAN_WINDOW_SIZE, min_periods=1).mean()
+	
+	# Merge the two series
+	merged_df = pd.DataFrame({
+		DF_COL_MEDALS		: medals_df['Total_Medals'],
+		DF_COL_GDP			: gdp_shifted,
+		DF_COL_IS_HOST		: medals_df['Is_Host'],
+		DF_COL_IS_BOYCOTT	: medals_df['Is_Boycott']
+	})
+	
+	# Drop rows with NaN values
+	merged_df = merged_df.dropna()
+
+	# Optionally remove years affected by boycotts
+	if remove_boycott:
+		merged_df = merged_df[~merged_df.index.isin([YEAR_BOYCOTT_URS, YEAR_BOYCOTT_USA])]
+	
+	return merged_df, country_name
+

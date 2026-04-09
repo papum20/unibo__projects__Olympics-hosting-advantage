@@ -15,7 +15,11 @@ from util.load_ds import (
 	load_medals_and_gdp_aligned,
 	merge_series,
 	DsGdpDataType,
-	DsMedalsDataType
+	DsMedalsDataType,
+	DF_COL_GDP,
+	DF_COL_IS_BOYCOTT,
+	DF_COL_IS_HOST,
+	DF_COL_MEDALS
 )
 from util.plot_gdp import plot_gdp
 from util.plot_medals import plot_medals
@@ -25,31 +29,40 @@ from util.common import print_ds
 
 PLOT_OUT_PATH = 'out/plot/'
 
-COL_GDP		= 'GDP'
-COL_MEDALS	= 'Medals'
 
 
-
-def perform_granger_manual(merged_df: pd.DataFrame):
+def perform_granger_manual(merged_df: pd.DataFrame, use_ctrl_vars=False):
 	"""
 	Do Granger manually, without lag, possibly using an already lagged dataset.
 	Granger wouldn't allow to not use lags, so we need to use a standard OLS regression.
 	"""
 
 	# ADF GDP
-	result = adfuller(merged_df[COL_GDP], regression='c')
+	result = adfuller(merged_df[DF_COL_GDP], regression='c')
 	print(f'ADF Statistic: {result[0]}')
 	print(f'p-value: {result[1]}')
 
 	# ADF medals
-	result = adfuller(merged_df[COL_MEDALS], regression='c')
+	result = adfuller(merged_df[DF_COL_MEDALS], regression='c')
 	print(f'ADF Statistic: {result[0]}')
 	print(f'p-value: {result[1]}')
 
 	# Granger (manual)
 	# Equation: Medal_Share = intercept + coefficient * ln_GDP_Lag_2
-	X = merged_df[COL_GDP]
-	Y = merged_df[COL_MEDALS]
+
+	# X = predictor
+	if use_ctrl_vars:
+		# X (predictors) with multiple variables
+		# OLS requires numbers, not bool
+		X = merged_df[[DF_COL_GDP, DF_COL_IS_HOST, DF_COL_IS_BOYCOTT]].astype({
+			DF_COL_IS_HOST		: int,
+			DF_COL_IS_BOYCOTT	: int
+		})
+	else:
+		X = merged_df[DF_COL_GDP]
+
+	# Y = what we are predicting
+	Y = merged_df[DF_COL_MEDALS]
 
 	# Add a constant (intercept) to the model
 	X = sm.add_constant(X)
@@ -62,12 +75,12 @@ def perform_granger_manual(merged_df: pd.DataFrame):
 def perform_tests(merged_df):
 	
 	# ADF GDP
-	result = adfuller(merged_df[COL_GDP], regression='c')
+	result = adfuller(merged_df[DF_COL_GDP], regression='c')
 	print(f'ADF Statistic: {result[0]}')
 	print(f'p-value: {result[1]}')
 
 	# ADF medals
-	result = adfuller(merged_df[COL_MEDALS], regression='c')
+	result = adfuller(merged_df[DF_COL_MEDALS], regression='c')
 	print(f'ADF Statistic: {result[0]}')
 	print(f'p-value: {result[1]}')
 
@@ -216,9 +229,21 @@ if __name__ == "__main__":
 	)
 
 	parser.add_argument(
+		'--ctrl-vars',
+		action='store_true',
+		help='Use control variables (flag, no value needed)'
+	)
+
+	parser.add_argument(
 		'--exclude-boycott',
 		action='store_true',
 		help='Exclude boycott years from the analysis (flag, no value needed)'
+	)
+
+	parser.add_argument(
+		'--gdp-avg',
+		action='store_true',
+		help='Use 4-year geometric mean of GDP instead of raw values (flag, no value needed)'
 	)
 	
 	parser.add_argument(
@@ -240,7 +265,9 @@ if __name__ == "__main__":
 	save_plot_flag	= args.save
 	year_start		= args.start_year
 	year_end		= args.end_year
+	use_ctrl_vars	= args.ctrl_vars
 	exclude_boycott	= args.exclude_boycott
+	use_gdp_mean	= args.gdp_avg
 	verbose			= args.verbose
 
 
@@ -254,14 +281,14 @@ if __name__ == "__main__":
 	medals_series = load_medals_series(country=noc, medals_season=medals_season,
 						year_start=year_start, year_end=year_end, data_type=DsMedalsDataType.PERCENTAGE)
 
-	merged_df = merge_series(medals_series, gdp_series, series1_name=COL_MEDALS, series2_name=COL_GDP)
+	merged_df = merge_series(medals_series, gdp_series, series1_name=DF_COL_MEDALS, series2_name=DF_COL_GDP)
 
 	actual_year_start	= max(merged_df.index.min(), year_start)
 	actual_year_end		= min(merged_df.index.max(), year_end)
 	print(f"Using data from {actual_year_start} to {actual_year_end} (requested: {year_start}-{year_end})")
 
-	print_ds(merged_df[COL_GDP],	f"{country_name} GDP series",	verbose)
-	print_ds(merged_df[COL_MEDALS],	f"{noc} medals series",			verbose)
+	print_ds(merged_df[DF_COL_GDP],	f"{country_name} GDP series",	verbose)
+	print_ds(merged_df[DF_COL_MEDALS],	f"{noc} medals series",			verbose)
 
 	perform_tests(merged_df)
 
@@ -272,7 +299,7 @@ if __name__ == "__main__":
 	plot_medals(medals_series, noc, actual_year_start, actual_year_end, medals_season=medals_season,
 		out_file_tag='perc', save=save_plot_flag)
 	
-	plot_merged_series2(merged_df[COL_MEDALS], merged_df[COL_GDP], noc, country_name,
+	plot_merged_series2(merged_df[DF_COL_MEDALS], merged_df[DF_COL_GDP], noc, country_name,
 			out_file_tag=f'{actual_year_start}-{actual_year_end}', save=save_plot_flag)
 
 
@@ -290,31 +317,38 @@ if __name__ == "__main__":
 			year_end			= year_end,
 			gdp_year_shift		= shift,
 			remove_boycott		= exclude_boycott,
+			use_gdp_mean		= use_gdp_mean,
 			medals_data_type	= DsMedalsDataType.PERCENTAGE,
 			gdp_data_type		= DsGdpDataType.LN_DIFF
 		)
 
-		gdp_series		= pd.Series(merged_df[COL_GDP],		name='GDP')
-		medals_series	= pd.Series(merged_df[COL_MEDALS],	name='Medals')
+		gdp_series		= pd.Series(merged_df[DF_COL_GDP],		name='GDP')
+		medals_series	= pd.Series(merged_df[DF_COL_MEDALS],	name='Medals')
 
 		actual_year_start	= max(merged_df.index.min(), year_start)
 		actual_year_end		= min(merged_df.index.max(), year_end)
 		print(f"Using data from {actual_year_start} to {actual_year_end} (requested: {year_start}-{year_end})")
 
-		print_ds(merged_df[COL_GDP],	f"{country_name} GDP series",	verbose)
-		print_ds(merged_df[COL_MEDALS],	f"{noc} medals series",			verbose)
+		print_ds(merged_df[DF_COL_GDP],	f"{country_name} GDP series",	verbose)
+		print_ds(merged_df[DF_COL_MEDALS],	f"{noc} medals series",		verbose)
 
-		perform_granger_manual(merged_df)
+		if verbose:
+			print("\nMerged DataFrame:")
+			print(merged_df)
+
+		perform_granger_manual(merged_df, use_ctrl_vars=use_ctrl_vars)
 
 		# Plot
-		tag_boycott = f'boycott{"N" if exclude_boycott else "Y"}'
+		tag_boycott		= f'boycott{"N" if exclude_boycott else "Y"}'
+		tag_ctrl_vars	= f'ctrl{"Y" if use_ctrl_vars else "N"}'
+		tag_gdp_mean	= f'gdpmean{"Y" if use_gdp_mean else "N"}'
 		
 		plot_gdp(gdp_series, noc, country_name, actual_year_start, actual_year_end, y_min=None,
-			out_file_tag=f'log_diff_{tag_boycott}_shift{shift}', save=save_plot_flag)
+			out_file_tag=f'log_diff_{tag_boycott}_{tag_ctrl_vars}_{tag_gdp_mean}_shift{shift}', save=save_plot_flag)
 
 		plot_medals(medals_series, noc, actual_year_start, actual_year_end, medals_season=medals_season,
-			out_file_tag=f'perc_{tag_boycott}', save=save_plot_flag)
+			out_file_tag=f'perc_{tag_boycott}_{tag_ctrl_vars}_{tag_gdp_mean}', save=save_plot_flag)
 		
-		plot_merged_series2(merged_df[COL_MEDALS], merged_df[COL_GDP], noc, country_name,
-				out_file_tag=f'{actual_year_start}-{actual_year_end}__shift{shift}_{tag_boycott}', save=save_plot_flag)
+		plot_merged_series2(merged_df[DF_COL_MEDALS], merged_df[DF_COL_GDP], noc, country_name,
+				out_file_tag=f'{actual_year_start}-{actual_year_end}_shift{shift}_{tag_boycott}_{tag_ctrl_vars}_{tag_gdp_mean}', save=save_plot_flag)
 

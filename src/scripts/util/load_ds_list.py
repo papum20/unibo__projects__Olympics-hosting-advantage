@@ -33,8 +33,6 @@ DF_COL_GDP			= 'GDP'
 DF_COL_IS_BOYCOTT	= 'Is_Boycott'
 DF_COL_IS_COMMUNIST	= 'Is_Communist'
 DF_COL_IS_HOST		= 'Is_Host'
-DF_COL_IS_HOST_PRE	= 'Is_Host_Pre'
-DF_COL_IS_HOST_POST	= 'Is_Host_Post'
 DF_COL_MEDALS		= 'Medals'
 DF_COL_POPULATION	= 'Population'
 
@@ -102,20 +100,24 @@ def get_medal_series_percentage(country_series: pd.Series, full_df: pd.DataFrame
 
 
 def load_gdppc_maddison_series(
-	country_code	: str,
+	country_code	: str | list[str],
 	year_start		: int			= GDP_MADDISON_YEAR_START_DFLT,
 	year_end		: int			= GDP_MADDISON_YEAR_END_DFLT,
 	dataset_path	: str			= DS_GDPPC_MADDISON_PATH,
 	data_type		: DsGdpDataType = DsGdpDataType.DEFAULT
 ) -> tuple[pd.Series, str]:
 	"""Load GDP per capita from Maddison Project Database.
-	@param country_code: Mandatory country code (3-letter) to filter by.
+	@param country_code: Mandatory country code(s) (3-letter) to filter by. Can be a single string or list of strings.
 	@param year_start: Starting year for the data
 	@param year_end: Ending year for the data
 	@param dataset_path: Path to the Maddison CSV file
 	@param data_type: Type of transformation to apply (DEFAULT or LN_DIFF)
 	@return: A pandas Series indexed by Year with GDP per capita values and the country name.
 	"""
+	
+	# Convert single string to list
+	if isinstance(country_code, str):
+		country_code = [country_code]
 	
 	# Load the dataset, skipping the first 2 rows (metadata/regions)
 	# Row 3 (index 2) contains the actual column names (year, country codes, etc)
@@ -126,14 +128,16 @@ def load_gdppc_maddison_series(
 	if 'year' in df.columns[0].lower():
 		df = df.rename(columns={df.columns[0]: 'Year'})
 	
-	# Filter for the specific country column
-	if country_code not in df.columns:
-		raise ValueError(f"Country code '{country_code}' not found in dataset. Available countries: {', '.join(df.columns[1:])}")
+	# Validate country codes
+	for code in country_code:
+		if code not in df.columns:
+			raise ValueError(f"Country code '{code}' not found in dataset. Available countries: {', '.join(df.columns[1:])}")
 	
 	# Extract year and country data
-	gdppc_data					= df[['Year', country_code]].copy()
-	gdppc_data['Year']			= pd.to_numeric(gdppc_data['Year'], errors='coerce')
-	gdppc_data[country_code]	= pd.to_numeric(gdppc_data[country_code], errors='coerce')
+	gdppc_data = df[['Year'] + country_code].copy()
+	gdppc_data['Year'] = pd.to_numeric(gdppc_data['Year'], errors='coerce')
+	for code in country_code:
+		gdppc_data[code] = pd.to_numeric(gdppc_data[code], errors='coerce')
 	
 	# Remove rows with NaN values
 	gdppc_data = gdppc_data.dropna()
@@ -141,15 +145,20 @@ def load_gdppc_maddison_series(
 	# Filter by year range
 	gdppc_data = gdppc_data[(gdppc_data['Year'] >= year_start) & (gdppc_data['Year'] <= year_end)]
 	
+	# Aggregate countries if multiple provided
+	if len(country_code) > 1:
+		gdppc_values = gdppc_data[country_code].mean(axis=1)
+		country_name = '+'.join(country_code)
+	else:
+		gdppc_values = gdppc_data[country_code[0]]
+		country_name = country_code[0]
+	
 	# Create Series with Year as index
 	gdppc_series = pd.Series(
-		gdppc_data[country_code].values,
+		gdppc_values.values,
 		index=gdppc_data['Year'].astype(int).values,
 		name='GDP_per_capita'
 	)
-	
-	# Get country name from the first row metadata (optional, fallback to country code)
-	country_name = country_code
 	
 	if data_type == DsGdpDataType.LN_DIFF:
 		gdppc_series = get_series_log_diff(gdppc_series)
@@ -158,20 +167,24 @@ def load_gdppc_maddison_series(
 
 
 def load_gdppc_extended_series(
-	country_code	: str,
+	country_code	: str | list[str],
 	year_start		: int			= GDP_MADDISON_YEAR_START_DFLT,
 	year_end		: int			= GDPPC_PERC_WBOD_YEAR_LAST,
 	dataset_path	: str			= DS_GDPPC_PERC_WBOD_PATH,
 	data_type		: DsGdpDataType = DsGdpDataType.DEFAULT
 ) -> tuple[pd.Series, str]:
 	"""Load GDP per capita from Maddison (until 2022) and extend with WBOD percentage changes (2023-2024).
-	@param country_code: Mandatory country code (3-letter) to filter by.
+	@param country_code: Mandatory country code(s) (3-letter) to filter by. Can be a single string or list of strings.
 	@param year_start: Starting year for the data
 	@param year_end: Ending year for the data (up to 2024)
 	@param dataset_path: Path to the WBOD percentage changes CSV file
 	@param data_type: Type of transformation to apply (DEFAULT or LN_DIFF)
 	@return: A pandas Series indexed by Year with GDP per capita values and the country name.
 	"""
+	
+	# Convert single string to list
+	if isinstance(country_code, str):
+		country_code = [country_code]
 	
 	# Load Maddison data (1800-2022)
 	gdppc_series, country_name = load_gdppc_maddison_series(
@@ -190,8 +203,8 @@ def load_gdppc_extended_series(
 	# Load percentage changes from WBOD for years 2023-2024
 	df_perc = pd.read_csv(dataset_path)
 	
-	# Filter for specific country
-	country_df = df_perc[df_perc['Country Code'] == country_code]
+	# Filter for specific countries
+	country_df = df_perc[df_perc['Country Code'].isin(country_code)]
 	
 	if country_df.empty:
 		# If no percentage data available, just return Maddison data
@@ -199,25 +212,30 @@ def load_gdppc_extended_series(
 			gdppc_series = get_series_log_diff(gdppc_series)
 		return gdppc_series, country_name
 	
-	country_perc_data	= country_df.iloc[0]
-	last_gdppc_value	= gdppc_series.iloc[-1]  # Last value from Maddison (2022)
+	# Aggregate percentage changes across countries (average)
+	country_perc_avg = country_df.set_index('Country Code').mean()
+	last_gdppc_value = gdppc_series.iloc[-1]  # Last value from Maddison (2022)
 	
 	# Extend with percentage changes
-	extended_values	= dict(gdppc_series)  # Convert to dict
-	current_value	= last_gdppc_value
+	extended_values = dict(gdppc_series)  # Convert to dict
+	current_value = last_gdppc_value
 	
 	for year in range(GDP_MADDISON_YEAR_LAST + 1, year_end + 1):
 		year_str = str(year)
-		if year_str in country_perc_data.index:
-			perc_change = country_perc_data[year_str]
-			if pd.notna(perc_change):
-				try:
-					# Percentage change (multiply by 1 + percentage/100)
-					perc_change_float		= float(perc_change) / 100.0
-					current_value			= current_value * (1 + perc_change_float)
-					extended_values[year]	= current_value
-				except (ValueError, TypeError):
-					pass
+		perc_changes = []
+		for _, row in country_df.iterrows():
+			if year_str in row.index:
+				perc_change = row[year_str]
+				if pd.notna(perc_change):
+					try:
+						perc_changes.append(float(perc_change))
+					except (ValueError, TypeError):
+						pass
+		
+		if perc_changes:
+			avg_perc_change = np.mean(perc_changes) / 100.0
+			current_value = current_value * (1 + avg_perc_change)
+			extended_values[year] = current_value
 	
 	# Create extended Series
 	gdppc_series = pd.Series(extended_values, name='GDP_per_capita')
@@ -230,27 +248,28 @@ def load_gdppc_extended_series(
 
 
 def load_gdp_wbod_series(
-	country_code	: str,
+	country_code	: str | list[str],
 	year_start		: int			= GDP_WBOD_YEAR_FIRST,
 	year_end		: int			= GDP_WBOD_YEAR_LAST,
 	dataset_path	: str			= DS_GDP_WBOD_PATH,
 	data_type		: DsGdpDataType = DsGdpDataType.DEFAULT
 ) -> tuple[pd.Series, str]:
-	"""@param country_code: Mandatory country code to filter by.
+	"""@param country_code: Mandatory country code(s) to filter by. Can be a single string or list of strings.
 	@return: A pandas Series indexed by Year with GDP values and the country name.
 	"""
 
+	# Convert single string to list
+	if isinstance(country_code, str):
+		country_code = [country_code]
+	
 	# Load the dataset
 	df = pd.read_csv(dataset_path)
 	
-	# Filter for specific country
-	country_df = df[df['Country Code'] == country_code]
+	# Filter for specific countries
+	country_df = df[df['Country Code'].isin(country_code)]
 	
 	if country_df.empty:
-		raise ValueError(f"Country code '{country_code}' not found in dataset")
-	
-	# Get the first row (should be unique by country code and indicator)
-	country_data = country_df.iloc[0]
+		raise ValueError(f"Country code(s) {country_code} not found in dataset")
 	
 	# Extract year columns (1960-2025) and create a series
 	years		= [str(year) for year in range(year_start, year_end + 1)]
@@ -258,33 +277,38 @@ def load_gdp_wbod_series(
 	valid_years	= []
 	
 	for year in years:
-		if year in country_data.index:
-			value = country_data[year]
-			if pd.notna(value):  # Skip NaN values
-				try:
-					gdp_values.append(float(value))
-					valid_years.append(int(year))
-				except (ValueError, TypeError):
-					pass
+		year_values = []
+		for _, row in country_df.iterrows():
+			if year in row.index:
+				value = row[year]
+				if pd.notna(value):
+					try:
+						year_values.append(float(value))
+					except (ValueError, TypeError):
+						pass
+		if year_values:
+			gdp_values.append(np.mean(year_values))
+			valid_years.append(int(year))
 	
 	# Create pandas Series with Year as index
 	gdp_series = pd.Series(gdp_values, index=valid_years, name='GDP')
+	country_name = '+'.join(country_code) if len(country_code) > 1 else country_df.iloc[0].get('Country Name', country_code[0])
 
 	if data_type == DsGdpDataType.LN_DIFF:
 		gdp_series = get_series_log_diff(gdp_series)	
 	
-	return gdp_series, country_data['Country Name']
+	return gdp_series, country_name
 
 
 def load_gdp_series(
-	country_code	: str,
+	country_code	: str | list[str],
 	year_start		: int			= GDP_MADDISON_YEAR_START_DFLT,
 	year_end		: int			= GDP_MADDISON_YEAR_END_DFLT,
 	dataset_path	: str			= DS_GDPPC_MADDISON_PATH,
 	data_type		: DsGdpDataType = DsGdpDataType.DEFAULT
 ) -> tuple[pd.Series, str]:
 	"""
-	@param country_code: Mandatory country code to filter by.
+	@param country_code: Mandatory country code(s) to filter by. Can be a single string or list of strings.
 	@param year_start: Starting year for the data
 	@param year_end: Ending year for the data
 	@param dataset_path: Path to the dataset CSV file. One of the two datasets (World Bank Open Data or Maddison Project Database) can be used, depending on the file path provided.
@@ -312,7 +336,7 @@ def load_gdp_series(
 
 
 def load_medals(
-	country			: str|None			= None,
+	country			: str | list[str] | None = None,
 	year_start		: int				= MEDALS_FULL_YEAR_FIRST,
 	year_end		: int				= MEDALS_FULL_YEAR_LAST,
 	medals_season	: str				= 'S',
@@ -320,7 +344,7 @@ def load_medals(
 	data_type		: DsMedalsDataType	= DsMedalsDataType.DEFAULT
 ) -> pd.DataFrame:
 	"""Load medals data with Is_Host and Is_Boycott columns.
-	@param country: Optional country code (NOC) to filter by.
+	@param country: Optional country code(s) (NOC) to filter by. Can be a single string, list of strings, or None.
 	@param medals_season: Season of medals to include (S for Summer, W for Winter, B for Both).
 	@param data_type: Type of transformation to apply to the medals series (DEFAULT, LN_DIFF, PERCENTAGE)
 	@return: DataFrame indexed by Year with Total_Medals, Is_Host, and Is_Boycott columns.
@@ -340,9 +364,12 @@ def load_medals(
 	elif medals_season == 'B':
 		medals_df = medals_df[medals_df['Season'].isin(['Summer', 'Winter'])]
 	
-	# Filter for specific country if provided
+	# Filter for specific country/countries if provided
 	if country:
-		medals_df = medals_df[medals_df['NOC'] == country]
+		if isinstance(country, str):
+			medals_df = medals_df[medals_df['NOC'] == country]
+		else:
+			medals_df = medals_df[medals_df['NOC'].isin(country)]
 	
 	# Group by year and aggregate
 	medals_df = medals_df.groupby('Year').agg({
@@ -365,14 +392,14 @@ def load_medals(
 
 
 def load_medals_series(
-	country			: str|None			= None,
+	country			: str | list[str] | None = None,
 	year_start		: int				= MEDALS_FULL_YEAR_FIRST,
 	year_end		: int				= MEDALS_FULL_YEAR_LAST,
 	medals_season	: str				= 'S',
 	dataset_path	: str				= DS_MEDALS_FULL_PATH,
 	data_type		: DsMedalsDataType	= DsMedalsDataType.DEFAULT
 ) -> pd.Series:
-	"""@param country: Optional country code (NOC) to filter by. If None, aggregates across all countries.
+	"""@param country: Optional country code(s) (NOC) to filter by. Can be a single string, list of strings, or None. If None, aggregates across all countries.
 	@param medals_season: Season of medals to include (S for Summer, W for Winter, B for Both).
 	@param data_type: Type of transformation to apply to the medals series (DEFAULT, LN_DIFF, PERCENTAGE).
 	@return: A pandas Series indexed by Year with total medals as values.
@@ -397,9 +424,12 @@ def load_medals_series(
 		# Aggregate total medals by year (summing across all countries)
 		medals_by_year = df.groupby('Year')['Total_Medals'].sum()
 	else:
-		# Filter for specific country and aggregate by year
-		country_df		= df[df['NOC'] == country]
-		medals_by_year	= country_df.groupby('Year')['Total_Medals'].sum()
+		# Filter for specific country/countries and aggregate by year
+		if isinstance(country, str):
+			country_df = df[df['NOC'] == country]
+		else:
+			country_df = df[df['NOC'].isin(country)]
+		medals_by_year = country_df.groupby('Year')['Total_Medals'].sum()
 	
 	# Convert to pandas Series with Year as index
 	medals_series = pd.Series(medals_by_year.values, index=medals_by_year.index, name='Total_Medals')
@@ -419,20 +449,24 @@ def load_medals_series(
 
 
 def load_population_maddison_series(
-	country_code	: str,
+	country_code	: str | list[str],
 	year_start		: int			= GDP_MADDISON_YEAR_START_DFLT,
 	year_end		: int			= GDP_MADDISON_YEAR_END_DFLT,
 	dataset_path	: str			= DS_POPULATION_MADDISON_PATH,
 	data_type		: DsPopDataType = DsPopDataType.DEFAULT
 ) -> tuple[pd.Series, str]:
 	"""Load population from Maddison Project Database.
-	@param country_code: Mandatory country code (3-letter) to filter by.
+	@param country_code: Mandatory country code(s) (3-letter) to filter by. Can be a single string or list of strings.
 	@param year_start: Starting year for the data
 	@param year_end: Ending year for the data
 	@param dataset_path: Path to the Maddison CSV file
 	@param data_type: Type of transformation to apply (DEFAULT or LN_DIFF)
 	@return: A pandas Series indexed by Year with population values and the country name.
 	"""
+	
+	# Convert single string to list
+	if isinstance(country_code, str):
+		country_code = [country_code]
 	
 	# Load the dataset, skipping the first 2 rows (metadata/regions)
 	# Row 3 (index 2) contains the actual column names (year, country codes, etc)
@@ -443,14 +477,16 @@ def load_population_maddison_series(
 	if 'year' in df.columns[0].lower():
 		df = df.rename(columns={df.columns[0]: 'Year'})
 	
-	# Filter for the specific country column
-	if country_code not in df.columns:
-		raise ValueError(f"Country code '{country_code}' not found in dataset. Available countries: {', '.join(df.columns[1:])}")
+	# Validate country codes
+	for code in country_code:
+		if code not in df.columns:
+			raise ValueError(f"Country code '{code}' not found in dataset. Available countries: {', '.join(df.columns[1:])}")
 	
 	# Extract year and country data
-	population_data					= df[['Year', country_code]].copy()
-	population_data['Year']			= pd.to_numeric(population_data['Year'], errors='coerce')
-	population_data[country_code]	= pd.to_numeric(population_data[country_code], errors='coerce')
+	population_data = df[['Year'] + country_code].copy()
+	population_data['Year'] = pd.to_numeric(population_data['Year'], errors='coerce')
+	for code in country_code:
+		population_data[code] = pd.to_numeric(population_data[code], errors='coerce')
 	
 	# Remove rows with NaN values
 	population_data = population_data.dropna()
@@ -458,15 +494,20 @@ def load_population_maddison_series(
 	# Filter by year range
 	population_data = population_data[(population_data['Year'] >= year_start) & (population_data['Year'] <= year_end)]
 	
+	# Aggregate countries if multiple provided
+	if len(country_code) > 1:
+		population_values = population_data[country_code].sum(axis=1)
+		country_name = '+'.join(country_code)
+	else:
+		population_values = population_data[country_code[0]]
+		country_name = country_code[0]
+	
 	# Create Series with Year as index
 	population_series = pd.Series(
-		population_data[country_code].values,
+		population_values.values,
 		index=population_data['Year'].astype(int).values,
 		name='Population'
 	)
-	
-	# Get country name from the first row metadata (optional, fallback to country code)
-	country_name = country_code
 	
 	if data_type == DsPopDataType.LN_DIFF:
 		population_series = get_series_log_diff(population_series)
@@ -475,20 +516,24 @@ def load_population_maddison_series(
 
 
 def load_population_extended_series(
-	country_code	: str,
+	country_code	: str | list[str],
 	year_start		: int			= GDP_MADDISON_YEAR_START_DFLT,
 	year_end		: int			= GDPPC_PERC_WBOD_YEAR_LAST,
 	dataset_path	: str			= DS_POPULATION_WBOD_PATH,
 	data_type		: DsPopDataType = DsPopDataType.DEFAULT
 ) -> tuple[pd.Series, str]:
 	"""Load population from Maddison (until 2022) and extend with WBOD data (2023-2024).
-	@param country_code: Mandatory country code (3-letter) to filter by.
+	@param country_code: Mandatory country code(s) (3-letter) to filter by. Can be a single string or list of strings.
 	@param year_start: Starting year for the data
 	@param year_end: Ending year for the data (up to 2024)
 	@param dataset_path: Path to the WBOD population CSV file
 	@param data_type: Type of transformation to apply (DEFAULT or LN_DIFF)
 	@return: A pandas Series indexed by Year with population values and the country name.
 	"""
+	
+	# Convert single string to list
+	if isinstance(country_code, str):
+		country_code = [country_code]
 	
 	# Load Maddison data (1800-2022)
 	population_series, country_name = load_population_maddison_series(
@@ -507,8 +552,8 @@ def load_population_extended_series(
 	# Load population data from WBOD for years 2023-2024
 	df_wbod = pd.read_csv(dataset_path)
 	
-	# Filter for specific country
-	country_df = df_wbod[df_wbod['Country Code'] == country_code]
+	# Filter for specific countries
+	country_df = df_wbod[df_wbod['Country Code'].isin(country_code)]
 	
 	if country_df.empty:
 		# If no WBOD data available, just return Maddison data
@@ -516,21 +561,22 @@ def load_population_extended_series(
 			population_series = get_series_log_diff(population_series)
 		return population_series, country_name
 	
-	country_data	= country_df.iloc[0]
-	#last_pop_value	= population_series.iloc[-1]  # Last value from Maddison (2022)
-	
 	# Extend with WBOD data for years 2023 onwards
-	extended_values	= dict(population_series)  # Convert to dict
+	extended_values = dict(population_series)  # Convert to dict
 	
 	for year in range(POPULATION_MADDISON_YEAR_LAST + 1, year_end + 1):
 		year_str = str(year)
-		if year_str in country_data.index:
-			pop_value = country_data[year_str]
-			if pd.notna(pop_value):
-				try:
-					extended_values[year] = float(pop_value)
-				except (ValueError, TypeError):
-					pass
+		pop_values = []
+		for _, row in country_df.iterrows():
+			if year_str in row.index:
+				pop_value = row[year_str]
+				if pd.notna(pop_value):
+					try:
+						pop_values.append(float(pop_value))
+					except (ValueError, TypeError):
+						pass
+		if pop_values:
+			extended_values[year] = sum(pop_values)
 	
 	# Create extended Series
 	population_series = pd.Series(extended_values, name='Population')
@@ -543,14 +589,14 @@ def load_population_extended_series(
 
 
 def load_population_series(
-	country_code	: str,
+	country_code	: str | list[str],
 	year_start		: int			= GDP_MADDISON_YEAR_START_DFLT,
 	year_end		: int			= GDP_MADDISON_YEAR_END_DFLT,
 	dataset_path	: str			= DS_POPULATION_MADDISON_PATH,
 	data_type		: DsPopDataType = DsPopDataType.DEFAULT
 ) -> tuple[pd.Series, str]:
 	"""
-	@param country_code: Mandatory country code to filter by.
+	@param country_code: Mandatory country code(s) to filter by. Can be a single string or list of strings.
 	@param year_start: Starting year for the data
 	@param year_end: Ending year for the data
 	@param dataset_path: Path to the dataset CSV file. One of the two datasets (World Bank Open Data or Maddison Project Database) can be used, depending on the file path provided.
@@ -609,24 +655,25 @@ def merge_series(
 GDP_MEAN_WINDOW_SIZE = 4
 
 def load_medals_gdp_and_population_aligned(
-	country					: str,
-	year_start				: int				= MEDALS_FULL_YEAR_FIRST,
-	year_end				: int				= MEDALS_FULL_YEAR_LAST,
-	medals_season			: str				= 'S',
-	gdp_year_shift			: int				= 0,
-	population_year_shift	: int				= 0,
-	use_gdp_mean			: bool				= False,
-	use_population_mean		: bool				= False,
-	remove_boycott			: bool				= False,
-	medals_data_type		: DsMedalsDataType	= DsMedalsDataType.DEFAULT,
-	gdp_data_type			: DsGdpDataType		= DsGdpDataType.DEFAULT,
-	population_data_type	: DsPopDataType		= DsPopDataType.DEFAULT,
-	medals_dataset_path		: str				= DS_MEDALS_FULL_PATH,
-	gdp_dataset_path		: str				= DS_GDPPC_MADDISON_PATH,
-	population_dataset_path	: str				= DS_POPULATION_MADDISON_PATH
+	country				: str | list[str],
+	year_start			: int				= MEDALS_FULL_YEAR_FIRST,
+	year_end			: int				= MEDALS_FULL_YEAR_LAST,
+	medals_season		: str				= 'S',
+	gdp_year_shift		: int				= 0,
+	population_year_shift		: int		= 0,
+	use_gdp_mean		: bool				= False,
+	use_population_mean	: bool				= False,
+	use_communist_bloc	: bool				= False,
+	remove_boycott		: bool				= False,
+	medals_data_type	: DsMedalsDataType	= DsMedalsDataType.DEFAULT,
+	gdp_data_type		: DsGdpDataType		= DsGdpDataType.DEFAULT,
+	population_data_type	: DsPopDataType	= DsPopDataType.DEFAULT,
+	medals_dataset_path	: str				= DS_MEDALS_FULL_PATH,
+	gdp_dataset_path	: str				= DS_GDPPC_MADDISON_PATH,
+	population_dataset_path	: str			= DS_POPULATION_MADDISON_PATH
 ) -> tuple[pd.DataFrame, str]:
 	"""Load Olympic medals, GDP per capita, and population data with year alignment/shift.
-	@param country: Country code (NOC for medals, 3-letter for GDP and population)
+	@param country: Country code(s) (NOC for medals, 3-letter for GDP and population). Can be a single string or list of strings.
 	@param year_start: Starting year for medals data
 	@param year_end: Ending year for medals data
 	@param medals_season: Season of medals ('S' for Summer, 'W' for Winter, 'B' for Both)
@@ -721,8 +768,9 @@ def load_medals_gdp_and_population_aligned(
 	# Drop rows with NaN values
 	merged_df = merged_df.dropna()
 
-	# add Is_Communist column
-	merged_df[DF_COL_IS_COMMUNIST] = country in COMMUNIST_BLOC_COUNTRIES
+	# Optionally add Is_Communist column
+	if use_communist_bloc:
+		merged_df[DF_COL_IS_COMMUNIST] = country in COMMUNIST_BLOC_COUNTRIES
 
 	# Optionally remove years affected by boycotts
 	if remove_boycott:
@@ -730,86 +778,3 @@ def load_medals_gdp_and_population_aligned(
 	
 	return merged_df, country_name
 
-
-def load_stacked_countries(
-	countries_list			: str,
-	year_start				: int				= MEDALS_FULL_YEAR_FIRST,
-	year_end				: int				= MEDALS_FULL_YEAR_LAST,
-	medals_season			: str				= 'S',
-	gdp_year_shift			: int				= 0,
-	population_year_shift	: int				= 0,
-	use_gdp_mean			: bool				= False,
-	use_population_mean		: bool				= False,
-	remove_boycott			: bool				= False,
-	medals_data_type		: DsMedalsDataType	= DsMedalsDataType.DEFAULT,
-	gdp_data_type			: DsGdpDataType		= DsGdpDataType.DEFAULT,
-	population_data_type	: DsPopDataType		= DsPopDataType.DEFAULT,
-	medals_dataset_path		: str				= DS_MEDALS_FULL_PATH,
-	gdp_dataset_path		: str				= DS_GDPPC_MADDISON_PATH,
-	population_dataset_path	: str				= DS_POPULATION_MADDISON_PATH,
-	is_verbose				: bool				= True
-) -> tuple[pd.DataFrame, str]:
-	
-	# In a panel regression, the DataFrame of each country is stacked on top of each other
-	
-	if is_verbose:
-		print("\n--- Building Global Panel Dataset ---")
-	all_countries_data	= []
-	all_countries_names = []
-
-	for noc in countries_list:
-		try:
-			country_df, country_name = load_medals_gdp_and_population_aligned(
-				country					= noc,
-				year_start				= year_start,
-				year_end				= year_end,
-				medals_season			= medals_season,
-				gdp_year_shift			= gdp_year_shift,
-				population_year_shift	= population_year_shift,
-				use_gdp_mean			= use_gdp_mean,
-				use_population_mean		= use_population_mean,
-				remove_boycott			= remove_boycott,
-				medals_data_type		= medals_data_type,
-				gdp_data_type			= gdp_data_type,
-				population_data_type	= population_data_type,
-				medals_dataset_path		= medals_dataset_path,
-				gdp_dataset_path		= gdp_dataset_path,
-				population_dataset_path	= population_dataset_path
-			)
-			
-			# Add the NOC column so we know who is who when we stack them
-			country_df['NOC'] = noc
-			
-			# Add the DataFrame to our list
-			all_countries_data.append(country_df)
-			if is_verbose:
-				print(f"Added {noc} to panel.")
-
-			all_countries_names.append(country_name)
-		except Exception as e:
-			# Some small countries might not have GDP data in Maddison, skip them safely
-			if is_verbose:
-				print(f"Skipped {noc}: {e}")
-
-	# Stack them all together into one giant "Long Format" DataFrame
-	global_df = pd.concat(all_countries_data)
-
-	# Reset index to convert Year from index to column (otherwise can't sort rows later)
-	global_df = global_df.reset_index()
-	if 'index' in global_df.columns:
-		global_df = global_df.rename(columns={'index': 'Year'})
-
-	# Sort by Country, then by Year (Crucial for the Pre/Post shift to work correctly)
-	global_df = global_df.sort_values(by=['NOC', 'Year'])
-
-	if is_verbose:
-		print("\n--- Calculating Pre and Post Host Dummies ---")
-	# Create Pre and Post using pandas groupby shift
-	# shift(-1) looks at the NEXT row. shift(1) looks at the PREVIOUS row.
-	global_df[DF_COL_IS_HOST_PRE]	= global_df.groupby('NOC')[DF_COL_IS_HOST].shift(-1).fillna(0).astype(int)
-	global_df[DF_COL_IS_HOST_POST]	= global_df.groupby('NOC')[DF_COL_IS_HOST].shift(1).fillna(0).astype(int)
-
-	# Clean up any remaining NaNs
-	global_df = global_df.dropna()
-
-	return global_df, '+'.join(all_countries_names)

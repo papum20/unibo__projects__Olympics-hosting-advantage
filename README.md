@@ -30,4 +30,6 @@ python src/scripts/stationary_test/adf_gdp.py USA --help
 
 python src/scripts/util/plot_medals.py S USA 1 1896 2026
 python src/scripts/util/plot_gdp.py USA 1 1896 2026
+
+python src/scripts/granger-causality/granger_medals_gdp.py -s S -n AUS BRA CHN ESP FRA GBR GRE JPN USA --start-year 1991 --save
 ```

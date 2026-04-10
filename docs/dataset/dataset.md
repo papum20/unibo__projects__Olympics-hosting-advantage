@@ -27,6 +27,11 @@ Citation: MPD version 2023: Bolt, Jutta and Jan Luiten van Zanden (2024), "Maddi
 GDPpc (per capita), measured in 2011 international dollars.  
 The paper (_The less obvious effect of hosting the Olympics on sporting performance._) also used GDPpc.  
 
+### maddisonProjectDatabase_population_2023.csv
+
+Population, same source as [GDPpc](#maddisonProjectDatabase_GDPpc_2023.csv).  
+Measured unit: thousands of people.  
+
 ### rgiffin_athletes.csv
 
 https://www.kaggle.com/datasets/heesoo37/120-years-of-olympic-history-athletes-and-results  
@@ -76,3 +81,13 @@ https://data.worldbank.org/indicator/NY.GDP.PCAP.KD.ZG
 GDP per capita increase (annual %) from the previous year, 1960-2024  
 "Data Source","World Development Indicators",  
 "Last Updated Date","2026-02-24",  
+
+### worldBankOpenData_population
+
+https://data.worldbank.org/indicator/SP.POP.TOTL  
+World Bank Open Data  
+Population 1960-2025  
+"Data Source","World Development Indicators",  
+"Last Updated Date","2026-04-08",  
+Measure unit: thousands of people  
+

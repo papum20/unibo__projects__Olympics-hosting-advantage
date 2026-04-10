@@ -62,11 +62,15 @@ Before writing the code, you must handle a major time-series rule: **Time steps 
 The Olympics happen every 4 years, but they were cancelled in 1916, 1940, and 1944. If you leave these gaps in a standard time-series index, Granger Causality will calculate incorrectly. 
 *The fix:* Treat the "Olympiad number" as the time index (1, 2, 3...) rather than the calendar year, skipping the cancelled years entirely, so the data is just a sequence of continuous games.
 
-### Fix for 0/inf
 
-`0`/`inf`/etc. with logs (error): do `ln(x + 1)` instead of `ln(x)`.  
+## Leggere risultati
 
-#### How to Interpret the Output for your Project:
+OLS:  
+https://www.geeksforgeeks.org/machine-learning/interpreting-the-results-of-linear-regression-using-ols-summary/  
+
+Costanti in OLS: se p-value < 0.05, il dato non è significativo (quindi non leggere gli altri valori, come _coef_).  
+
+## How to Interpret the Output for your Project:
 
 1.  **The ADF Output:** If both p-values are below 0.05, you have successfully proven to your professor that you transformed the data correctly and it is safe to run time-series models.
 2.  **The Granger Output:** The test will print out $F$-tests and $\chi^2$ tests for Lag 1 and Lag 2. 
@@ -75,6 +79,12 @@ The Olympics happen every 4 years, but they were cancelled in 1916, 1940, and 19
 
 **Why this is an awesome addition to your paper:**
 The original authors say, *"GDP is associated with medals."* But their model only looks at the data cross-sectionally (matching 2012 GDP with 2012 Medals). By adding a Granger Causality test on the historical data, you are answering a much cooler question: *"Does an economic boom today actually predict a sports boom four years from now?"*
+
+**Which statistic p-value to look at:**  
+Look at the F-tests (ssr based F test & parameter F test).
+Why? Chi-square (chi2) and Likelihood Ratio tests rely on "asymptotic theory," which means they only work correctly when you have a massive dataset (hundreds of rows). Because your df_denom (degrees of freedom) is only 2 (a tiny dataset), the Chi2 test breaks and gives you a False Positive (p=0.000)
+The F-test is designed specifically for small samples.  
+
 
 
 ## Tecniche
@@ -92,6 +102,16 @@ Because GDP compounds over time (like interest in a bank account). If a country 
 * attraverso derivate parziali, si può capire l'effetto di una variabile (GDP) tenendo costante l'altra (host/boicottaggio)
 * previene _Omitted Variable Bias (OVB)_: se ometti una variabile che influenza sia X che Y, potresti erroneamente attribuire a X tutto l'effetto di quella variabile omessa
 * quindi, è diverso da fare 3 regressioni separate, perché tiene conto di tutte le variabili contemporaneamente, isolando l'effetto di ciascuna
+
+**Chi boicotta**:
+* paper: 
+  >Some countries have only participated in one Olympic competition, so using zero observations from all Olympic competitions would bias the analysis.
+* quindi, lascia riga vuota, altrimenti influenzerebbe male (la regressione vedrebbe una correlazione con 0 medaglie, che non sono vere)
+
+### Fix for 0/inf
+
+`0`/`inf`/etc. with logs (error): do `ln(x + 1)` instead of `ln(x)`.  
+
 
 ## Relazione
 

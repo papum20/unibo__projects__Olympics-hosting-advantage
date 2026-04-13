@@ -38,10 +38,19 @@ DF_COL_IS_HOST_POST	= 'Is_Host_Post'
 DF_COL_MEDALS		= 'Medals'
 DF_COL_POPULATION	= 'Population'
 
+def DF_COL_IS_HOST_OG_YEAR(year: int) -> str:
+	return f'OG{year}'
+
+def DF_COL_IS_HOST_PRE_YEAR(year: int) -> str:
+	return f'PRE{year}'
+
+def DF_COL_IS_HOST_POST_YEAR(year: int) -> str:
+	return f'POST{year}'
+
 COMMUNIST_BLOC_COUNTRIES = {
 	'ALB', 'BGD', 'BLR', 'BGR', 'CHN', 'CUB', 'CSK', 'DDR', 'EST', 'HUN', 'KAZ',
 	'KGZ', 'LAO', 'LVA', 'LTU', 'MDA', 'MNG', 'PRK', 'ROU', 'RUS', 'TJK', 'TKM',
-	'UKR', 'UZB', 'YUG'
+	'UKR', 'URS', 'UZB', 'YUG'
 }
 
 
@@ -581,6 +590,36 @@ def load_population_series(
 #
 
 
+def _get_hosting_schedule(
+	medals_season		: str,
+	year_start			: int,
+	year_end			: int,
+	medals_dataset_path	: str	= DS_MEDALS_FULL_PATH
+) -> pd.DataFrame:
+	"""Get a schedule of which country hosted each Olympic year.
+	@return: DataFrame indexed by Year with NOC column
+	"""
+	df = pd.read_csv(medals_dataset_path, usecols=['Year', 'Season', 'NOC', 'Is_Host'])
+	
+	# Filter by season
+	if medals_season == 'S':
+		df = df[df['Season'] == 'Summer']
+	elif medals_season == 'W':
+		df = df[df['Season'] == 'Winter']
+	
+	# Filter by year range
+	df = df[(df['Year'] >= year_start) & (df['Year'] <= year_end)]
+	
+	# Filter years where Is_Host is True
+	df = df[df['Is_Host'] == True]
+	
+	# Get unique years and their hosts
+	hosts = df.groupby('Year')['NOC'].first().reset_index()
+	hosts = hosts.set_index('Year')
+	
+	return hosts
+
+
 def merge_series(
 	series1			: pd.Series,
 	series2			: pd.Series,
@@ -618,6 +657,7 @@ def load_medals_gdp_and_population_aligned(
 	use_gdp_mean			: bool				= False,
 	use_population_mean		: bool				= False,
 	remove_boycott			: bool				= False,
+	use_separate_host_vars	: bool				= False,
 	medals_data_type		: DsMedalsDataType	= DsMedalsDataType.DEFAULT,
 	gdp_data_type			: DsGdpDataType		= DsGdpDataType.DEFAULT,
 	population_data_type	: DsPopDataType		= DsPopDataType.DEFAULT,
@@ -636,6 +676,7 @@ def load_medals_gdp_and_population_aligned(
 	@param use_population_mean: Whether to use 4-year arithmetic mean of population
 	@param use_communist_bloc: Add a variable indicating whether the country is communist/was part of the communist bloc
 	@param remove_boycott: Whether to remove years affected by boycotts (1980 and 1984)
+	@param use_separate_host_vars: Whether to use separate binary variables for hosting, pre-hosting, and post-hosting instead of a single Is_Host variable
 	@param medals_data_type: Type of transformation for medals (DEFAULT, LN_DIFF, PERCENTAGE)
 	@param gdp_data_type: Type of transformation for GDP (DEFAULT, LN_DIFF)
 	@param population_data_type: Type of transformation for population (DEFAULT, LN_DIFF)
@@ -714,9 +755,35 @@ def load_medals_gdp_and_population_aligned(
 		DF_COL_MEDALS		: medals_df['Total_Medals'],
 		DF_COL_GDP			: gdp_shifted,
 		DF_COL_POPULATION	: population_shifted,
-		DF_COL_IS_HOST		: medals_df['Is_Host'],
 		DF_COL_IS_BOYCOTT	: medals_df['Is_Boycott']
 	})
+
+		# Handle hosting columns
+	if use_separate_host_vars:
+		# Load all Olympic years and their hosts
+		hosting_schedule = _get_hosting_schedule(medals_season, year_start, year_end, medals_dataset_path)
+		
+		# Add OG<year>, PRE<year>, POST<year> columns
+		for olympic_year in hosting_schedule.index:
+			og_col_name		= f'OG{olympic_year}'
+			pre_col_name	= f'PRE{olympic_year}'
+			post_col_name	= f'POST{olympic_year}'
+			
+			# OG: 1 if this country hosted that year
+			merged_df[og_col_name] = (country == hosting_schedule.loc[olympic_year, 'NOC'] and (merged_df.index == olympic_year))
+			
+			# PRE: 1 if this country hosts next Olympics
+			next_year_idx	= hosting_schedule.index.get_loc(olympic_year) + 1	# type: ignore
+			next_host		= hosting_schedule.iloc[next_year_idx]['NOC'] if next_year_idx < len(hosting_schedule) else None
+			merged_df[pre_col_name] = (country == next_host and (merged_df.index == olympic_year))
+			
+			# POST: 1 if this country hosted previous Olympics
+			prev_year_idx	= hosting_schedule.index.get_loc(olympic_year) - 1	# type: ignore
+			prev_host		= hosting_schedule.iloc[prev_year_idx]['NOC'] if prev_year_idx >= 0 else None
+			merged_df[post_col_name] = (country == prev_host and (merged_df.index == olympic_year))
+	else:
+		# Use original Is_Host column
+		merged_df['Is_Host']	= medals_df['Is_Host']
 	
 	# Drop rows with NaN values
 	merged_df = merged_df.dropna()
@@ -741,6 +808,7 @@ def load_stacked_countries(
 	use_gdp_mean			: bool				= False,
 	use_population_mean		: bool				= False,
 	remove_boycott			: bool				= False,
+	use_separate_host_vars	: bool				= False,
 	medals_data_type		: DsMedalsDataType	= DsMedalsDataType.DEFAULT,
 	gdp_data_type			: DsGdpDataType		= DsGdpDataType.DEFAULT,
 	population_data_type	: DsPopDataType		= DsPopDataType.DEFAULT,
@@ -769,6 +837,7 @@ def load_stacked_countries(
 				use_gdp_mean			= use_gdp_mean,
 				use_population_mean		= use_population_mean,
 				remove_boycott			= remove_boycott,
+				use_separate_host_vars	= use_separate_host_vars,
 				medals_data_type		= medals_data_type,
 				gdp_data_type			= gdp_data_type,
 				population_data_type	= population_data_type,
@@ -804,10 +873,12 @@ def load_stacked_countries(
 
 	if is_verbose:
 		print("\n--- Calculating Pre and Post Host Dummies ---")
-	# Create Pre and Post using pandas groupby shift
-	# shift(-1) looks at the NEXT row. shift(1) looks at the PREVIOUS row.
-	global_df[DF_COL_IS_HOST_PRE]	= global_df.groupby('NOC')[DF_COL_IS_HOST].shift(-1).fillna(0).astype(int)
-	global_df[DF_COL_IS_HOST_POST]	= global_df.groupby('NOC')[DF_COL_IS_HOST].shift(1).fillna(0).astype(int)
+
+	if not use_separate_host_vars:
+		# Create Pre and Post using pandas groupby shift
+		# shift(-1) looks at the NEXT row. shift(1) looks at the PREVIOUS row.
+		global_df[DF_COL_IS_HOST_PRE]	= global_df.groupby('NOC')[DF_COL_IS_HOST].shift(-1).fillna(0).astype(int)
+		global_df[DF_COL_IS_HOST_POST]	= global_df.groupby('NOC')[DF_COL_IS_HOST].shift(1).fillna(0).astype(int)
 
 	# Clean up any remaining NaNs
 	global_df = global_df.dropna()

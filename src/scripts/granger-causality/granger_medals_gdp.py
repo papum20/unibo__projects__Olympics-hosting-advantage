@@ -12,12 +12,13 @@ from statsmodels.tsa.stattools import adfuller, grangercausalitytests
 from util.load_ds import (
 	load_gdp_series,
 	load_medals_series,
-	load_medals_gdp_and_population_aligned,
 	load_stacked_countries,
 	merge_series,
 	DsGdpDataType,
 	DsMedalsDataType,
 	DsPopDataType,
+	DS_GDP_WBOD_PATH,
+	DS_GDPPC_MADDISON_PATH,
 	DF_COL_GDP,
 	DF_COL_IS_BOYCOTT,
 	DF_COL_IS_COMMUNIST,
@@ -25,7 +26,10 @@ from util.load_ds import (
 	DF_COL_IS_HOST_PRE,
 	DF_COL_IS_HOST_POST,
 	DF_COL_MEDALS,
-	DF_COL_POPULATION
+	DF_COL_POPULATION,
+	DF_COL_IS_HOST_OG_YEAR,
+	DF_COL_IS_HOST_PRE_YEAR,
+	DF_COL_IS_HOST_POST_YEAR
 )
 from util.plot_gdp import plot_gdp
 from util.plot_medals import plot_medals
@@ -35,9 +39,20 @@ from util.common import print_ds
 
 PLOT_OUT_PATH = 'out/plot/'
 
+CTRL_VARS_DICT = {
+	'GDP':		DF_COL_GDP,
+	'POP':		DF_COL_POPULATION,
+	'BOYCOTT':	DF_COL_IS_BOYCOTT,
+	'COMM':		DF_COL_IS_COMMUNIST,
+	'HOST':		DF_COL_IS_HOST,
+	'PRE':		DF_COL_IS_HOST_PRE,
+	'POST':		DF_COL_IS_HOST_POST
+}
+CTRL_VARS = CTRL_VARS_DICT.keys()
 
 
-def perform_granger_manual(merged_df: pd.DataFrame, use_ctrl_vars=False):
+
+def perform_granger_manual(merged_df: pd.DataFrame, ctrl_vars=CTRL_VARS):
 	"""
 	Do Granger manually, without lag, possibly using an already lagged dataset.
 	Granger wouldn't allow to not use lags, so we need to use a standard OLS regression.
@@ -57,16 +72,13 @@ def perform_granger_manual(merged_df: pd.DataFrame, use_ctrl_vars=False):
 	# Equation: Medal_Share = intercept + coefficient * ln_GDP_Lag_2
 
 	# X = predictor
-	if use_ctrl_vars:
-		# X (predictors) with multiple variables
-		# OLS requires numbers, not bool
-		X = merged_df[[DF_COL_GDP, DF_COL_IS_HOST, DF_COL_IS_BOYCOTT, DF_COL_IS_COMMUNIST]].astype({
-			DF_COL_IS_BOYCOTT	: int,
-			DF_COL_IS_COMMUNIST	: int,
-			DF_COL_IS_HOST		: int
-		})
-	else:
-		X = merged_df[DF_COL_GDP]
+	# X (predictors) with multiple variables
+	# OLS requires numbers, not bool
+	ctrl_vars_cols = [CTRL_VARS_DICT.get(var) for var in ctrl_vars if var in CTRL_VARS_DICT]
+	X = merged_df[ctrl_vars_cols]
+	for col in [DF_COL_IS_BOYCOTT, DF_COL_IS_COMMUNIST, DF_COL_IS_HOST]:
+		if col in X.columns:
+			X[col] = X[col].astype(int)
 
 	# Y = what we are predicting
 	Y = merged_df[DF_COL_MEDALS]
@@ -79,30 +91,50 @@ def perform_granger_manual(merged_df: pd.DataFrame, use_ctrl_vars=False):
 
 
 
-def perform_global_panel_regression(global_df: pd.DataFrame):
+def perform_global_panel_regression(global_df: pd.DataFrame, use_separate_host_vars=False, ctrl_vars=CTRL_VARS):
+	"""
+	Perform a global panel regression with multiple countries stacked together.
+	`Is_Host` is always used as predictor control variable, while the others can be included optionally.
+	@param global_df: DataFrame containing the merged data for all countries, with columns for medals, GDP, population, host status, etc.
+	@param use_separate_host_vars: Whether to use separate binary variables for hosting, pre-hosting, and post-hosting instead of a single Is_Host variable
+	@param ctrl_vars: Use this list of control variables instead of all
+	"""
 
 	print("\n--- Running Global Panel OLS Regression ---")
 	# Define our variables
 	Y = global_df[DF_COL_MEDALS]
 	
+	predictors = []
+	
 	# Include all the control variables in X
 	# Notice we use Population, GDP, Host, Pre, Post, Communist, and Boycott all at once.
-	predictors =[
-		DF_COL_GDP, 
-		DF_COL_POPULATION, 
-		DF_COL_IS_HOST, 
-		DF_COL_IS_HOST_PRE, 
-		DF_COL_IS_HOST_POST, 
-		DF_COL_IS_COMMUNIST, 
-		DF_COL_IS_BOYCOTT
-	]
-	
+	predictors += [CTRL_VARS_DICT.get(var) for var in ctrl_vars
+		if var in CTRL_VARS_DICT and var not in ['HOST', 'PRE', 'POST']]
+
+
+	if use_separate_host_vars:
+		years = global_df['Year'].unique()
+		if 'HOST' in ctrl_vars:
+			predictors += [DF_COL_IS_HOST_OG_YEAR(year)		for year in years]
+		if 'PRE' in ctrl_vars:
+			predictors += [DF_COL_IS_HOST_PRE_YEAR(year)	for year in years]
+		if 'POST' in ctrl_vars:
+			predictors += [DF_COL_IS_HOST_POST_YEAR(year)	for year in years]
+	else:
+		if 'HOST' in ctrl_vars:
+			predictors += [DF_COL_IS_HOST]
+		if 'PRE' in ctrl_vars:
+			predictors += [DF_COL_IS_HOST_PRE]
+		if 'POST' in ctrl_vars:
+			predictors += [DF_COL_IS_HOST_POST]
+
 	# Ensure they are numeric
 	X = global_df[predictors].astype(float)
 	X = sm.add_constant(X)
 
 	# Run the massive multi-variable OLS
-	model = sm.OLS(Y, X).fit()
+	#model = sm.OLS(Y, X).fit()
+	model = sm.OLS(Y, X).fit(cov_type='HC3')  # HC3 is standard for robust errors (heteroskedasticity-consistent)
 	print(model.summary())
 	
 
@@ -263,11 +295,20 @@ if __name__ == "__main__":
 		default=2026,
 		help='Ending year for the data - default: 2026'
 	)
+	
+	parser.add_argument(
+		'--max-lag',
+		type=int,
+		default=7,
+		help='Maximum lag for the Granger causality test - default: 7'
+	)
 
 	parser.add_argument(
 		'--ctrl-vars',
-		action='store_true',
-		help='Use control variables (flag, no value needed)'
+		type=str,
+		nargs='+',
+		default=CTRL_VARS,
+		help=f'Custom control variables to include in the regression (space-separated list), in [{", ".join(CTRL_VARS)}]'
 	)
 
 	parser.add_argument(
@@ -280,6 +321,24 @@ if __name__ == "__main__":
 		'--gdp-avg',
 		action='store_true',
 		help='Use 4-year geometric mean of GDP instead of raw values (flag, no value needed)'
+	)
+
+	parser.add_argument(
+		'--gdp-tot',
+		action='store_true',
+		help='Use GDP instead of GDPpc (flag, no value needed)'
+	)
+
+	parser.add_argument(
+		'--pop-avg',
+		action='store_true',
+		help='Use 4-year geometric mean of population instead of raw values (flag, no value needed)'
+	)
+	
+	parser.add_argument(
+		'--sep-host',
+		action='store_true',
+		help='Use separate binary variables for hosting, pre-hosting, and post-hosting instead of a single Is_Host variable (flag, no value needed)'
 	)
 	
 	parser.add_argument(
@@ -296,15 +355,26 @@ if __name__ == "__main__":
 	
 	args = parser.parse_args()
 
-	noc_list		= args.noc
-	medals_season	= args.season
-	save_plot_flag	= args.save
-	year_start		= args.start_year
-	year_end		= args.end_year
-	use_ctrl_vars	= args.ctrl_vars
-	exclude_boycott	= args.exclude_boycott
-	use_gdp_mean	= args.gdp_avg
-	verbose			= args.verbose
+	noc_list			= args.noc
+	medals_season		= args.season
+	save_plot_flag		= args.save
+	year_start			= args.start_year
+	year_end			= args.end_year
+	max_lag				= args.max_lag
+	
+	ctrl_vars			= args.ctrl_vars
+	exclude_boycott		= args.exclude_boycott
+	use_gdp_mean		= args.gdp_avg
+	use_gdp_tot			= args.gdp_tot
+	use_population_mean	= args.pop_avg
+	use_sep_host_vars	= args.sep_host
+	verbose				= args.verbose
+
+	if any(var not in CTRL_VARS for var in ctrl_vars):
+		print(f"Error: Invalid control variable specified in --ctrl-vars-custom. Allowed values are: {', '.join(CTRL_VARS)}")
+		sys.exit(1)
+
+	DS_GDP_PATH = DS_GDP_WBOD_PATH if use_gdp_tot else DS_GDPPC_MADDISON_PATH
 
 
 	#
@@ -316,7 +386,7 @@ if __name__ == "__main__":
 		noc = noc_list[0]
 	
 		gdp_series, country_name = load_gdp_series(noc, year_start=year_start, year_end=year_end,
-										data_type=DsGdpDataType.LN_DIFF)
+										data_type=DsGdpDataType.LN_DIFF, dataset_path=DS_GDP_PATH)
 
 		medals_series = load_medals_series(country=noc, medals_season=medals_season,
 							year_start=year_start, year_end=year_end, data_type=DsMedalsDataType.PERCENTAGE)
@@ -347,39 +417,45 @@ if __name__ == "__main__":
 	# Granger (manual)
 	#
 
-	for shift in range(1, 8):
+	for shift in range(1, max_lag + 1):
 		print(f"\nGranger causality test (manual) with lag {shift}:")
 
-		if len(noc_list) == 1:
-			noc = noc_list[0]
+		#if len(noc_list) == 1:
+		#	noc = noc_list[0]
 
-			merged_df, country_name = load_medals_gdp_and_population_aligned(
-				noc,
-				medals_season			= medals_season,
-				year_start				= year_start,
-				year_end				= year_end,
-				gdp_year_shift			= shift,
-				remove_boycott			= exclude_boycott,
-				use_gdp_mean			= use_gdp_mean,
-				medals_data_type		= DsMedalsDataType.PERCENTAGE,
-				gdp_data_type			= DsGdpDataType.LN_DIFF,
-				population_data_type	= DsPopDataType.LN_DIFF
-			)
+		#	merged_df, country_name = load_medals_gdp_and_population_aligned(
+		#		noc,
+		#		medals_season			= medals_season,
+		#		year_start				= year_start,
+		#		year_end				= year_end,
+		#		gdp_year_shift			= shift,
+		#		remove_boycott			= exclude_boycott,
+		#		use_gdp_mean			= use_gdp_mean,
+		#		use_population_mean		= use_population_mean,
+		#		use_separate_host_vars	= use_sep_host_vars,
+		#		medals_data_type		= DsMedalsDataType.PERCENTAGE,
+		#		gdp_data_type			= DsGdpDataType.LN_DIFF,
+		#		population_data_type	= DsPopDataType.LN_DIFF,
+		#		gdp_dataset_path		= DS_GDP_PATH
+		#	)
+		#else:
 
-		else:
-			merged_df, country_name = load_stacked_countries(
-				countries_list			= noc_list,
-				medals_season			= medals_season,
-				year_start				= year_start,
-				year_end				= year_end,
-				gdp_year_shift			= shift,
-				remove_boycott			= exclude_boycott,
-				use_gdp_mean			= use_gdp_mean,
-				medals_data_type		= DsMedalsDataType.PERCENTAGE,
-				gdp_data_type			= DsGdpDataType.LN_DIFF,
-				population_data_type	= DsPopDataType.LN_DIFF,
-				is_verbose				= verbose
-			)
+		merged_df, country_name = load_stacked_countries(
+			countries_list			= noc_list,
+			medals_season			= medals_season,
+			year_start				= year_start,
+			year_end				= year_end,
+			gdp_year_shift			= shift,
+			remove_boycott			= exclude_boycott,
+			use_gdp_mean			= use_gdp_mean,
+			use_population_mean		= use_population_mean,
+			use_separate_host_vars	= use_sep_host_vars,
+			medals_data_type		= DsMedalsDataType.PERCENTAGE,
+			gdp_data_type			= DsGdpDataType.LN_DIFF,
+			population_data_type	= DsPopDataType.LN_DIFF,
+			gdp_dataset_path		= DS_GDP_PATH,
+			is_verbose				= verbose
+		)
 
 		actual_year_start	= max(merged_df.index.min(), year_start)
 		actual_year_end		= min(merged_df.index.max(), year_end)
@@ -390,13 +466,13 @@ if __name__ == "__main__":
 
 		if verbose:
 			print("\nMerged DataFrame:")
-			print(merged_df)
+			print(merged_df.to_string())
 
 		if len(noc_list) == 1:
-			perform_granger_manual(merged_df, use_ctrl_vars=use_ctrl_vars)
+			perform_granger_manual(merged_df, ctrl_vars=ctrl_vars)
 
 		else:
-			perform_global_panel_regression(merged_df)
+			perform_global_panel_regression(merged_df, use_separate_host_vars=use_sep_host_vars, ctrl_vars=ctrl_vars)
 
 		# Plot
 
@@ -407,7 +483,7 @@ if __name__ == "__main__":
 
 			
 			tag_boycott		= f'boycott{"N" if exclude_boycott else "Y"}'
-			tag_ctrl_vars	= f'ctrl{"Y" if use_ctrl_vars else "N"}'
+			tag_ctrl_vars	= f'ctrl{'+'.join(ctrl_vars)}'
 			tag_gdp_mean	= f'gdpmean{"Y" if use_gdp_mean else "N"}'
 			
 			plot_gdp(gdp_series, noc, country_name, actual_year_start, actual_year_end, y_min=None,

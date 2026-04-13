@@ -108,9 +108,89 @@ Because GDP compounds over time (like interest in a bank account). If a country 
   >Some countries have only participated in one Olympic competition, so using zero observations from all Olympic competitions would bias the analysis.
 * quindi, lascia riga vuota, altrimenti influenzerebbe male (la regressione vedrebbe una correlazione con 0 medaglie, che non sono vere)
 
+
+### Dummy variable separate per ogni edizione
+
+To analyze each specific Olympic Games individually, you literally create a separate column for **every single hosting event**. 
+
+**Will you have tens of variables?**   
+**Yes!** If you analyze 7 recent Summer Olympics (1996 to 2020), you will create:
+*   7 `OG` (Host) variables
+*   7 `Pre` variables
+*   7 `Post` variables
+This means you will add **21 new dummy variables** to your regression.
+
+**Won't they interfere with each other?**  
+**No, they won't, because of a concept called "Degrees of Freedom."**
+In OLS regression, as long as your number of rows (observations) is much larger than your number of columns (variables), the math works perfectly. 
+*   If you analyze 18 countries over 15 Olympics (1964 to 2024), you have **~270 rows**. 
+*   Your model will have **~25 variables** (21 dummies + GDP, Pop, etc.).
+Because 270 is much bigger than 25, the model has plenty of "degrees of freedom" to calculate everything without the variables tripping over each other. 
+
+Furthermore, because `OG96` is only a `1` for the USA in 1996, and `OG12` is only a `1` for Great Britain in 2012, they are mathematically separate. They never overlap, so they cannot interfere with each other!
+
+*(Econometric Note: When you create a dummy variable that is `1` for only a single row in the entire dataset, it is called an "Observation-Specific Dummy". It calculates the exact abnormal surplus of medals for that specific country in that specific year, adjusting for their GDP and Population!)*
+
+
 ### Fix for 0/inf
 
 `0`/`inf`/etc. with logs (error): do `ln(x + 1)` instead of `ln(x)`.  
+
+
+### Confronto con risultati del paper
+
+* confronto con risultati del paper  
+* robust standard error (heteroskedasticity-consistent)
+  * risolve il problema di quando i dati hanno diverse misure, per cui errori e varianze sarebbero diversi per i vari dati altrimenti
+  * a occhio, non vedo differenze nei risultati
+  
+#### What are the numbers in the paper's tables?
+Look at Table 1 in the paper. For the Baseline Total (Column 1), you see:
+**Host**
+**$0.467^{***}$**
+**(0.0820)**
+
+Here is exactly what this means:
+*   **The Top Number ($0.467$):** This is the **Coefficient ($\beta$)**. Because the authors used a Zero-Inflated Negative Binomial (ZINB) model, this number represents a logarithmic multiplier. Mathematically, $e^{0.467} = 1.59$. This means hosting gives a country roughly a **59% boost** to their raw medal count compared to a normal year.
+*   **The Stars ($^{***}$):** This is the **p-value**. Instead of writing out $p = 0.0002$, academics use stars as a shortcut.
+    *   $^{***}$ means $p < 0.01$ (99% confident)
+    *   $^{**}$ means $p < 0.05$ (95% confident)
+    *   $^*$ means $p < 0.10$ (90% confident)
+*   **The Number in Parentheses $(0.0820)$:** This is the **Standard Error (SE)**. It is the measure of uncertainty around the coefficient. (If you divide the coefficient by the standard error: $0.467 / 0.0820 = 5.69$, this gives you the $t$-statistic/ $z$-statistic, which is what generates the p-value!).
+
+#### What does "Robust" Standard Errors mean?
+In statistics, there is a strict rule called *Homoskedasticity*, which assumes the "error" or "noise" in your predictions is the same for every row in your dataset.
+
+But think about the Olympics: 
+*   If your model tries to predict medals for Malta, it might be wrong by 1 or 2 medals. 
+*   If your model tries to predict medals for the USA, it might be wrong by 15 or 20 medals. 
+Because the error size changes depending on the country, your data has **Heteroskedasticity**.
+
+If you run a normal OLS, heteroskedasticity tricks the math into making the Standard Errors too small, which makes the p-values artificially low (giving you false positives). **"Robust" standard errors** use a mathematical correction (often called the Huber-White sandwich estimator) to widen the standard errors back to their true, honest size, fixing the false positives.
+
+**How to do this in Python:**
+You can easily make your OLS robust just like the paper by changing one line of code!
+```python
+# Instead of: model = sm.OLS(Y, X).fit()
+# Do this:
+model = sm.OLS(Y, X).fit(cov_type='HC3')  # HC3 is standard for robust errors
+```
+
+#### Are your numbers comparable to the paper's numbers?
+**Direct numerical comparison? NO.**
+You cannot compare your `Is_Host` coefficient of (for example) `0.678` to their `0.467`. 
+
+**Why? Because your scales are completely different.**
+*   **The Paper:** Predicts **Raw Medal Counts** (0, 1, 50, 100). Their ZINB model uses a logarithmic scale, so their coefficient means "+46.7% more medals."
+*   **Your Model:** Predicts **Medal Share %** (0.0 to 100.0). Since you used OLS, your scale is linear. If your coefficient for `Is_Host` is `2.5`, it literally means: *"Hosting gives this country an extra 2.5% of the total medals available worldwide."*
+
+**So, what CAN you compare?**
+You compare the **Direction** and the **Significance (Stars)**! 
+
+*   **Agreement:** If the paper says `Host` is positive and significant ($^{***}$) in the baseline model, and your `Is_Host` has a positive coefficient and $p < 0.01$, **you successfully replicated their baseline finding.**
+*   **The Big Reveal:** If the paper says `Host` loses its stars (becomes insignificant) when GDP is added, and your `Is_Host` p-value suddenly jumps to $p = 0.448$ when you add your `ln_GDP` variable... **you have successfully proven the exact same econometric phenomenon using a completely different mathematical approach.**
+
+If you write in your report: *"While the coefficients are on different scales (log-counts vs. linear percentages), the direction and statistical significance of the variables perfectly mirror the ZINB findings of the original paper,"* your professor will know you truly understand how econometrics works.
 
 
 ## Relazione
@@ -120,6 +200,48 @@ Spiegare come funzionano le implementazioni usate, parametri usati etc. (eg ADF 
 Come fa il paper, mostrare 2 regressioni/modelli:
 * `Medals ~ Host` o `Medals ~ Host + Boycott` : solo con _Host_ ritorna risultati positivi (basso p-value)
 * `Medals ~ Host + Boycott + ln_GDP_4yr_mean` :  ma, aggiungendo le variabili di controllo, l'effetto di _Host_ scompare (alto p-value) e passa a _GDP_
+
+
+### Why does GDP causality appear and disappear (with more vars)
+You noticed that GDP is significant from 1961, but not from 1991, and sometimes disappears when you add all the separated Host dummies. Here are the two econometric reasons why:
+
+*   **Reason A: The "Variance Sponge" Effect:** When you run a model with the generic `Is_Host` variable, GDP has plenty of room to explain why medals go up. But when you add 20+ specific event variables (`OG92`, `Pre96`, `Post00`), you are saturating the model. Those specific dummies act like a sponge, soaking up all the variance in the data. With so many variables, the model starts to "overfit," leaving GDP with nothing left to explain, causing its p-value to spike.
+*   **Reason B: The Post-1990 Economic Plateau:** Between 1961 and 1990, the global economy radically transformed. Countries went from poor to rich, and their medal shares followed. But from 1991 to 2024, the wealthy countries (USA, UK, France) mostly had stable, low GDP growth (~2% a year). Because their GDP stopped fluctuating wildly, it stopped being a dynamic predictor of medal spikes in the modern era.
+
+### Should you merge URS->RUS and FRG->GER?
+**NO. Do not merge them.** 
+
+This is a classic time-series trap. Let’s look at the Soviet Union (URS):
+*   In 1988, URS had a population of ~286 million (it included Ukraine, Belarus, Kazakhstan, etc.) and won 132 medals.
+*   In 1996, Russia (RUS) had a population of ~148 million and won 63 medals.
+
+If you merge them into a single "RUS" code, your dataset will show a catastrophic 50% drop in Population, GDP, and Medals overnight in 1992. Your OLS regression will completely freak out trying to calculate a slope for that crash.
+
+**The Solution:** The beauty of Panel Data is that it is **Unbalanced**. You don't need to force a continuous history. 
+*   Let `URS` be its own country that simply "dies" (disappears from the dataset) after 1988. 
+*   Let `RUS` be a brand new country that is "born" in 1996. 
+*   Because you have `Is_Communist = 1` for both of them, the model will inherently understand that they share the same state-sponsored sports culture, without ruining the GDP/Population math!
+
+### How to structure your final project (Which results to present)
+
+You have run so many amazing models. You do not need to show all of them. A perfect university paper tells a "story" by showing 3 specific models, side-by-side. 
+
+I strongly recommend you present your results exactly in this order:
+
+#### Step 1: The Global Baseline (The "Naive" Model)
+*   **Setup:** Panel regression from 1964 to 2024.
+*   **Variables:** `Is_Host` (the generic one), `Is_Communist`, and `Is_Boycott`. 
+*   **What to say:** *"First, I ran a baseline model simulating public perception. The results show that the generic 'Host' variable is highly significant, leading to the common assumption that simply hosting the games guarantees a medal surplus. Additionally, the Communist Bloc dummy is highly significant, confirming the literature on state-sponsored sports dominance."*
+
+#### Step 2: The Macroeconomic Control Model
+*   **Setup:** Same as Step 1, but you add `ln_GDP` (Lagged or 4-year mean) and `ln_Population`.
+*   **What to say:** *"However, when controlling for national wealth (GDP) and talent pool (Population), the strength of the generic 'Host' effect diminishes. This proves the core thesis: a large portion of the 'Host Advantage' is actually a 'Wealth Advantage'. Host nations are generally wealthy, and their underlying GDP drives the medals, not the event itself."*
+
+#### Step 3: The Disaggregated "Specific Games" Model
+*   **Setup:** Panel regression, but you remove the generic `Is_Host` and replace it with the specific `OG92`, `OG96`, `Pre12`, etc., variables.
+*   **What to say:** *"Finally, to replicate the original paper's deeper findings, I disaggregated the host variable. The results reveal that the 'Host Effect' is not a universal rule. While countries like Spain (1992) or Great Britain (2012) show highly significant positive coefficients (meaning they truly overperformed their GDP), others do not. This confirms that the Host Effect is highly heterogeneous, dependent on specific national sports policies (like Spain's ADO program) rather than a guaranteed outcome."*
+
+
 
 ## Ref
 

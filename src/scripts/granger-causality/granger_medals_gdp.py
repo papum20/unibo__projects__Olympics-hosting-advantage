@@ -483,7 +483,7 @@ if __name__ == "__main__":
 
 			
 			tag_boycott		= f'boycott{"N" if exclude_boycott else "Y"}'
-			tag_ctrl_vars	= f'ctrl{'+'.join(ctrl_vars)}'
+			tag_ctrl_vars	= f'ctrl{"+".join(ctrl_vars)}'
 			tag_gdp_mean	= f'gdpmean{"Y" if use_gdp_mean else "N"}'
 			
 			plot_gdp(gdp_series, noc, country_name, actual_year_start, actual_year_end, y_min=None,

@@ -8,6 +8,7 @@ import matplotlib.pyplot as plt
 import pandas as pd
 import statsmodels.api as sm
 from statsmodels.tsa.stattools import adfuller, grangercausalitytests
+from statsmodels.discrete.count_model import ZeroInflatedNegativeBinomialP
 
 from util.load_ds import (
 	load_gdp_series,
@@ -91,7 +92,8 @@ def perform_granger_manual(merged_df: pd.DataFrame, ctrl_vars=CTRL_VARS):
 
 
 
-def perform_global_panel_regression(global_df: pd.DataFrame, use_separate_host_vars=False, ctrl_vars=CTRL_VARS):
+def perform_global_panel_regression(global_df: pd.DataFrame, use_separate_host_vars=False, ctrl_vars=CTRL_VARS,
+									use_hc3=True, use_zinb=False):
 	"""
 	Perform a global panel regression with multiple countries stacked together.
 	`Is_Host` is always used as predictor control variable, while the others can be included optionally.
@@ -128,13 +130,22 @@ def perform_global_panel_regression(global_df: pd.DataFrame, use_separate_host_v
 		if 'POST' in ctrl_vars:
 			predictors += [DF_COL_IS_HOST_POST]
 
+	print(f"{predictors = }")
+	print(f"{len(predictors) = }")
+
 	# Ensure they are numeric
 	X = global_df[predictors].astype(float)
 	X = sm.add_constant(X)
 
 	# Run the massive multi-variable OLS
-	#model = sm.OLS(Y, X).fit()
-	model = sm.OLS(Y, X).fit(cov_type='HC3')  # HC3 is standard for robust errors (heteroskedasticity-consistent)
+	# HC3 is standard for robust errors (heteroskedasticity-consistent)
+	# not working for separate vars
+	if use_zinb:
+		model = ZeroInflatedNegativeBinomialP(Y, X).fit()
+	elif use_hc3:
+		model = sm.OLS(Y, X).fit(cov_type='HC3')
+	else:
+		model = sm.OLS(Y, X).fit()
 	print(model.summary())
 	
 
@@ -342,6 +353,19 @@ if __name__ == "__main__":
 	)
 	
 	parser.add_argument(
+		'--reg-zinb',
+		action='store_true',
+		help='Use Zero-Inflated Negative Binomial regression (flag, no value needed)'
+	)
+	
+	parser.add_argument(
+		'--reg-hc3',
+		action='store_true',
+		help='Use HC3, for robust errors (flag, no value needed)'
+	)
+	
+
+	parser.add_argument(
 		'--save',
 		action='store_true',
 		help='Save plots to file (flag, no value needed)'
@@ -368,6 +392,8 @@ if __name__ == "__main__":
 	use_gdp_tot			= args.gdp_tot
 	use_population_mean	= args.pop_avg
 	use_sep_host_vars	= args.sep_host
+	use_reg_zinb		= args.reg_zinb
+	use_reg_hc3			= args.reg_hc3
 	verbose				= args.verbose
 
 	if any(var not in CTRL_VARS for var in ctrl_vars):
@@ -450,7 +476,7 @@ if __name__ == "__main__":
 			use_gdp_mean			= use_gdp_mean,
 			use_population_mean		= use_population_mean,
 			use_separate_host_vars	= use_sep_host_vars,
-			medals_data_type		= DsMedalsDataType.PERCENTAGE,
+			medals_data_type		= DsMedalsDataType.DEFAULT,
 			gdp_data_type			= DsGdpDataType.LN_DIFF,
 			population_data_type	= DsPopDataType.LN_DIFF,
 			gdp_dataset_path		= DS_GDP_PATH,
@@ -472,7 +498,8 @@ if __name__ == "__main__":
 			perform_granger_manual(merged_df, ctrl_vars=ctrl_vars)
 
 		else:
-			perform_global_panel_regression(merged_df, use_separate_host_vars=use_sep_host_vars, ctrl_vars=ctrl_vars)
+			perform_global_panel_regression(merged_df, use_separate_host_vars=use_sep_host_vars, ctrl_vars=ctrl_vars,
+				use_hc3=use_reg_hc3, use_zinb=use_reg_zinb)
 
 		# Plot
 

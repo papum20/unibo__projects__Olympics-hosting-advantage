@@ -1,0 +1,7 @@
+- Mostrare Spearman per dimostrare correlazione (ma non ancora causalità) tra GDP e medaglie (TOMMASO)
+- Mostrare t-test sui delta (differenza delle medaglie tra quando un paese è host e la media di quando lo stesso paese non è host) (TOMMASO)
+- Mostriamo Granger (provando a dimostrare causalità) ma diciamo che non è utilizzabile in quanto ci sono poche osservazioni e le serie non sono stazionarie (DANIELE)
+- ANOVA per provare causalità tra medaglie e più di due variabili (popolazione, host, PIL -> medaglie) (SIMONA)
+- Regressioni con numero crescente di variabili (PIL pro capite, popolazione, media della performance olimpica, blocco comunista, pre/post olimpiade) (DANIELE)
+- Bayesian Changepoint Detection per provare a dimostrare che un'impennata del PIL porta ad un'impennata delle medaglie (SIMONA)
+- Paesi limitrofi (T/S/D)

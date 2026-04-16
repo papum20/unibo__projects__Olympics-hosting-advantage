@@ -228,6 +228,64 @@ You can just add these three lines of code right before you run your OLS:
 Facendo un'analisi a livello di sport per sport (con la sua dummy var), vengono esclusi i Paesi che non hanno partecipato a quello sport in quell'anno (nessuna riga piuttosto che uno 0). Altrimenti, ci sarebbe un bias.  
 
 
+### Dead or fictional countries
+
+To answer your question directly: **Yes, you absolutely must exclude them.** 
+
+Here is the econometric justification for why you must drop them, how the authors of your paper handled it, and exactly what to write in your project report to defend this choice.
+
+#### The Fictional Olympic Entities (EOR, AIN, IOA)
+The IOC uses codes like `EOR` (Refugee Olympic Team), `IOA` (Independent Olympic Athletes), and `AIN` (Individual Neutral Athletes, used for Russians/Belarusians in 2024). 
+
+*   **The Econometric Reality:** These are not sovereign nations. They do not have a GDP. They do not have a national population. They do not have a government sports budget. 
+*   **The Solution:** You physically cannot run a regression that requires `ln_GDP` on an entity that has no GDP. These must be dropped. 
+
+#### The Transitional States (Serbia & Montenegro, Netherlands Antilles)
+You correctly noted that `SCG` (Serbia and Montenegro) competed in 2004 but split shortly after. 
+*   Macroeconomic datasets (like the World Bank and Maddison) often retroactively update their databases to only show modern borders (Serbia `SRB` and Montenegro `MNE`). 
+*   Because the World Bank doesn't list the GDP for the combined entity of `SCG` in the 2000s, you will get a `NaN` (blank value) when you merge your Olympic data with your GDP data.
+*   **The Solution:** In statistics, if an observation is missing an independent variable (GDP), you must drop the entire row. This is a standard practice called **"Listwise Deletion."**
+
+#### How did the paper handle this?
+They did exactly what I am advising you to do! Look closely at the paper's data section:
+> *"For the socioeconomic indicators, we used data from the database of the World Bank."*
+
+By definition, because they put GDP and Population into their model, any Olympic team that did not have World Bank data was automatically dropped from their "Extended Model" by the statistical software. They didn't even have to manually delete them; the math just ignores rows with missing variables.
+
+#### Wait, what about Russia (ROC / OAR)?
+There is **one major exception** you need to be careful with. 
+Because of the doping scandal, Russian athletes competed under `OAR` in 2018 and `ROC` in 2020/2022. 
+*   If you leave these as `OAR` and `ROC`, your Python script will look for the GDP of "ROC" in the Maddison database, find nothing, and delete Russia's medals!
+*   **The Fix:** Before you merge your datasets, you should write a quick line of Python to map those specific codes back to `RUS`, so they successfully link to Russia's GDP.
+
+```python
+# Fix the Russian doping ban codes so they match macroeconomic databases
+medals_df['NOC'] = medals_df['NOC'].replace({'ROC': 'RUS', 'OAR': 'RUS'})
+```
+
+2024: No Russia, just few athletes competed under `AIN`, which is totally another thing, without a State, so should be excluded (only one game, no GDP, etc.).  
+
+#### How to automatically handle the rest in Python:
+You do not need to manually write a list of fictional countries to delete. Pandas will do it for you cleanly and perfectly. 
+When you merge your Medals dataframe with your GDP and Population dataframes, you just use `.dropna()`.
+
+```python
+# This single line is your best friend. 
+# It looks at the GDP and Population columns. If they are NaN (because the country 
+# is fictional or dissolved), the row is safely and automatically removed!
+global_df = global_df.dropna(subset=['ln_GDP', 'ln_Population'])
+```
+
+#### How to defend this in your university report:
+If a professor asks why some NOCs are missing from your dataset, you have the perfect academic response:
+
+> *"The IOC recognizes several administrative designations (e.g., the Refugee Olympic Team, Independent Olympic Athletes) and historical transitional states (e.g., Serbia and Montenegro). Because this econometric analysis relies on sovereign macroeconomic variables—specifically log-differenced GDP and population—any entity lacking continuous tracking in the Maddison Project Database was excluded via listwise deletion. (Note: Administrative designations for Russian athletes, such as ROC and OAR, were manually recoded to 'RUS' to preserve the validity of the Russian macroeconomic continuum)."*
+
+Writing a paragraph like this elevates your project from a simple "coding exercise" to a professional Data Science paper. It shows you completely understand the relationship between the real world and your dataset!
+
+
+
+
 ### Confronto con risultati del paper
 
 * confronto con risultati del paper  

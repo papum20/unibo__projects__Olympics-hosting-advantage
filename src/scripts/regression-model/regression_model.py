@@ -3,6 +3,7 @@ sys.path.append('src/scripts/')
 
 import argparse
 import os
+from typing import Literal
 
 import matplotlib.pyplot as plt
 import pandas as pd
@@ -34,7 +35,7 @@ from util.load_ds import (
 )
 from util.plot_gdp import plot_gdp
 from util.plot_medals import plot_medals
-from util.common import print_ds
+from util.common import Logger, print_ds
 
 
 
@@ -92,8 +93,11 @@ def perform_granger_manual(merged_df: pd.DataFrame, ctrl_vars=CTRL_VARS):
 
 
 
-def perform_global_panel_regression(global_df: pd.DataFrame, use_separate_host_vars=False, ctrl_vars=CTRL_VARS,
-									use_hc3=True, use_zinb=False):
+def perform_global_panel_regression(
+	global_df: pd.DataFrame, use_separate_host_vars=False, ctrl_vars=CTRL_VARS,
+	cov_type: Literal['nonrobust', 'fixed scale', 'HC0', 'HC1', 'HC2', 'HC3', 'HAC', 'hac-panel', 'hac-groupsum', 'cluster'] = 'nonrobust',
+	use_zinb = False
+):
 	"""
 	Perform a global panel regression with multiple countries stacked together.
 	`Is_Host` is always used as predictor control variable, while the others can be included optionally.
@@ -115,13 +119,14 @@ def perform_global_panel_regression(global_df: pd.DataFrame, use_separate_host_v
 
 
 	if use_separate_host_vars:
-		years = global_df['Year'].unique()
+		years		= global_df['Year'].unique()
+		col_headers = global_df.columns
 		if 'HOST' in ctrl_vars:
-			predictors += [DF_COL_IS_HOST_OG_YEAR(year)		for year in years]
+			predictors += [col for col in col_headers for year in years if col == DF_COL_IS_HOST_OG_YEAR(year)]
 		if 'PRE' in ctrl_vars:
-			predictors += [DF_COL_IS_HOST_PRE_YEAR(year)	for year in years]
+			predictors += [col for col in col_headers for year in years if col == DF_COL_IS_HOST_PRE_YEAR(year)]
 		if 'POST' in ctrl_vars:
-			predictors += [DF_COL_IS_HOST_POST_YEAR(year)	for year in years]
+			predictors += [col for col in col_headers for year in years if col == DF_COL_IS_HOST_POST_YEAR(year)]
 	else:
 		if 'HOST' in ctrl_vars:
 			predictors += [DF_COL_IS_HOST]
@@ -135,17 +140,24 @@ def perform_global_panel_regression(global_df: pd.DataFrame, use_separate_host_v
 
 	# Ensure they are numeric
 	X = global_df[predictors].astype(float)
+
+
+	#cols_before = X.shape[1]
+	#X = X.loc[:, (X != 0).any(axis=0)]
+	#cols_after = X.shape[1]
+	#
+	#if cols_before != cols_after:
+	#	print(f"Removed {cols_before - cols_after} empty/zero predictor columns.")
+
+	
 	X = sm.add_constant(X)
 
 	# Run the massive multi-variable OLS
 	# HC3 is standard for robust errors (heteroskedasticity-consistent)
-	# not working for separate vars
 	if use_zinb:
-		model = ZeroInflatedNegativeBinomialP(Y, X).fit()
-	elif use_hc3:
-		model = sm.OLS(Y, X).fit(cov_type='HC3')
+		model = ZeroInflatedNegativeBinomialP(Y, X).fit(cov_type=cov_type, maxiter=500, method='bfgs')
 	else:
-		model = sm.OLS(Y, X).fit()
+		model = sm.OLS(Y, X).fit(cov_type=cov_type)
 	print(model.summary())
 	
 
@@ -359,16 +371,27 @@ if __name__ == "__main__":
 	)
 	
 	parser.add_argument(
+		'--reg-hc0',
+		action='store_true',
+		help='Use HC0, for robust errors (HC0 has priority) (flag, no value needed)'
+	)
+
+	parser.add_argument(
 		'--reg-hc3',
 		action='store_true',
-		help='Use HC3, for robust errors (flag, no value needed)'
+		help='Use HC3, for robust errors (HC0 has priority) (flag, no value needed)'
 	)
 	
-
 	parser.add_argument(
 		'--save',
 		action='store_true',
 		help='Save plots to file (flag, no value needed)'
+	)
+
+	parser.add_argument(
+		'--log',
+		action='store_true',
+		help='Save output to a log file in out/regression/ (flag, no value needed)'
 	)
 
 	parser.add_argument(
@@ -393,7 +416,10 @@ if __name__ == "__main__":
 	use_population_mean	= args.pop_avg
 	use_sep_host_vars	= args.sep_host
 	use_reg_zinb		= args.reg_zinb
+	use_reg_hc0			= args.reg_hc0
 	use_reg_hc3			= args.reg_hc3
+	
+	log_output			= args.log
 	verbose				= args.verbose
 
 	if any(var not in CTRL_VARS for var in ctrl_vars):
@@ -401,6 +427,24 @@ if __name__ == "__main__":
 		sys.exit(1)
 
 	DS_GDP_PATH = DS_GDP_WBOD_PATH if use_gdp_tot else DS_GDPPC_MADDISON_PATH
+
+	cov_type='HC0' if use_reg_hc0 else 'HC3' if use_reg_hc3 else 'nonrobust'
+
+
+	if log_output:
+		sys.stdout = Logger(
+			noc=noc_list,
+			year_start=year_start,
+			year_end=year_end,
+			reg_type='ZINB' if use_reg_zinb else 'OLS',
+			cov_type=cov_type,
+			use_gpd_avg=use_gdp_mean,
+			use_pop_avg=use_population_mean,
+			sep_host_vars=use_sep_host_vars,
+			ctrl_vars=ctrl_vars
+		)
+
+	print(f"Running with args: {args}")
 
 
 	#
@@ -466,6 +510,8 @@ if __name__ == "__main__":
 		#	)
 		#else:
 
+		medals_data_type = DsMedalsDataType.DEFAULT if use_reg_zinb else DsMedalsDataType.PERCENTAGE
+
 		merged_df, country_name = load_stacked_countries(
 			countries_list			= noc_list,
 			medals_season			= medals_season,
@@ -476,7 +522,7 @@ if __name__ == "__main__":
 			use_gdp_mean			= use_gdp_mean,
 			use_population_mean		= use_population_mean,
 			use_separate_host_vars	= use_sep_host_vars,
-			medals_data_type		= DsMedalsDataType.DEFAULT,
+			medals_data_type		= medals_data_type,
 			gdp_data_type			= DsGdpDataType.LN_DIFF,
 			population_data_type	= DsPopDataType.LN_DIFF,
 			gdp_dataset_path		= DS_GDP_PATH,
@@ -498,7 +544,7 @@ if __name__ == "__main__":
 
 		else:
 			perform_global_panel_regression(merged_df, use_separate_host_vars=use_sep_host_vars, ctrl_vars=ctrl_vars,
-				use_hc3=use_reg_hc3, use_zinb=use_reg_zinb)
+				cov_type=cov_type, use_zinb=use_reg_zinb)
 
 		# Plot
 

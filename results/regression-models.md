@@ -31,7 +31,8 @@ python src/scripts/regression-model/regression_model.py -s S -n AUS AUT BRA CAN 
 python src/scripts/regression-model/regression_model.py -s S -n AUS BRA CAN CHN ESP FRA FRG GBR GRC JPN KOR MEX URS USA --start-year 1961 --gdp-avg --pop-avg --sep-host --save
 ```
 Risaltano solo OG, PRE e POST per degli anni straordinari (boicattaggi 1980 e 1984; USA 1996).  
-GDP quasi 0.05 con lag 7, ma in realtà mai.  
+`nonrobust`: GDP quasi 0.05 con lag 7, ma in realtà mai.  
+`hc0`: GDP a volte si, a volte no per poco.  
 
 ```sh
 python src/scripts/regression-model/regression_model.py -s S -n AUS AUT BRA CAN CHN ESP FRA FRG GBR GRC JPN KOR MEX RUS URS USA --start-year 1961 --gdp-avg --pop-avg --save
@@ -65,6 +66,83 @@ A volte, GDP `<0.05` e HOST no!
 ### Lag
 
 `2` spesso ottimo.  
+
+### Cov type
+
+`HC3` troppo aggressivo con OLS, quindi usare `HC0` per robustness. Con ZINB ok.  
+
+
+### All countries
+
+Panel regression su tutti* (eccetto gli esclusi...).  
+ZINB, ovviamente.  
+ZINB richiede nessuna colonna vuota:
+* rimuovere Boycott, se quegli anni non inclusi
+* rimuovere PRE2024 (non esiste) - già rimosso di default
+
+>Why fewer hosts are significant in OLS than ZINB: ZINB evaluates the jump from 0 to 5 medals (a massive mathematical leap for a small country). OLS evaluates the jump from 2% to 3% of the global medal share. ZINB is much more sensitive to "breakout" performances by smaller host nations, which is why more Host dummies light up in that model.  
+
+#### 1996
+
+```sh
+python3 -u src/scripts/regression-model/regression_model.py --start-year 1996 --save --gdp-avg --pop-avg  --sep-host --reg-zinb --reg-hc3 --ctrl-vars GDP POP HOST PRE POST COMM --log
+```
+
+**POP** sempre molto significativo:
+* probabilmente, perché c'è una marea di Paesi piccoli e molto piccoli che sono molto scarsi
+
+**GDP**: significativo solo con lag 1  
+**COMM**: sempre significativo  
+
+##### nonrobust
+
+Host, PRE e POST: mai significativi  
+
+##### HC3
+
+Host, PRE e POST:
+* sempre significativi
+* tranne POST2008 (Grecia, che avuto la crisi)
+
+HC3: cambiamento atteso, data heteroskedasticity  
+
+#### 1964
+
+```sh
+python3 -u src/scripts/regression-model/regression_model.py --start-year 1964 --save --gdp-avg --pop-avg  --sep-host --reg-zinb --reg-hc3 --ctrl-vars GDP POP HOST PRE POST COMM --log
+```
+
+Comm, POP: sempre  
+Host Pre Post:
+* sempre
+* eccetto post2008, di nuovo, e pre1988 (ESP ha avuto boom solo in 1992)
+GDP:
+* no
+* migliora sempre con lag, e con lag `7` sì
+sep-host: no diff.  
+
+##### Boycott
+
+Non cambia alcun risultato.  
+Solo Pseudo R-sq passa da ~0.0195 a ~0.0205.  
+Probabilmente perché ora ci sono tanti Paesi, e Boycott è significativa solo per pochi.  
+>Furthermore, once you add Year Dummies (Time Fixed Effects) to fix the medal inflation issue, those Year Dummies will completely absorb the 1980 and 1984 boycotts anyway! The math will say, "1980 was a weird year for everyone," and the Is_Boycott variable becomes redundant.  
+
+#### 1960
+
+```sh
+python3 -u src/scripts/regression-model/regression_model.py --start-year 1960 --save --gdp-avg --pop-avg  --sep-host --reg-zinb --reg-hc3 --ctrl-vars GDP POP HOST PRE POST COMM BOYCOTT --log
+```
+
+come 1964  
+
+#### 1952
+
+```sh
+python3 -u src/scripts/regression-model/regression_model.py --start-year 1952 --save --gdp-avg --pop-avg  --sep-host --reg-zinb --reg-hc3 --ctrl-vars GDP POP HOST PRE POST COMM BOYCOTT --log
+```
+
+risp. a 1964, GDP più significativo, già <0.05 a lag 3.  
 
 
 ## Parameters

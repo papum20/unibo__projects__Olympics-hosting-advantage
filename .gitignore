@@ -3,6 +3,9 @@
 
 # binary outputs
 out/**/**.png
+out/scripts/**/**
+!out/scripts/regression/
+!out/scripts/**/**.gitkeep
 
 # cache
 __pycache__/

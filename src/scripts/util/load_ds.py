@@ -718,8 +718,8 @@ def load_population_series(
 
 def _get_hosting_schedule(
 	medals_season		: str,
-	year_start			: int,
-	year_end			: int,
+	year_start			: int	= MEDALS_FULL_YEAR_FIRST,
+	year_end			: int	= MEDALS_FULL_YEAR_LAST,
 	medals_dataset_path	: str	= DS_MEDALS_FULL_PATH
 ) -> pd.DataFrame:
 	"""Get a schedule of which country hosted each Olympic year.
@@ -884,10 +884,10 @@ def load_medals_gdp_and_population_aligned(
 		DF_COL_IS_BOYCOTT	: medals_df['Is_Boycott']
 	})
 
-		# Handle hosting columns
+	# Handle hosting columns
 	if use_separate_host_vars:
 		# Load all Olympic years and their hosts
-		hosting_schedule = _get_hosting_schedule(medals_season, year_start, year_end, medals_dataset_path)
+		hosting_schedule = _get_hosting_schedule(medals_season, medals_dataset_path=medals_dataset_path)
 		
 		# Add OG<year>, PRE<year>, POST<year> columns
 		for olympic_year in hosting_schedule.index:
@@ -1013,6 +1013,17 @@ def load_stacked_countries(
 
 	# Stack them all together into one giant "Long Format" DataFrame
 	global_df = pd.concat(all_countries_data)
+
+	# Prune empty separate host columns
+	if use_separate_host_vars:
+		host_cols = [c for c in global_df.columns if any(c.startswith(pre) for pre in ['OG', 'PRE', 'POST'])]
+		# Keep only columns that have at least one True/1 value
+		cols_to_drop = [c for c in host_cols if not global_df[c].any()]
+		if cols_to_drop:
+			global_df = global_df.drop(columns=cols_to_drop)
+			if is_verbose:
+				print(f"Dropped {len(cols_to_drop)} separate host columns with no data.")
+				print(cols_to_drop)
 
 	# Reset index to convert Year from index to column (otherwise can't sort rows later)
 	global_df = global_df.reset_index()

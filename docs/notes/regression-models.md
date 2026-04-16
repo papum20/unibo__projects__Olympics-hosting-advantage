@@ -70,7 +70,7 @@ https://www.geeksforgeeks.org/machine-learning/interpreting-the-results-of-linea
 
 Costanti in OLS: se p-value < 0.05, il dato non è significativo (quindi non leggere gli altri valori, come _coef_).  
 
-## How to Interpret the Output for your Project:
+### OLS
 
 1.  **The ADF Output:** If both p-values are below 0.05, you have successfully proven to your professor that you transformed the data correctly and it is safe to run time-series models.
 2.  **The Granger Output:** The test will print out $F$-tests and $\chi^2$ tests for Lag 1 and Lag 2. 
@@ -84,6 +84,15 @@ The original authors say, *"GDP is associated with medals."* But their model onl
 Look at the F-tests (ssr based F test & parameter F test).
 Why? Chi-square (chi2) and Likelihood Ratio tests rely on "asymptotic theory," which means they only work correctly when you have a massive dataset (hundreds of rows). Because your df_denom (degrees of freedom) is only 2 (a tiny dataset), the Chi2 test breaks and gives you a False Positive (p=0.000)
 The F-test is designed specifically for small samples.  
+
+
+### ZINB
+ZINB does not use OLS; it uses Maximum Likelihood. Therefore, it does not have a true $R^2$. Instead, you look at two numbers at the top right of your output:
+
+*   **LLR p-value (`3.237e-13`):** This is the "Log-Likelihood Ratio." Because `3.237e-13` is basically `0.0000000000003` (which is $< 0.05$), it means **your overall model is highly statistically significant.** It is vastly better at predicting medals than a blank, empty model.
+*   **Pseudo R-squ. (`0.01985`):** This is McFadden’s Pseudo R-squared. Do not read this like a normal $R^2$. In count data with massive amounts of zeros, Pseudo R-squared is always extremely low (0.02 to 0.10 is normal). It just confirms the model has some explanatory power, but the `LLR p-value` is the true test of model validity.
+
+
 
 
 
@@ -291,6 +300,9 @@ If a professor asks why some NOCs are missing from your dataset, you have the pe
 
 Writing a paragraph like this elevates your project from a simple "coding exercise" to a professional Data Science paper. It shows you completely understand the relationship between the real world and your dataset!
 
+#### Those missing in Maddison DS
+
+Approximately 30 micro-nations and states lacking continuous macroeconomic tracking in the Maddison database were excluded. Given their negligible historical medal share, their omission does not bias the coefficients of the primary economic and host variables.  
 
 
 
@@ -332,6 +344,10 @@ You can easily make your OLS robust just like the paper by changing one line of 
 # Do this:
 model = sm.OLS(Y, X).fit(cov_type='HC3')  # HC3 is standard for robust errors
 ```
+
+#### Convergence
+
+Il modello (ZINB) dovrebbe convergere: dunque, usiamo `maxit=500`, con HC3 (tanto si ferma molto prima, tipo a 60-70, default=50).  
 
 #### Are your numbers comparable to the paper's numbers?
 **Direct numerical comparison? NO.**

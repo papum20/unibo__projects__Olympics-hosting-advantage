@@ -53,45 +53,88 @@ COMMUNIST_BLOC_COUNTRIES = {
 	'UKR', 'URS', 'UZB', 'YUG'
 }
 
+# NOC codes that should be treated as RUS (e.g. Olympic Athletes from Russia, Russian Olympic Committee)
+NOC_TO_RUS = {
+	'OAR': 'RUS',
+	'ROC': 'RUS'
+}
+
 # IOC to NOC mapping
 # IOC codes are used in GDP and Population datasets (Maddison, World Bank)
 # NOC codes are used in Medal datasets
 IOC_TO_NOC = {
 	'AFG': 'AFG', 'ALB': 'ALB', 'DZA': 'ALG', 'ASM': 'ASA', 'AND': 'AND', 'AGO': 'ANG',
 	'ATG': 'ANT', 'ARG': 'ARG', 'ARM': 'ARM', 'ABW': 'ARU', 'AUS': 'AUS', 'AUT': 'AUT',
-	'AZE': 'AZE', 'BHS': 'BAH', 'BHR': 'BRN', 'BGD': 'BAN', 'BRB': 'BAR', 'BLR': 'BLR',
-	'BEL': 'BEL', 'BLZ': 'BIZ', 'BEN': 'BEN', 'BMU': 'BER', 'BTN': 'BHU', 'BOL': 'BOL',
-	'BIH': 'BIH', 'BWA': 'BOT', 'BRA': 'BRA', 'VGB': 'IVB', 'BRN': 'BRU', 'BGR': 'BUL',
-	'BFA': 'BUR', 'BDI': 'BDI', 'KHM': 'CAM', 'CMR': 'CMR', 'CAN': 'CAN', 'CPV': 'CPV',
-	'CYM': 'CAY', 'CAF': 'CAF', 'TCD': 'CHA', 'CHL': 'CHI', 'CHN': 'CHN', 'COL': 'COL',
-	'COM': 'COM', 'COG': 'CGO', 'COD': 'COD', 'COK': 'COK', 'CRI': 'CRC', 'CIV': 'CIV',
-	'HRV': 'CRO', 'CUB': 'CUB', 'CYP': 'CYP', 'CZE': 'CZE', 'DNK': 'DEN', 'DJI': 'DJI',
-	'DMA': 'DMA', 'DOM': 'DOM', 'ECU': 'ECU', 'EGY': 'EGY', 'SLV': 'ESA', 'GNQ': 'GEQ',
-	'ERI': 'ERI', 'EST': 'EST', 'ETH': 'ETH', 'FJI': 'FIJ', 'FIN': 'FIN', 'FRA': 'FRA',
+	'AZE': 'AZE',
+
+	'BHS': 'BAH', 'BHR': 'BRN', 'BGD': 'BAN', 'BRB': 'BAR', 'BLR': 'BLR', 'BEL': 'BEL',
+	'BLZ': 'BIZ', 'BEN': 'BEN', 'BMU': 'BER', 'BTN': 'BHU', 'BOL': 'BOL', 'BIH': 'BIH',
+	'BWA': 'BOT', 'BRA': 'BRA', 'VGB': 'IVB', 'BRN': 'BRU', 'BGR': 'BUL', 'BFA': 'BUR',
+	'BDI': 'BDI',
+
+	'KHM': 'CAM', 'CMR': 'CMR', 'CAN': 'CAN', 'CPV': 'CPV', 'CYM': 'CAY', 'CAF': 'CAF',
+	'TCD': 'CHA', 'CHL': 'CHI', 'CHN': 'CHN', 'COL': 'COL', 'COM': 'COM', 'COG': 'CGO',
+	'COD': 'COD', 'COK': 'COK', 'CRI': 'CRC', 'CIV': 'CIV', 'HRV': 'CRO', 'CUB': 'CUB',
+	'CYP': 'CYP', 'CZE': 'CZE',
+
+	'DNK': 'DEN', 'DJI': 'DJI', 'DMA': 'DMA', 'DOM': 'DOM',
+
+	'ECU': 'ECU', 'EGY': 'EGY', 'SLV': 'ESA', 'GNQ': 'GEQ', 'ERI': 'ERI', 'EST': 'EST',
+	'ETH': 'ETH',
+
+	'FJI': 'FIJ', 'FIN': 'FIN', 'FRA': 'FRA',
+
 	'GAB': 'GAB', 'GMB': 'GAM', 'GEO': 'GEO', 'DEU': 'GER', 'GHA': 'GHA', 'GRC': 'GRE',
 	'GRD': 'GRN', 'GUM': 'GUM', 'GTM': 'GUA', 'GIN': 'GUI', 'GNB': 'GBS', 'GUY': 'GUY',
-	'HTI': 'HAI', 'HND': 'HON', 'HKG': 'HKG', 'HUN': 'HUN', 'ISL': 'ISL', 'IND': 'IND',
-	'IDN': 'INA', 'IRN': 'IRI', 'IRQ': 'IRQ', 'IRL': 'IRL', 'ISR': 'ISR', 'ITA': 'ITA',
-	'JAM': 'JAM', 'JPN': 'JPN', 'JOR': 'JOR', 'KAZ': 'KAZ', 'KEN': 'KEN', 'KIR': 'KIR',
-	'PRK': 'PRK', 'KOR': 'KOR', 'KWT': 'KUW', 'KGZ': 'KGZ', 'LAO': 'LAO', 'LVA': 'LAT',
-	'LBN': 'LIB', 'LSO': 'LES', 'LBR': 'LBR', 'LBY': 'LBY', 'LIE': 'LIE', 'LTU': 'LTU',
-	'LUX': 'LUX', 'MDG': 'MAD', 'MWI': 'MAW', 'MYS': 'MAS', 'MDV': 'MDV', 'MLI': 'MLI',
-	'MLT': 'MLT', 'MHL': 'MHL', 'MRT': 'MTN', 'MUS': 'MRI', 'MEX': 'MEX', 'FSM': 'FSM',
-	'MDA': 'MDA', 'MCO': 'MON', 'MNG': 'MNG', 'MNE': 'MNE', 'MAR': 'MAR', 'MOZ': 'MOZ',
-	'MMR': 'MYA', 'NAM': 'NAM', 'NRU': 'NRU', 'NPL': 'NEP', 'NLD': 'NED', 'NZL': 'NZL',
-	'NIC': 'NCA', 'NER': 'NIG', 'NGA': 'NGR', 'MKD': 'MKD', 'NOR': 'NOR', 'OMN': 'OMA',
+
+	'HTI': 'HAI', 'HND': 'HON', 'HKG': 'HKG', 'HUN': 'HUN',
+
+	'ISL': 'ISL', 'IND': 'IND', 'IDN': 'INA', 'IRN': 'IRI', 'IRQ': 'IRQ', 'IRL': 'IRL',
+	'ISR': 'ISR', 'ITA': 'ITA', 'ISV': 'ISV',
+
+	'JAM': 'JAM', 'JPN': 'JPN', 'JOR': 'JOR',
+
+	'KAZ': 'KAZ', 'KEN': 'KEN', 'KIR': 'KIR', 'KOR': 'KOR', 'KWT': 'KUW',
+	'KGZ': 'KGZ', 'KNA': 'SKN',
+
+	'LAO': 'LAO', 'LVA': 'LAT', 'LBN': 'LIB', 'LSO': 'LES', 'LBR': 'LBR', 'LBY': 'LBA',
+	'LIE': 'LIE', 'LTU': 'LTU', 'LUX': 'LUX', 'LCA': 'LCA', 'LKA': 'SRI',
+
+	'MDG': 'MAD', 'MWI': 'MAW', 'MYS': 'MAS', 'MDV': 'MDV', 'MLI': 'MLI', 'MLT': 'MLT',
+	'MHL': 'MHL', 'MRT': 'MTN', 'MUS': 'MRI', 'MEX': 'MEX', 'FSM': 'FSM', 'MDA': 'MDA',
+	'MCO': 'MON', 'MNG': 'MGL', 'MNE': 'MNE', 'MAR': 'MAR', 'MOZ': 'MOZ', 'MMR': 'MYA',
+	'MKD': 'MKD',
+
+	'NAM': 'NAM', 'NRU': 'NRU', 'NPL': 'NEP', 'NLD': 'NED', 'NZL': 'NZL', 'NIC': 'NCA',
+	'NER': 'NIG', 'NGA': 'NGR', 'NOR': 'NOR',
+
+	'OMN': 'OMA',
+
 	'PAK': 'PAK', 'PLW': 'PLW', 'PSE': 'PLE', 'PAN': 'PAN', 'PNG': 'PNG', 'PRY': 'PAR',
-	'PER': 'PER', 'PHL': 'PHI', 'POL': 'POL', 'PRT': 'POR', 'PRI': 'PUR', 'QAT': 'QAT',
-	'ROU': 'ROU', 'RUS': 'RUS', 'RWA': 'RWA', 'KNA': 'SKN', 'LCA': 'LCA', 'VIN': 'VIN',
-	'WSM': 'SAM', 'SMR': 'SMR', 'STP': 'STP', 'SAU': 'KSA', 'SEN': 'SEN', 'SRB': 'SRB',
+	'PER': 'PER', 'PHL': 'PHI', 'POL': 'POL', 'PRT': 'POR', 'PRI': 'PUR', 'PRK': 'PRK',
+
+	'QAT': 'QAT',
+
+	'ROU': 'ROU', 'RUS': 'RUS', 'RWA': 'RWA',
+
+	'SMR': 'SMR', 'STP': 'STP', 'SAU': 'KSA', 'SEN': 'SEN', 'SRB': 'SRB',
 	'SYC': 'SEY', 'SLE': 'SLE', 'SGP': 'SGP', 'SVK': 'SVK', 'SVN': 'SLO', 'SLB': 'SOL',
-	'SOM': 'SOM', 'ZAF': 'RSA', 'SSD': 'SSD', 'ESP': 'ESP', 'LKA': 'SRI', 'SDN': 'SUD',
-	'SUR': 'SUR', 'SWZ': 'SWZ', 'SWE': 'SWE', 'CHE': 'SUI', 'SYR': 'SYR', 'TWN': 'TPE',
-	'TJK': 'TJK', 'TZA': 'TAN', 'THA': 'THA', 'TLS': 'TLS', 'TGO': 'TOG', 'TON': 'TGA',
-	'TTO': 'TTO', 'TUN': 'TUN', 'TUR': 'TUR', 'TKM': 'TKM', 'TUV': 'TUV', 'UGA': 'UGA',
-	'UKR': 'UKR', 'ARE': 'UAE', 'GBR': 'GBR', 'USA': 'USA', 'URY': 'URU', 'UZB': 'UZB',
-	'VUT': 'VAN', 'VEN': 'VEN', 'VNM': 'VIE', 'ISV': 'ISV', 'YEM': 'YEM', 'ZMB': 'ZAM',
-	'ZWE': 'ZIM'
+	'SOM': 'SOM', 'ZAF': 'RSA', 'SSD': 'SSD', 'ESP': 'ESP', 'SDN': 'SUD', 'SUR': 'SUR',
+	'SWZ': 'SWZ', 'SWE': 'SWE', 'CHE': 'SUI', 'SYR': 'SYR',
+
+	'TWN': 'TPE', 'TJK': 'TJK', 'TZA': 'TAN', 'THA': 'THA', 'TLS': 'TLS', 'TGO': 'TOG',
+	'TON': 'TGA', 'TTO': 'TTO', 'TUN': 'TUN', 'TUR': 'TUR', 'TKM': 'TKM', 'TUV': 'TUV',
+
+	'UGA': 'UGA', 'UKR': 'UKR', 'ARE': 'UAE', 'GBR': 'GBR', 'USA': 'USA', 'URY': 'URU',
+	'UZB': 'UZB',
+
+	'VUT': 'VAN', 'VEN': 'VEN', 'VNM': 'VIE', 'VIN': 'VIN',
+
+	'WSM': 'SAM', 
+
+	'YEM': 'YEM',
+
+	'ZMB': 'ZAM', 'ZWE': 'ZIM'
 }
 
 
@@ -205,7 +248,7 @@ def load_gdppc_maddison_series(
 	
 	# Filter for the specific country column
 	if country_code not in df.columns:
-		raise ValueError(f"Country code '{country_code}' not found in dataset. Available countries for GDP: {', '.join(df.columns[1:])}")
+		raise ValueError(f"Country code '{country_code}' not found in GDPpc dataset.")
 	
 	# Extract year and country data
 	gdppc_data					= df[['Year', country_code]].copy()
@@ -330,7 +373,7 @@ def load_gdp_wbod_series(
 	country_df = df[df['Country Code'] == country_code]
 	
 	if country_df.empty:
-		raise ValueError(f"Country code '{country_code}' not found in dataset")
+		raise ValueError(f"Country code '{country_code}' not found in GDP dataset")
 	
 	# Get the first row (should be unique by country code and indicator)
 	country_data = country_df.iloc[0]
@@ -402,6 +445,10 @@ def get_all_countries_list(
 ) -> list[str]:
 	"""Get a list of all unique country codes (NOCs) from the medals dataset."""
 	df = pd.read_csv(DS_MEDALS_FULL_PATH, usecols=['Year', 'NOC'])
+
+	# Convert OAR and ROC to RUS
+	df['NOC'] = df['NOC'].replace(NOC_TO_RUS)
+
 	countries = df[(df['Year'] >= year_start) & (df['Year'] <= year_end)]
 	countries = countries['NOC'].dropna().unique().tolist()
 	return countries
@@ -425,6 +472,9 @@ def load_medals(
 	# Load the dataset
 	df = pd.read_csv(dataset_path, usecols=['Year', 'Season', 'NOC', 'Total_Medals', 'Is_Host'])
 	
+	# Convert OAR and ROC to RUS
+	df['NOC'] = df['NOC'].replace(NOC_TO_RUS)
+
 	# Filter by year range
 	medals_df = df[(df['Year'] >= year_start) & (df['Year'] <= year_end)]
 	
@@ -441,10 +491,17 @@ def load_medals(
 		medals_df = medals_df[medals_df['NOC'] == country]
 	
 	# Group by year and aggregate
-	medals_df = medals_df.groupby('Year').agg({
-		'Total_Medals'	: 'sum',
-		'Is_Host'		: 'any'  # True if any entry for that year is a host
-	}).reset_index()
+	if country:
+		medals_df = medals_df.groupby('Year').agg({
+			'Total_Medals'	: 'sum',
+			'Is_Host'		: 'any'  # True if any entry for that year is a host
+		}).reset_index()
+	else:
+		# Group by year without country filtering
+		medals_df = medals_df.groupby('Year').agg({
+			'Total_Medals'	: 'sum',
+			'Is_Host'		: 'any'
+		}).reset_index()
 	
 	# Add Is_Boycott column
 	medals_df['Is_Boycott'] = medals_df['Year'].isin([YEAR_BOYCOTT_URS, YEAR_BOYCOTT_USA])
@@ -474,38 +531,16 @@ def load_medals_series(
 	@return: A pandas Series indexed by Year with total medals as values.
 	"""
 
-	# Load the dataset with specified columns
-	df = pd.read_csv(dataset_path, usecols=['Year', 'Season', 'NOC', 'Total_Medals', 'Gold', 'Silver', 'Bronze', 'Men_Medals', 'Women_Medals', 'Is_Host'])
+	medals_df = load_medals(
+		country=country,
+		year_start=year_start,
+		year_end=year_end,
+		medals_season=medals_season,
+		dataset_path=dataset_path,
+		data_type=data_type
+	)
 
-	# Filter by year range
-	df = df[(df['Year'] >= year_start) & (df['Year'] <= year_end)]
-	
-	
-	# Filter by medals type
-	if medals_season == 'S':
-		df = df[df['Season'] == 'Summer']
-	elif medals_season == 'W':
-		df = df[df['Season'] == 'Winter']
-	elif medals_season == 'B':
-		df = df[df['Season'].isin(['Summer', 'Winter'])]
-	
-	if country is None:
-		# Aggregate total medals by year (summing across all countries)
-		medals_by_year = df.groupby('Year')['Total_Medals'].sum()
-	else:
-		# Filter for specific country and aggregate by year
-		country_df		= df[df['NOC'] == country]
-		medals_by_year	= country_df.groupby('Year')['Total_Medals'].sum()
-	
-	# Convert to pandas Series with Year as index
-	medals_series = pd.Series(medals_by_year.values, index=medals_by_year.index, name='Total_Medals')
-
-	if data_type == DsMedalsDataType.LN_DIFF:
-		medals_series = get_series_log_diff(medals_series)
-	elif data_type == DsMedalsDataType.PERCENTAGE:
-		medals_series = get_medal_series_percentage(medals_series, df)
-
-	return medals_series
+	return medals_df['Total_Medals']
 
 
 
@@ -543,7 +578,7 @@ def load_population_maddison_series(
 	
 	# Filter for the specific country column
 	if country_code not in df.columns:
-		raise ValueError(f"Country code '{country_code}' not found in dataset. Available countries: {', '.join(df.columns[1:])}")
+		raise ValueError(f"Country code '{country_code}' not found in POP dataset.")
 	
 	# Extract year and country data
 	population_data					= df[['Year', country_code]].copy()

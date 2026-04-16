@@ -487,8 +487,7 @@ if __name__ == "__main__":
 		actual_year_end		= min(merged_df.index.max(), year_end)
 		print(f"Using data from {actual_year_start} to {actual_year_end} (requested: {year_start}-{year_end})")
 
-		print_ds(merged_df[DF_COL_GDP],		f"{country_name} GDP series",			verbose)
-		print_ds(merged_df[DF_COL_MEDALS],	f"{'+'.join(noc_list)} medals series",	verbose)
+		print_ds(merged_df,		f"{country_name} stacked data",			verbose, n=20)
 
 		if verbose:
 			print("\nMerged DataFrame:")

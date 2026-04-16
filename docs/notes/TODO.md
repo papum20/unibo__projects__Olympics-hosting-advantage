@@ -13,7 +13,3 @@ other:
 * men, women
 * EU countries
 * winter
-
-ds:
-* convert IOC -> NOC if and when needed
-* other countries, not existing, no gdp (filter out), russia, AIN,

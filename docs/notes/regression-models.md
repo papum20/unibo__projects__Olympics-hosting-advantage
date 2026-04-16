@@ -240,6 +240,12 @@ The IOC uses codes like `EOR` (Refugee Olympic Team), `IOA` (Independent Olympic
 *   **The Econometric Reality:** These are not sovereign nations. They do not have a GDP. They do not have a national population. They do not have a government sports budget. 
 *   **The Solution:** You physically cannot run a regression that requires `ln_GDP` on an entity that has no GDP. These must be dropped. 
 
+List:
+* IOA Individual Olympic Athletes
+* EOR Équipe Olympique des Réfugiés
+* ROT Refugee Olympic Team
+* AIN (2024 Russian athletes competing under a neutral flag)
+
 #### The Transitional States (Serbia & Montenegro, Netherlands Antilles)
 You correctly noted that `SCG` (Serbia and Montenegro) competed in 2004 but split shortly after. 
 *   Macroeconomic datasets (like the World Bank and Maddison) often retroactively update their databases to only show modern borders (Serbia `SRB` and Montenegro `MNE`). 

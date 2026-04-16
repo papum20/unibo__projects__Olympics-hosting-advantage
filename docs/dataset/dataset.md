@@ -27,6 +27,51 @@ Citation: MPD version 2023: Bolt, Jutta and Jan Luiten van Zanden (2024), "Maddi
 GDPpc (per capita), measured in 2011 international dollars.  
 The paper (_The less obvious effect of hosting the Olympics on sporting performance._) also used GDPpc.  
 
+Missing Countries (but present in WBOD) (Format: Name IOC (NOC: NOC)):
+* American Samoa ASM (NOC: ASA)
+* Andorra AND
+* Antigua and Barbuda ATG (NOC: ANT)
+* Aruba ABW (NOC: ARU)
+* Bahamas BHA
+* Belize BLZ (NOC: BIZ)
+* Bermuda BMU (NOC: BER)
+* Bhutan BTN (NOC: BHU)
+* British Virgin Islands VGB (NOC: IVB)
+* Brunei Darussalam BRN
+* Cayman Islands CYM (NOC: CAY)
+* Eritrea ERI
+* Fiji FJI
+* Grenada GRD (NOC: GRN)
+* Guam GUM
+* Guyana GUY
+* Kiribati KIR
+* Kosovo XKX (NOC: KOS)
+* Liechtenstein LIE
+* Maldives MDV
+* Marshall Islands MHL
+* Micronesia FSM
+* Monaco MCO (NOC: MON)
+* Nauru NRU
+* Palau PLW
+* Papua New Guinea PNG
+* Saint Kitts and Nevis KNA (NOC: SKN)
+* Saint Vincent and the Grenadines VCT (NOC: VIN)
+* Samoa WSM (NOC: SAM)
+* San Marino SMR
+* Solomon Islands SOL
+* Somalia SOM
+* South Sudan SSD
+* Suriname SUR
+* Timor-Leste TLS
+* Tonga TGA
+* Tuvalu TUV
+* U.S. Virgin Islands VIR (NOC: ISV)
+* Vanuatu VUT (NOC: VAN)
+
+Missing (also in WBOD):
+* Laos LAO
+* Netherlands Antilles ANT (NOC: AHO)
+
 ### maddisonProjectDatabase_population_2023.csv
 
 Population, same source as [GDPpc](#maddisonProjectDatabase_GDPpc_2023.csv).  

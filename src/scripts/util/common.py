@@ -1,8 +1,8 @@
 
-def print_ds(series, series_name, verbose):
+def print_ds(data, name, verbose, n=5):
 	if verbose:
-		print(f"Loaded series for {series_name}:")
-		print(series)
+		print(f"Loaded series for {name}:")
+		print(data)
 	else:
-		print(f"Loaded series for {series_name} (tail):")
-		print(series.tail())
+		print(f"Loaded series for {name} (tail {n}):")
+		print(data.tail(n))

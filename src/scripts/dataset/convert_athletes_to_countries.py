@@ -69,10 +69,6 @@ def process_olympic_data(input_file, hosts_file, output_file):
 	# Clean up by dropping the temporary columns from the merge
 	final_df = final_df.drop(columns=['Host_NOC', 'City'])
 	
-	# Replace GRE with GRC (GRC is the correct code, bank DS uses it but this doesn't)
-	print("Standardizing country codes...")
-	final_df['NOC'] = final_df['NOC'].replace('GRE', 'GRC')
-	
 	# Sort data chronologically and alphabetically for readability
 	final_df = final_df.sort_values(by=['Year', 'Season', 'Total_Medals'], ascending=[True, True, False])
 	

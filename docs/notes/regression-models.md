@@ -109,6 +109,14 @@ Because GDP compounds over time (like interest in a bank account). If a country 
 * quindi, lascia riga vuota, altrimenti influenzerebbe male (la regressione vedrebbe una correlazione con 0 medaglie, che non sono vere)
 
 
+### Panel regression
+
+Paper: per Paese per anno per sport.  
+N_COUNTRIES x N_SPORTS x N_YEARS righe - ~12,000 observations.  
+
+By zooming in on the sport level, they can control for the fact that a country might be historically amazing at Fencing but terrible at Judo. It also allowed them (in the text of the paper) to check if the "Host Advantage" is stronger in *subjectively judged* sports (like Gymnastics) compared to *objective* sports (like the 100m sprint), where a referee might be influenced by a cheering home crowd.  
+
+
 ### Dummy variable separate per ogni edizione
 
 To analyze each specific Olympic Games individually, you literally create a separate column for **every single hosting event**. 
@@ -132,9 +140,92 @@ Furthermore, because `OG96` is only a `1` for the USA in 1996, and `OG12` is onl
 *(Econometric Note: When you create a dummy variable that is `1` for only a single row in the entire dataset, it is called an "Observation-Specific Dummy". It calculates the exact abnormal surplus of medals for that specific country in that specific year, adjusting for their GDP and Population!)*
 
 
+### Dummy var per sport - Sport FE
+
+**What do "OG FE" and "Sport FE" mean?**  
+"FE" stands for **Fixed Effects**. This is one of the most powerful tools in panel data econometrics. 
+
+A "Fixed Effect" is simply a **Dummy Variable** used to absorb structural, unchangeable differences between groups so they don't mess up your math. The "Yes" in the table just means: *"We added these dummy variables to the regression."*
+
+Here is exactly what each one does:
+
+**A. Sport FE (Sport Fixed Effects) = YES**
+Imagine comparing Swimming to Soccer. 
+*   In Swimming, Michael Phelps alone can win 8 medals. A country can easily win 30 swimming medals. 
+*   In Soccer, a country can only win **1 medal** (the team medal). 
+If the researchers didn't use Sport FE, the ZINB model would look at the data and say: *"Wow, the USA won 30 medals in Swimming and only 1 in Soccer. The USA must be 30 times better at Swimming than Soccer!"* 
+
+By putting `Sport FE = Yes`, they added a dummy variable for every single sport (`Is_Swimming`, `Is_Soccer`, `Is_Judo`). The math then completely absorbs the size difference, essentially saying: *"We will judge a country's swimming performance ONLY against other swimming performances, not against soccer."*
+
+### Dummy var per anno - OG FE
+
+**B. OG FE (Olympic Games Fixed Effects) = YES**
+This is the **Time Fixed Effect** we discussed a few messages ago! 
+The IOC adds new sports and hands out more total medals every single Olympic cycle (e.g., 841 medals in 1996 vs. 1,080 medals in 2020). If a country's raw medal count goes up between 1996 and 2020, the model might accidentally think it's because their GDP went up. In reality, it's just because there are more medals available to win!
+
+By putting `OG FE = Yes`, they added a dummy variable for every single year (`Is_1996`, `Is_2000`, `Is_2004`). These year dummies automatically absorb the "global inflation" of medals and any global economic recessions that affected every country at the exact same time.
+
+#### How this relates to your project:
+*   **Do you need Sport FE?** No! Because you grouped all your medals together into a single total per country (`N_COUNTRIES × N_YEARS`), the sports are already combined. You don't need Sport Fixed Effects.
+*   **Do you need OG FE?** Because you smartly converted your dependent variable into **Medal Share (%)** rather than raw counts, you naturally defeated the medal inflation problem (10% of the medals in 1996 is mathematically equal to 10% in 2020). Therefore, adding Olympic Games Fixed Effects isn't strictly necessary for you, though adding year dummies is always a safe econometric practice to absorb global shocks! 
+
+You have done an incredible job deconstructing this paper. You are reading the notation, the tables, and the methodology exactly how a PhD reviewer would.
+
+
+### Year dummy
+
+To add a "Year Dummy" (Time Fixed Effect), you create a new column for each year. If the row is from 1996, the `Year_1996` column gets a `1`, and all other year columns get a `0`. 
+
+#### The "Dummy Variable Trap" (Perfect Multicollinearity)
+If you have 15 Olympic Games in your dataset, you **cannot** add 15 Year columns. You must only add **14 columns**. You have to leave one year out.
+
+**Why?**
+Because you already have a `const` (Intercept) in your model! The Intercept acts as your baseline. 
+If you include all 15 years, the computer's matrix algebra completely breaks (it literally divides by zero) because the sum of the year columns perfectly equals the Intercept column. 
+
+**The Solution:** You drop the very first year (e.g., 1964). 
+*   1964 becomes the hidden "Baseline" built into the Intercept.
+*   The coefficient for the `Year_1968` column will tell you: *"Compared to 1964, how much did the global average change in 1968?"*
+
+#### A beautiful nuance about your specific model:
+The authors of the paper **desperately** needed Year Dummies because they used *Raw Medal Counts*. In 1960 there were ~400 medals. Today there are over 1,000. They needed the Year Dummies to absorb that massive global inflation.
+
+But **you** are using **Medal Share (%)**. The total percentage of medals awarded in 1960 was exactly 100%. The total percentage of medals awarded in 2024 was exactly 100%. The pie never gets bigger! 
+Because of this, Year Dummies won't change your model very much. However, adding them is still considered a "best practice" because it absorbs the fact that there are *more countries* competing today than in 1960, which slightly lowers the average share everyone gets.
+
+#### How to code this automatically in Python
+You do not need to write a massive `for` loop to create these. Pandas has a built-in function called `pd.get_dummies()` that does it instantly, and it even has a built-in parameter to avoid the Dummy Variable Trap!
+
+You can just add these three lines of code right before you run your OLS:
+
+```python
+    # 1. Let Pandas generate all the Year columns automatically
+    # drop_first=True automatically deletes the first year to avoid the Dummy Variable Trap!
+    year_dummies = pd.get_dummies(global_df['Year'], prefix='Year', drop_first=True)
+    
+    # 2. Convert them from True/False to 1/0
+    year_dummies = year_dummies.astype(int)
+    
+    # 3. Add them to your X predictors matrix
+    X = pd.concat([X, year_dummies], axis=1)
+    
+    # Run your model as usual!
+    model = sm.OLS(Y, X).fit()
+    print(model.summary())
+```
+
+
 ### Fix for 0/inf
 
 `0`/`inf`/etc. with logs (error): do `ln(x + 1)` instead of `ln(x)`.  
+
+
+### Sport-level non Participating countries
+
+>We used data for countries with qualified athletes in the sport concerned. Some countries have only participated in one 
+>Olympic competition, so using zero observations from all Olympic competitions would bias the analysis. 
+
+Facendo un'analisi a livello di sport per sport (con la sua dummy var), vengono esclusi i Paesi che non hanno partecipato a quello sport in quell'anno (nessuna riga piuttosto che uno 0). Altrimenti, ci sarebbe un bias.  
 
 
 ### Confronto con risultati del paper

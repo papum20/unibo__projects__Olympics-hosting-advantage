@@ -53,6 +53,46 @@ COMMUNIST_BLOC_COUNTRIES = {
 	'UKR', 'URS', 'UZB', 'YUG'
 }
 
+# IOC to NOC mapping
+# IOC codes are used in GDP and Population datasets (Maddison, World Bank)
+# NOC codes are used in Medal datasets
+IOC_TO_NOC = {
+	'AFG': 'AFG', 'ALB': 'ALB', 'DZA': 'ALG', 'ASM': 'ASA', 'AND': 'AND', 'AGO': 'ANG',
+	'ATG': 'ANT', 'ARG': 'ARG', 'ARM': 'ARM', 'ABW': 'ARU', 'AUS': 'AUS', 'AUT': 'AUT',
+	'AZE': 'AZE', 'BHS': 'BAH', 'BHR': 'BRN', 'BGD': 'BAN', 'BRB': 'BAR', 'BLR': 'BLR',
+	'BEL': 'BEL', 'BLZ': 'BIZ', 'BEN': 'BEN', 'BMU': 'BER', 'BTN': 'BHU', 'BOL': 'BOL',
+	'BIH': 'BIH', 'BWA': 'BOT', 'BRA': 'BRA', 'VGB': 'IVB', 'BRN': 'BRU', 'BGR': 'BUL',
+	'BFA': 'BUR', 'BDI': 'BDI', 'KHM': 'CAM', 'CMR': 'CMR', 'CAN': 'CAN', 'CPV': 'CPV',
+	'CYM': 'CAY', 'CAF': 'CAF', 'TCD': 'CHA', 'CHL': 'CHI', 'CHN': 'CHN', 'COL': 'COL',
+	'COM': 'COM', 'COG': 'CGO', 'COD': 'COD', 'COK': 'COK', 'CRI': 'CRC', 'CIV': 'CIV',
+	'HRV': 'CRO', 'CUB': 'CUB', 'CYP': 'CYP', 'CZE': 'CZE', 'DNK': 'DEN', 'DJI': 'DJI',
+	'DMA': 'DMA', 'DOM': 'DOM', 'ECU': 'ECU', 'EGY': 'EGY', 'SLV': 'ESA', 'GNQ': 'GEQ',
+	'ERI': 'ERI', 'EST': 'EST', 'ETH': 'ETH', 'FJI': 'FIJ', 'FIN': 'FIN', 'FRA': 'FRA',
+	'GAB': 'GAB', 'GMB': 'GAM', 'GEO': 'GEO', 'DEU': 'GER', 'GHA': 'GHA', 'GRC': 'GRE',
+	'GRD': 'GRN', 'GUM': 'GUM', 'GTM': 'GUA', 'GIN': 'GUI', 'GNB': 'GBS', 'GUY': 'GUY',
+	'HTI': 'HAI', 'HND': 'HON', 'HKG': 'HKG', 'HUN': 'HUN', 'ISL': 'ISL', 'IND': 'IND',
+	'IDN': 'INA', 'IRN': 'IRI', 'IRQ': 'IRQ', 'IRL': 'IRL', 'ISR': 'ISR', 'ITA': 'ITA',
+	'JAM': 'JAM', 'JPN': 'JPN', 'JOR': 'JOR', 'KAZ': 'KAZ', 'KEN': 'KEN', 'KIR': 'KIR',
+	'PRK': 'PRK', 'KOR': 'KOR', 'KWT': 'KUW', 'KGZ': 'KGZ', 'LAO': 'LAO', 'LVA': 'LAT',
+	'LBN': 'LIB', 'LSO': 'LES', 'LBR': 'LBR', 'LBY': 'LBY', 'LIE': 'LIE', 'LTU': 'LTU',
+	'LUX': 'LUX', 'MDG': 'MAD', 'MWI': 'MAW', 'MYS': 'MAS', 'MDV': 'MDV', 'MLI': 'MLI',
+	'MLT': 'MLT', 'MHL': 'MHL', 'MRT': 'MTN', 'MUS': 'MRI', 'MEX': 'MEX', 'FSM': 'FSM',
+	'MDA': 'MDA', 'MCO': 'MON', 'MNG': 'MNG', 'MNE': 'MNE', 'MAR': 'MAR', 'MOZ': 'MOZ',
+	'MMR': 'MYA', 'NAM': 'NAM', 'NRU': 'NRU', 'NPL': 'NEP', 'NLD': 'NED', 'NZL': 'NZL',
+	'NIC': 'NCA', 'NER': 'NIG', 'NGA': 'NGR', 'MKD': 'MKD', 'NOR': 'NOR', 'OMN': 'OMA',
+	'PAK': 'PAK', 'PLW': 'PLW', 'PSE': 'PLE', 'PAN': 'PAN', 'PNG': 'PNG', 'PRY': 'PAR',
+	'PER': 'PER', 'PHL': 'PHI', 'POL': 'POL', 'PRT': 'POR', 'PRI': 'PUR', 'QAT': 'QAT',
+	'ROU': 'ROU', 'RUS': 'RUS', 'RWA': 'RWA', 'KNA': 'SKN', 'LCA': 'LCA', 'VIN': 'VIN',
+	'WSM': 'SAM', 'SMR': 'SMR', 'STP': 'STP', 'SAU': 'KSA', 'SEN': 'SEN', 'SRB': 'SRB',
+	'SYC': 'SEY', 'SLE': 'SLE', 'SGP': 'SGP', 'SVK': 'SVK', 'SVN': 'SLO', 'SLB': 'SOL',
+	'SOM': 'SOM', 'ZAF': 'RSA', 'SSD': 'SSD', 'ESP': 'ESP', 'LKA': 'SRI', 'SDN': 'SUD',
+	'SUR': 'SUR', 'SWZ': 'SWZ', 'SWE': 'SWE', 'CHE': 'SUI', 'SYR': 'SYR', 'TWN': 'TPE',
+	'TJK': 'TJK', 'TZA': 'TAN', 'THA': 'THA', 'TLS': 'TLS', 'TGO': 'TOG', 'TON': 'TGA',
+	'TTO': 'TTO', 'TUN': 'TUN', 'TUR': 'TUR', 'TKM': 'TKM', 'TUV': 'TUV', 'UGA': 'UGA',
+	'UKR': 'UKR', 'ARE': 'UAE', 'GBR': 'GBR', 'USA': 'USA', 'URY': 'URU', 'UZB': 'UZB',
+	'VUT': 'VAN', 'VEN': 'VEN', 'VNM': 'VIE', 'ISV': 'ISV', 'YEM': 'YEM', 'ZMB': 'ZAM',
+	'ZWE': 'ZIM'
+}
 
 
 class DsGdpDataType(Enum):
@@ -103,6 +143,31 @@ def get_medal_series_percentage(country_series: pd.Series, full_df: pd.DataFrame
 	percentage_series = ((country_series / total_medals_by_year) * 100).dropna()
 	return percentage_series
 
+def ioc_to_noc(country_code: str) -> str:
+	"""Convert IOC country code to NOC code if mapping exists.
+	@param country_code: IOC country code (3-letter)
+	@return: Corresponding NOC code or original code if no mapping exists.
+	"""
+	return IOC_TO_NOC.get(country_code, country_code)
+
+def rename_df_columns_ioc_to_noc(df: pd.DataFrame) -> pd.DataFrame:
+	"""Rename columns of a DataFrame from IOC to NOC codes.
+	Useful for datasets where each country is a column (e.g. Maddison).
+	@param df: pandas DataFrame with IOC codes as column names
+	@return: DataFrame with renamed columns
+	"""
+	return df.rename(columns=IOC_TO_NOC)
+
+def rename_df_values_ioc_to_noc(df: pd.DataFrame, column_name: str) -> pd.DataFrame:
+	"""Rename the values in a column from IOC to NOC code.
+	Useful for datasets where each country is a column (e.g. Maddison).
+	@param df: pandas DataFrame with IOC codes as column names
+	@param column_name: Name of the column to update
+	@return: DataFrame with the renamed values in the specified column
+	"""
+	df[column_name] = df[column_name].map(lambda x: IOC_TO_NOC.get(x, x))	# type: ignore
+	return df
+
 
 
 #
@@ -135,9 +200,12 @@ def load_gdppc_maddison_series(
 	if 'year' in df.columns[0].lower():
 		df = df.rename(columns={df.columns[0]: 'Year'})
 	
+	# Rename IOC columns to NOC
+	df = rename_df_columns_ioc_to_noc(df)
+	
 	# Filter for the specific country column
 	if country_code not in df.columns:
-		raise ValueError(f"Country code '{country_code}' not found in dataset. Available countries: {', '.join(df.columns[1:])}")
+		raise ValueError(f"Country code '{country_code}' not found in dataset. Available countries for GDP: {', '.join(df.columns[1:])}")
 	
 	# Extract year and country data
 	gdppc_data					= df[['Year', country_code]].copy()
@@ -163,7 +231,7 @@ def load_gdppc_maddison_series(
 	if data_type == DsGdpDataType.LN_DIFF:
 		gdppc_series = get_series_log_diff(gdppc_series)
 	
-	return gdppc_series, country_name
+	return gdppc_series, ioc_to_noc(country_name)
 
 
 def load_gdppc_extended_series(
@@ -181,6 +249,8 @@ def load_gdppc_extended_series(
 	@param data_type: Type of transformation to apply (DEFAULT or LN_DIFF)
 	@return: A pandas Series indexed by Year with GDP per capita values and the country name.
 	"""
+
+	# convert all NOCs at the end, for clarity
 	
 	# Load Maddison data (1800-2022)
 	gdppc_series, country_name = load_gdppc_maddison_series(
@@ -198,6 +268,8 @@ def load_gdppc_extended_series(
 	
 	# Load percentage changes from WBOD for years 2023-2024
 	df_perc = pd.read_csv(dataset_path)
+	
+	df_perc = rename_df_values_ioc_to_noc(df_perc, 'Country Code')
 	
 	# Filter for specific country
 	country_df = df_perc[df_perc['Country Code'] == country_code]
@@ -252,6 +324,8 @@ def load_gdp_wbod_series(
 	# Load the dataset
 	df = pd.read_csv(dataset_path)
 	
+	df = rename_df_values_ioc_to_noc(df, 'Country Code')
+	
 	# Filter for specific country
 	country_df = df[df['Country Code'] == country_code]
 	
@@ -282,7 +356,9 @@ def load_gdp_wbod_series(
 	if data_type == DsGdpDataType.LN_DIFF:
 		gdp_series = get_series_log_diff(gdp_series)	
 	
-	return gdp_series, country_data['Country Name']
+	# The country filter was already applied using 'Country Code' from the dataset, 
+	# which uses IOC codes. The name is just for display.
+	return gdp_series, ioc_to_noc(country_data['Country Code'])
 
 
 def load_gdp_series(
@@ -318,6 +394,17 @@ def load_gdp_series(
 #
 # Medals
 #
+
+
+def get_all_countries_list(
+	year_start	: int	= MEDALS_FULL_YEAR_FIRST,
+	year_end	: int	= MEDALS_FULL_YEAR_LAST,
+) -> list[str]:
+	"""Get a list of all unique country codes (NOCs) from the medals dataset."""
+	df = pd.read_csv(DS_MEDALS_FULL_PATH, usecols=['Year', 'NOC'])
+	countries = df[(df['Year'] >= year_start) & (df['Year'] <= year_end)]
+	countries = countries['NOC'].dropna().unique().tolist()
+	return countries
 
 
 def load_medals(
@@ -452,6 +539,8 @@ def load_population_maddison_series(
 	if 'year' in df.columns[0].lower():
 		df = df.rename(columns={df.columns[0]: 'Year'})
 	
+	df = rename_df_columns_ioc_to_noc(df)
+	
 	# Filter for the specific country column
 	if country_code not in df.columns:
 		raise ValueError(f"Country code '{country_code}' not found in dataset. Available countries: {', '.join(df.columns[1:])}")
@@ -480,7 +569,7 @@ def load_population_maddison_series(
 	if data_type == DsPopDataType.LN_DIFF:
 		population_series = get_series_log_diff(population_series)
 	
-	return population_series, country_name
+	return population_series, ioc_to_noc(country_name)
 
 
 def load_population_extended_series(
@@ -515,6 +604,8 @@ def load_population_extended_series(
 	
 	# Load population data from WBOD for years 2023-2024
 	df_wbod = pd.read_csv(dataset_path)
+
+	df_wbod = rename_df_values_ioc_to_noc(df_wbod, 'Country Code')
 	
 	# Filter for specific country
 	country_df = df_wbod[df_wbod['Country Code'] == country_code]
@@ -799,7 +890,7 @@ def load_medals_gdp_and_population_aligned(
 
 
 def load_stacked_countries(
-	countries_list			: str,
+	countries_list			: list[str]|None	= None,
 	year_start				: int				= MEDALS_FULL_YEAR_FIRST,
 	year_end				: int				= MEDALS_FULL_YEAR_LAST,
 	medals_season			: str				= 'S',
@@ -817,6 +908,26 @@ def load_stacked_countries(
 	population_dataset_path	: str				= DS_POPULATION_MADDISON_PATH,
 	is_verbose				: bool				= True
 ) -> tuple[pd.DataFrame, str]:
+	"""Load Olympic medals, GDP per capita, and population data with year alignment/shift.
+	@param countries_list: List of country codes to filter (None or [] means all countries in the medals dataset)
+	@param year_start: Starting year for medals data
+	@param year_end: Ending year for medals data
+	@param medals_season: Season of medals ('S' for Summer, 'W' for Winter, 'B' for Both)
+	@param gdp_year_shift: Number of years to shift GDP backwards
+	@param population_year_shift: Number of years to shift population backwards
+	@param use_gdp_mean: Whether to use 4-year arithmetic mean of GDP
+	@param use_population_mean: Whether to use 4-year arithmetic mean of population
+	@param remove_boycott: Whether to remove years affected by boycotts (1980 and 1984)
+	@param use_separate_host_vars: Whether to use separate binary variables for hosting, pre-hosting, and post-hosting instead of a single Is_Host variable
+	@param medals_data_type: Type of transformation for medals (DEFAULT, LN_DIFF, PERCENTAGE)
+	@param gdp_data_type: Type of transformation for GDP (DEFAULT, LN_DIFF)
+	@param population_data_type: Type of transformation for population (DEFAULT, LN_DIFF)
+	@param medals_dataset_path: Path to medals CSV
+	@param gdp_dataset_path: Path to GDP CSV
+	@param population_dataset_path: Path to population CSV
+	@return: tuple of (DataFrame with aligned 'Medals', 'GDP', and 'Population' columns indexed by Olympics year, country_name)
+	"""
+
 	
 	# In a panel regression, the DataFrame of each country is stacked on top of each other
 	
@@ -824,6 +935,11 @@ def load_stacked_countries(
 		print("\n--- Building Global Panel Dataset ---")
 	all_countries_data	= []
 	all_countries_names = []
+
+	if countries_list is None or len(countries_list) == 0:
+		countries_list = get_all_countries_list(year_start, year_end)
+		if is_verbose:
+			print(f"Using all countries from medals dataset: {', '.join(countries_list)}")
 
 	for noc in countries_list:
 		try:

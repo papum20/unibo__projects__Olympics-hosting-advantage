@@ -289,8 +289,8 @@ if __name__ == "__main__":
 		'-n', '--noc',
 		type=str,
 		nargs='+',
-		default=['USA'],
-		help='Country code(s) (NOC) - space-separated list - default: USA'
+		default=[],
+		help='Country code(s) (NOC) - space-separated list - default: all countries (no filter)'
 	)
 	
 	parser.add_argument(
@@ -379,7 +379,7 @@ if __name__ == "__main__":
 	
 	args = parser.parse_args()
 
-	noc_list			= args.noc
+	noc_list: list[str]	= args.noc
 	medals_season		= args.season
 	save_plot_flag		= args.save
 	year_start			= args.start_year

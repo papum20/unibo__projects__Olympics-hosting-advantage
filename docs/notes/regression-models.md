@@ -246,6 +246,8 @@ You correctly noted that `SCG` (Serbia and Montenegro) competed in 2004 but spli
 *   Because the World Bank doesn't list the GDP for the combined entity of `SCG` in the 2000s, you will get a `NaN` (blank value) when you merge your Olympic data with your GDP data.
 *   **The Solution:** In statistics, if an observation is missing an independent variable (GDP), you must drop the entire row. This is a standard practice called **"Listwise Deletion."**
 
+**Listwise Deletion** is often preferred to alternatives (https://en.wikipedia.org/wiki/Listwise_deletion).  
+
 #### How did the paper handle this?
 They did exactly what I am advising you to do! Look closely at the paper's data section:
 > *"For the socioeconomic indicators, we used data from the database of the World Bank."*

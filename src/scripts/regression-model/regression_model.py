@@ -91,6 +91,7 @@ def perform_global_panel_regression(
 	if use_separate_host_vars:
 		if 'HOST' in ctrl_vars:
 			predictors += [col for col in col_headers if is_dfCol_isHostOg_separate(col)]
+		if 'PRE' in ctrl_vars:
 			predictors += [col for col in col_headers if is_dfCol_isHostPre_separate(col)]
 		if 'POST' in ctrl_vars:
 			predictors += [col for col in col_headers if is_dfCol_isHostPost_separate(col)]
@@ -109,21 +110,17 @@ def perform_global_panel_regression(
 	X = global_df[predictors].astype(float)
 
 
-	#cols_before = X.shape[1]
-	#X = X.loc[:, (X != 0).any(axis=0)]
-	#cols_after = X.shape[1]
-	#
-	#if cols_before != cols_after:
-	#	print(f"Removed {cols_before - cols_after} empty/zero predictor columns.")
-
+	# Remove columns that are all zeros (empty dummies)
+	cols_before = X.shape[1]
+	X = X.loc[:, (X != 0).any(axis=0)]
+	cols_after = X.shape[1]
 	
-	X = sm.add_constant(X)
+	if cols_before != cols_after:
+		print(f"Removed {cols_before - cols_after} empty/zero predictor columns.")
+		print(f"Kept predictors ({cols_after}): {X.columns.tolist()}")
 
-	# Check for rank sufficiency
-	rank = np.linalg.matrix_rank(X.values)	# type: ignore
-	if rank < X.shape[1]:
-		print(f"Warning: Matrix is rank deficient ({rank} < {X.shape[1]}). "
-			  "Check for collinear predictors.")
+
+	X = sm.add_constant(X)
 
 	# Add near-zero variance check
 	#low_variance = X.columns[X.var() < 1e-6].tolist()
@@ -143,6 +140,12 @@ def perform_global_panel_regression(
 	# Run the massive multi-variable OLS
 	# HC3 is standard for robust errors (heteroskedasticity-consistent)
 	if use_zinb:
+		# Check for rank sufficiency
+		rank = np.linalg.matrix_rank(X.values)	# type: ignore
+		if rank < X.shape[1]:
+			print(f"Warning: Matrix is rank deficient ({rank} < {X.shape[1]}). "
+				"Check for collinear predictors.")
+
 		model = ZeroInflatedNegativeBinomialP(Y, X).fit(cov_type=cov_type, maxiter=500, method='bfgs')
 	else:
 		model = sm.OLS(Y, X).fit(cov_type=cov_type)

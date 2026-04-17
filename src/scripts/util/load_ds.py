@@ -476,7 +476,7 @@ def load_gdp_series(
 #
 
 
-def get_all_countries_list(
+def _get_all_countries_list(
 	year_start	: int	= MEDALS_FULL_YEAR_FIRST,
 	year_end	: int	= MEDALS_FULL_YEAR_LAST,
 ) -> list[str]:
@@ -489,53 +489,6 @@ def get_all_countries_list(
 	countries = df[(df['Year'] >= year_start) & (df['Year'] <= year_end)]
 	countries = countries['NOC'].dropna().unique().tolist()
 	return countries
-
-
-def get_averageMedals_history_byYear(
-	country			: str,
-	year_start		: int	= MEDALS_FULL_YEAR_FIRST,
-	year_end		: int	= MEDALS_FULL_YEAR_LAST,
-	medals_season	: str	= 'S',
-	dataset_path	: str	= DS_MEDALS_FULL_PATH
-) -> pd.Series:
-	"""Get the average medals history by year for a specific country.
-	The history for year `t` goes from the first year the country appears in the dataset to `t-1`.
-	@param country: Country code (NOC) to filter by.
-	@param medals_season: Season of medals to include (S for Summer, W for Winter, B for Both).
-	@return: A pandas Series indexed by Year with average medals as values.
-	"""
-	df = pd.read_csv(dataset_path, usecols=['Year', 'Season', 'NOC', 'Total_Medals'])
-	
-	# Convert OAR and ROC to RUS
-	df['NOC'] = df['NOC'].replace(NOC_TO_RUS)
-	
-	medals_df = df[df['NOC'] == country]
-
-	# Filter by medals season
-	if medals_season == 'S':
-		medals_df = medals_df[medals_df['Season'] == 'Summer']
-	elif medals_season == 'W':
-		medals_df = medals_df[medals_df['Season'] == 'Winter']
-	elif medals_season == 'B':
-		medals_df = medals_df[medals_df['Season'].isin(['Summer', 'Winter'])]
-
-
-	# Sort the data chronologically for each country
-	medals_df = medals_df.sort_values(by=['NOC', 'Year'])
-
-	# Calculate the Expanding Mean of their Medal Share
-	# We use .shift(1) so the current year's medals aren't included in the past average
-	medals_df['AM'] = medals_df.groupby('NOC')['Total_Medals'].transform(lambda x: x.shift(1).expanding().mean())
-
-	# Fill any NaNs (for a country's very first Olympics) with 0
-	medals_df['AM'] = medals_df['AM'].fillna(0)
-
-
-	# Set index to Year for easy merging
-	am_series = medals_df.set_index('Year')['AM']
-
-	# Filter by selected year range
-	return am_series[(am_series.index >= year_start) & (am_series.index <= year_end)]
 
 
 def load_medals(
@@ -553,64 +506,55 @@ def load_medals(
 	@return: DataFrame indexed by Year with Total_Medals, Is_Host, and Is_Boycott columns.
 	"""
 	
-	# Load the dataset
 	df = pd.read_csv(dataset_path, usecols=['Year', 'Season', 'NOC', 'Total_Medals', 'Is_Host'])
 	
 	# Convert OAR and ROC to RUS
 	df['NOC'] = df['NOC'].replace(NOC_TO_RUS)
 
-	# Filter by year range
-	medals_df = df[(df['Year'] >= year_start) & (df['Year'] <= year_end)]
-	
-	# Filter by medals season
 	if medals_season == 'S':
-		medals_df = medals_df[medals_df['Season'] == 'Summer']
+		medals_df = df[df['Season'] == 'Summer']
 	elif medals_season == 'W':
-		medals_df = medals_df[medals_df['Season'] == 'Winter']
+		medals_df = df[df['Season'] == 'Winter']
 	elif medals_season == 'B':
-		medals_df = medals_df[medals_df['Season'].isin(['Summer', 'Winter'])]
+		medals_df = df[df['Season'].isin(['Summer', 'Winter'])]
 	
-	# Filter for specific country if provided
 	if country:
 		medals_df = medals_df[medals_df['NOC'] == country]
 	
 	# Group by year and aggregate
-	if country:
-		medals_df = medals_df.groupby('Year').agg({
-			'Total_Medals'	: 'sum',
-			'Is_Host'		: 'any'  # True if any entry for that year is a host
-		}).reset_index()
-	else:
-		# Group by year without country filtering
-		medals_df = medals_df.groupby('Year').agg({
-			'Total_Medals'	: 'sum',
-			'Is_Host'		: 'any'
-		}).reset_index()
+	medals_df = medals_df.groupby('Year').agg({
+		'Total_Medals'	: 'sum',
+		'Is_Host'		: 'any'  # True if any entry for that year is a host
+	}).reset_index()
 	
-	# Add Is_Boycott column
 	medals_df['Is_Boycott'] = medals_df['Year'].isin([YEAR_BOYCOTT_URS, YEAR_BOYCOTT_USA])
 	
-	# Set Year as index
-	medals_df = medals_df.set_index('Year')
+	# Set index to Year early to ensure transformations align correctly
+	medals_df = medals_df.set_index('Year').sort_index()
 
-	if country:
-		# Join the AM history series (Pandas aligns automatically by the 'Year' index)
-		medals_df[DF_COL_AM_HISTORY] = get_averageMedals_history_byYear(
-			country=country,
-			year_start=year_start,
-			year_end=year_end,
-			medals_season=medals_season,
-			dataset_path=dataset_path
-		)
 
 	if data_type == DsMedalsDataType.LN_DIFF:
-		medals_df['Total_Medals']		= get_series_log_diff(medals_df['Total_Medals'])
-		medals_df[DF_COL_AM_HISTORY]	= get_series_log_diff(medals_df[DF_COL_AM_HISTORY])
+		# get_series_log_diff returns a series indexed by Year
+		# We use .reindex() to keep the original years (filling the first gap with 0 or NaN)
+		transformed = get_series_log_diff(medals_df['Total_Medals'])
+		medals_df['Total_Medals'] = transformed.reindex(medals_df.index).fillna(0)
 	elif data_type == DsMedalsDataType.PERCENTAGE:
-		medals_df['Total_Medals']		= get_medal_series_percentage(medals_df['Total_Medals'], df)
-		medals_df[DF_COL_AM_HISTORY]	= get_medal_series_percentage(medals_df[DF_COL_AM_HISTORY], df)
-	
+		transformed = get_medal_series_percentage(medals_df['Total_Medals'], df)
+		medals_df['Total_Medals'] = transformed.reindex(medals_df.index).fillna(0)
+
+
+	if country:
+		# Calculate the Expanding Mean of their Medal Share
+		# We use .shift(1) so the current year's medals aren't included in the past average
+		medals_df[DF_COL_AM_HISTORY] = medals_df['Total_Medals'].shift(1).expanding().mean()
+
+		# Fill any NaNs (for a country's very first Olympics) with 0
+		medals_df[DF_COL_AM_HISTORY] = medals_df[DF_COL_AM_HISTORY].fillna(0)
+
+
+	medals_df = medals_df[(medals_df.index >= year_start) & (medals_df.index <= year_end)]
 	return medals_df
+
 
 
 def load_medals_series(
@@ -999,10 +943,14 @@ def load_medals_gdp_and_population_aligned(
 	# Handle hosting columns
 	if use_separate_host_vars:
 		# Load all Olympic years and their hosts
-		hosting_schedule = _get_hosting_schedule(medals_season, medals_dataset_path=medals_dataset_path)
-		
+		hosting_schedule			= _get_hosting_schedule(medals_season, medals_dataset_path=medals_dataset_path)
+		hosting_schedule_filtered	= hosting_schedule[
+			(hosting_schedule.index >= year_start) & (hosting_schedule.index <= year_end)
+		]
+		olympic_years = sorted(hosting_schedule_filtered.index.tolist())
+
 		# Add OG<year>, PRE<year>, POST<year> columns
-		for olympic_year in hosting_schedule.index:
+		for olympic_year in olympic_years:
 			og_col_name		= DF_COL_IS_HOST_OG_YEAR(	olympic_year)
 			pre_col_name	= DF_COL_IS_HOST_PRE_YEAR(	olympic_year)
 			post_col_name	= DF_COL_IS_HOST_POST_YEAR(	olympic_year)
@@ -1024,11 +972,11 @@ def load_medals_gdp_and_population_aligned(
 		new_cols['Is_Host']	= medals_df['Is_Host']
 
 	# Add Year Dummy Variables
+	# Use ALL possible Olympic years to ensure column consistency across countries (and avoid NaN)
 	# exclude the last year to avoid dummy variable trap (perfect multicollinearity): const already has its role
-	for year in merged_df.index[:-1]:
+	for year in olympic_years[:-1]:
 		new_cols[DF_COL_YEAR_DUMMY(year)] = (merged_df.index == year)
 	
-	# add Is_Communist column
 	new_cols[DF_COL_IS_COMMUNIST] = country in COMMUNIST_BLOC_COUNTRIES
 
 	# Join all new columns at once
@@ -1090,7 +1038,7 @@ def load_stacked_countries(
 	all_countries_names = []
 
 	if countries_list is None or len(countries_list) == 0:
-		countries_list = get_all_countries_list(year_start, year_end)
+		countries_list = _get_all_countries_list(year_start, year_end)
 		if is_verbose:
 			print(f"Using all countries from medals dataset: {', '.join(countries_list)}")
 
@@ -1144,8 +1092,7 @@ def load_stacked_countries(
 		if cols_to_drop:
 			global_df = global_df.drop(columns=cols_to_drop)
 			if is_verbose:
-				print(f"Dropped {len(cols_to_drop)} separate host columns with no data.")
-				print(cols_to_drop)
+				print(f"Dropped {len(cols_to_drop)} separate host columns with no data: {', '.join(cols_to_drop)}")
 
 	# Reset index to convert Year from index to column (otherwise can't sort rows later)
 	global_df = global_df.reset_index()

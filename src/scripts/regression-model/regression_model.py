@@ -29,12 +29,22 @@ from util.load_ds import (
 	DF_COL_IS_HOST,
 	DF_COL_IS_HOST_PRE,
 	DF_COL_IS_HOST_POST,
+	DF_COL_IS_HOST_CLOSE_CENTER,
+	DF_COL_IS_HOST_CLOSE_GMT1,
+	DF_COL_IS_HOST_CLOSE_MAIN,
+	DF_COL_IS_HOST_CLOSE_WEST,
+	DF_COL_IS_HOST_CLOSE_WIDE,
 	DF_COL_MEDALS,
 	DF_COL_POPULATION,
 	is_dfCol_yearDummy,
 	is_dfCol_isHostOg_separate,
 	is_dfCol_isHostPre_separate,
-	is_dfCol_isHostPost_separate
+	is_dfCol_isHostPost_separate,
+	is_dfCol_isHostCloseCenter_separate,
+	is_dfCol_isHostClose_GMT1_separate,
+	is_dfCol_isHostClose_Main_separate,
+	is_dfCol_isHostClose_West_separate,
+	is_dfCol_isHostClose_Wide_separate
 )
 from util.plot_gdp import plot_gdp
 from util.plot_medals import plot_medals
@@ -45,15 +55,33 @@ from util.common import Logger, print_ds
 PLOT_OUT_PATH = 'out/plot/'
 
 CTRL_VARS_DICT = {
-	'AM':		DF_COL_AM_HISTORY,
-	'GDP':		DF_COL_GDP,
-	'POP':		DF_COL_POPULATION,
-	'BOYCOTT':	DF_COL_IS_BOYCOTT,
-	'COMM':		DF_COL_IS_COMMUNIST,
-	'HOST':		DF_COL_IS_HOST,
-	'PRE':		DF_COL_IS_HOST_PRE,
-	'POST':		DF_COL_IS_HOST_POST
+	'AM'			: DF_COL_AM_HISTORY,
+	'GDP'			: DF_COL_GDP,
+	'POP'			: DF_COL_POPULATION,
+	'BOYCOTT'		: DF_COL_IS_BOYCOTT,
+	'COMM'			: DF_COL_IS_COMMUNIST,
+	'HOST'			: DF_COL_IS_HOST,
+	'PRE'			: DF_COL_IS_HOST_PRE,
+	'POST'			: DF_COL_IS_HOST_POST,
+	'CLOSE_CENTER'	: DF_COL_IS_HOST_CLOSE_CENTER,
+	'CLOSE_GMT1'	: DF_COL_IS_HOST_CLOSE_GMT1,
+	'CLOSE_MAIN'	: DF_COL_IS_HOST_CLOSE_MAIN,
+	'CLOSE_WEST'	: DF_COL_IS_HOST_CLOSE_WEST,
+	'CLOSE_WIDE'	: DF_COL_IS_HOST_CLOSE_WIDE
 }
+CTRL_VARS_HOST_BY_YEAR = [
+	'HOST',
+	'PRE',
+	'POST',
+]
+CTRL_VARS_CLOSE_BY_YEAR = [
+	'CLOSE_CENTER',
+	'CLOSE_GMT1',
+	'CLOSE_MAIN',
+	'CLOSE_WEST',
+	'CLOSE_WIDE'
+]
+CTRL_VARS_BY_YEAR = CTRL_VARS_HOST_BY_YEAR + CTRL_VARS_CLOSE_BY_YEAR
 CTRL_VARS = set(CTRL_VARS_DICT.keys()) | {
 	'YEAR'
 }
@@ -61,7 +89,7 @@ CTRL_VARS = set(CTRL_VARS_DICT.keys()) | {
 
 
 def perform_global_panel_regression(
-	global_df: pd.DataFrame, use_separate_host_vars=False, ctrl_vars=CTRL_VARS,
+	global_df: pd.DataFrame, use_separate_host_vars=False, use_separate_close_vars=False, ctrl_vars=CTRL_VARS,
 	cov_type: Literal['nonrobust', 'fixed scale', 'HC0', 'HC1', 'HC2', 'HC3', 'HAC', 'hac-panel', 'hac-groupsum', 'cluster'] = 'nonrobust',
 	use_zinb = False
 ):
@@ -70,6 +98,7 @@ def perform_global_panel_regression(
 	`Is_Host` is always used as predictor control variable, while the others can be included optionally.
 	@param global_df: DataFrame containing the merged data for all countries, with columns for medals, GDP, population, host status, etc.
 	@param use_separate_host_vars: Whether to use separate binary variables for hosting, pre-hosting, and post-hosting instead of a single Is_Host variable
+	@param use_sep_close_vars: Whether to use separate binary variables for close to host variables
 	@param ctrl_vars: Use this list of control variables instead of all
 	"""
 
@@ -83,7 +112,7 @@ def perform_global_panel_regression(
 	# Include all the control variables in X
 	# Notice we use Population, GDP, Host, Pre, Post, Communist, and Boycott all at once.
 	predictors += [CTRL_VARS_DICT.get(var) for var in ctrl_vars
-		if var in CTRL_VARS_DICT and var not in ['HOST', 'PRE', 'POST']]
+		if var in CTRL_VARS_DICT and var not in CTRL_VARS_BY_YEAR]
 
 	if 'YEAR' in ctrl_vars:
 		predictors += [col for col in col_headers if is_dfCol_yearDummy(col)]
@@ -96,12 +125,23 @@ def perform_global_panel_regression(
 		if 'POST' in ctrl_vars:
 			predictors += [col for col in col_headers if is_dfCol_isHostPost_separate(col)]
 	else:
-		if 'HOST' in ctrl_vars:
-			predictors += [DF_COL_IS_HOST]
-		if 'PRE' in ctrl_vars:
-			predictors += [DF_COL_IS_HOST_PRE]
-		if 'POST' in ctrl_vars:
-			predictors += [DF_COL_IS_HOST_POST]
+		predictors += [CTRL_VARS_DICT.get(var) for var in ctrl_vars
+			if var in CTRL_VARS_HOST_BY_YEAR]
+
+	if use_separate_close_vars:
+		if 'CLOSE_CENTER' in ctrl_vars:
+			predictors += [col for col in col_headers if is_dfCol_isHostCloseCenter_separate(col)]
+		if 'CLOSE_GMT1' in ctrl_vars:
+			predictors += [col for col in col_headers if is_dfCol_isHostClose_GMT1_separate(col)]
+		if 'CLOSE_MAIN' in ctrl_vars:
+			predictors += [col for col in col_headers if is_dfCol_isHostClose_Main_separate(col)]
+		if 'CLOSE_WEST' in ctrl_vars:
+			predictors += [col for col in col_headers if is_dfCol_isHostClose_West_separate(col)]
+		if 'CLOSE_WIDE' in ctrl_vars:
+			predictors += [col for col in col_headers if is_dfCol_isHostClose_Wide_separate(col)]
+	else:
+		predictors += [CTRL_VARS_DICT.get(var) for var in ctrl_vars
+			if var in CTRL_VARS_CLOSE_BY_YEAR]
 
 	print(f"{predictors = }")
 	print(f"{len(predictors) = }")
@@ -378,7 +418,13 @@ if __name__ == "__main__":
 	parser.add_argument(
 		'--sep-host',
 		action='store_true',
-		help='Use separate binary variables for hosting, pre-hosting, and post-hosting instead of a single Is_Host variable (flag, no value needed)'
+		help='Use separate binary variables for hosting, pre-hosting, and post-hosting and YEAR instead of a single Is_Host variable (flag, no value needed)'
+	)
+	
+	parser.add_argument(
+		'--sep-close',
+		action='store_true',
+		help='Use separate binary variables for close to host variables (flag, no value needed)'
 	)
 	
 	parser.add_argument(
@@ -432,6 +478,7 @@ if __name__ == "__main__":
 	use_gdp_tot			= args.gdp_tot
 	use_population_mean	= args.pop_avg
 	use_sep_host_vars	= args.sep_host
+	use_sep_close_vars	= args.sep_close
 	use_reg_zinb		= args.reg_zinb
 	use_reg_hc0			= args.reg_hc0
 	use_reg_hc3			= args.reg_hc3
@@ -461,6 +508,7 @@ if __name__ == "__main__":
 			use_gpd_avg=use_gdp_mean,
 			use_pop_avg=use_population_mean,
 			sep_host_vars=use_sep_host_vars,
+			sep_close_vars=use_sep_close_vars,
 			ctrl_vars=ctrl_vars
 		)
 
@@ -543,6 +591,7 @@ if __name__ == "__main__":
 			use_gdp_mean			= use_gdp_mean,
 			use_population_mean		= use_population_mean,
 			use_separate_host_vars	= use_sep_host_vars,
+			use_separate_close_vars	= use_sep_close_vars,
 			medals_data_type		= medals_data_type,
 			gdp_data_type			= gdp_type,
 			population_data_type	= pop_type,
@@ -564,7 +613,7 @@ if __name__ == "__main__":
 			perform_adf(merged_df)
 			perform_granger(merged_df)
 
-		perform_global_panel_regression(merged_df, use_separate_host_vars=use_sep_host_vars, ctrl_vars=ctrl_vars,
+		perform_global_panel_regression(merged_df, use_separate_host_vars=use_sep_host_vars, use_separate_close_vars=use_sep_close_vars, ctrl_vars=ctrl_vars,
 			cov_type=cov_type, use_zinb=use_reg_zinb)
 
 		# Plot

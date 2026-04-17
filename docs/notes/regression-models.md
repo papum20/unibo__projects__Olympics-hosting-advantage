@@ -230,6 +230,16 @@ Media delle medaglie, prese dallo storico complessivo (tutte le edizioni in cui 
 In data science, if you calculate a country's average using the years 1964 to 2024, and then plug that average into the row for the year 1964... you have committed Look-Ahead Bias (Data Leakage). You are using future events (medals won in 2024) to predict past events (medals won in 1964).  
 
 
+### Host Close
+
+Gruppi di Paesi vicini, in Europa continentale, che condividono il fuso orario GMT+1.  
+* Distinzione in central, west, etc. secondo confini culturali e spaziali, secondo la Standing Committee on Geographical Names, Germany (https://en.wikipedia.org/wiki/Central_Europe).  
+* Raggruppati insieme come GMT+1: central, west, Italia, Spagna.
+* Escludiamo da ogni gruppo gli Stati molto piccoli, che potrebbero aggiungere errori: Liechtenstein, San Marino, Andorra, Monaco, Lussemburgo
+* Gruppo più ristretto, per tre dei principali in Europa: Italia, Germania, Francia, Spagna
+* Gruppo più ampio, visto che già ci sono state poche Olimpiadi in Europa
+
+
 ### Fix for 0/inf
 
 `0`/`inf`/etc. with logs (error): do `ln(x + 1)` instead of `ln(x)`.  

@@ -28,6 +28,7 @@ class Logger():
 		use_gpd_avg		: bool,
 		use_pop_avg		: bool,
 		sep_host_vars	: bool,
+		sep_close_vars	: bool,
 		ctrl_vars		: list[str],
 		tag=""
 	):
@@ -39,7 +40,7 @@ class Logger():
 			f"out_regression_{timestamp}_{noc_str}_"
 			f"{year_start}-{year_end}_{reg_type}_{cov_type}_"
 			f"gdp-avg-{use_gpd_avg}_pop-avg-{use_pop_avg}_"
-			f"sep-host-{sep_host_vars}_{ctrl_str}_{tag}.txt"
+			f"sep-host-{sep_host_vars}_sep-close-{sep_close_vars}_{ctrl_str}_{tag}.txt"
 		)
 		
 		log_path = os.path.join(LOG_REGRESSION_OUT_PATH, filename)

@@ -29,15 +29,20 @@ YEAR_BOYCOTT_URS	= 1980	# hosted by URS, boycotted by USA bloc
 YEAR_BOYCOTT_USA	= 1984
 
 # Columns names in returned DataFrames
-DF_COL_AM_HISTORY	= 'Avg_Medals_History'
-DF_COL_GDP			= 'GDP'
-DF_COL_IS_BOYCOTT	= 'Is_Boycott'
-DF_COL_IS_COMMUNIST	= 'Is_Communist'
-DF_COL_IS_HOST		= 'Is_Host'
-DF_COL_IS_HOST_PRE	= 'Is_Host_Pre'
-DF_COL_IS_HOST_POST	= 'Is_Host_Post'
-DF_COL_MEDALS		= 'Medals'
-DF_COL_POPULATION	= 'Population'
+DF_COL_AM_HISTORY			= 'Avg_Medals_History'
+DF_COL_GDP					= 'GDP'
+DF_COL_IS_BOYCOTT			= 'Is_Boycott'
+DF_COL_IS_COMMUNIST			= 'Is_Communist'
+DF_COL_IS_HOST				= 'Is_Host'
+DF_COL_IS_HOST_PRE			= 'Is_Host_Pre'
+DF_COL_IS_HOST_POST			= 'Is_Host_Post'
+DF_COL_IS_HOST_CLOSE_CENTER	= 'Is_Host_Close_Center'
+DF_COL_IS_HOST_CLOSE_GMT1	= 'Is_Host_Close_GMT1'
+DF_COL_IS_HOST_CLOSE_MAIN	= 'Is_Host_Close_Main'
+DF_COL_IS_HOST_CLOSE_WEST	= 'Is_Host_Close_West'
+DF_COL_IS_HOST_CLOSE_WIDE	= 'Is_Host_Close_Wide'
+DF_COL_MEDALS				= 'Medals'
+DF_COL_POPULATION			= 'Population'
 
 def DF_COL_YEAR_DUMMY(year: int) -> str:
 	return f'YEAR{year}'
@@ -50,6 +55,17 @@ def DF_COL_IS_HOST_PRE_YEAR(year: int) -> str:
 
 def DF_COL_IS_HOST_POST_YEAR(year: int) -> str:
 	return f'POST{year}'
+
+def DF_COL_IS_HOST_CLOSE_CENTER_YEAR(year: int) -> str:
+	return f'CLOSE_CENTER{year}'
+def DF_COL_IS_HOST_CLOSE_GMT1_YEAR(year: int) -> str:
+	return f'CLOSE_GMT1{year}'
+def DF_COL_IS_HOST_CLOSE_MAIN_YEAR(year: int) -> str:
+	return f'CLOSE_MAIN{year}'
+def DF_COL_IS_HOST_CLOSE_WEST_YEAR(year: int) -> str:
+	return f'CLOSE_WEST{year}'
+def DF_COL_IS_HOST_CLOSE_WIDE_YEAR(year: int) -> str:
+	return f'CLOSE_WIDE{year}'
 
 
 def is_dfCol_yearDummy(col_name: str) -> bool:
@@ -64,12 +80,39 @@ def is_dfCol_isHostPre_separate(col_name: str) -> bool:
 def is_dfCol_isHostPost_separate(col_name: str) -> bool:
 	return col_name.startswith('POST') and col_name[4:].isdigit()
 
+def is_dfCol_isHostCloseCenter_separate(col_name: str) -> bool:
+	return col_name.startswith('CLOSE_CENTER') and col_name[13:].isdigit()
+def is_dfCol_isHostClose_GMT1_separate(col_name: str) -> bool:
+	return col_name.startswith('CLOSE_GMT1') and col_name[11:].isdigit()
+def is_dfCol_isHostClose_Main_separate(col_name: str) -> bool:
+	return col_name.startswith('CLOSE_MAIN') and col_name[11:].isdigit()
+def is_dfCol_isHostClose_West_separate(col_name: str) -> bool:
+	return col_name.startswith('CLOSE_WEST') and col_name[11:].isdigit()
+def is_dfCol_isHostClose_Wide_separate(col_name: str) -> bool:
+	return col_name.startswith('CLOSE_WIDE') and col_name[11:].isdigit()
+
 
 COMMUNIST_BLOC_COUNTRIES = {
-	'ALB', 'BGD', 'BLR', 'BGR', 'CHN', 'CUB', 'CSK', 'DDR', 'EST', 'HUN', 'KAZ',
-	'KGZ', 'LAO', 'LVA', 'LTU', 'MDA', 'MNG', 'PRK', 'ROU', 'RUS', 'TJK', 'TKM',
+	'ALB', 'BGD', 'BGR', 'BLR', 'CHN', 'CSK', 'CUB', 'DDR', 'EST', 'HUN', 'KAZ',
+	'KGZ', 'LAO', 'LTU', 'LVA', 'MDA', 'MNG', 'PRK', 'ROU', 'RUS', 'TJK', 'TKM',
 	'UKR', 'URS', 'UZB', 'YUG'
 }
+
+CLOSE_GROUP_EU_CENTRAL = [
+	'AUT', 'CZE', 'FRG', 'GER', 'HUN', 'POL', 'SLO', 'SVK', 'SWI'
+]
+CLOSE_GROUP_EU_WEST = [
+	'BEL', 'FRA', 'NED', 
+]
+CLOSE_GROUP_EU_GMT1 = [
+	'ESP', 'ITA'
+] + CLOSE_GROUP_EU_CENTRAL + CLOSE_GROUP_EU_WEST
+CLOSE_GROUP_EU_MAIN = [
+	'ESP', 'FRA', 'GER', 'ITA'
+]
+CLOSE_GROUP_EU_WIDE = [
+	'GBR', 'GRE', 'ITA'
+] + CLOSE_GROUP_EU_GMT1
 
 # NOC codes that should be treated as RUS (e.g. Olympic Athletes from Russia, Russian Olympic Committee)
 NOC_TO_RUS = {
@@ -832,6 +875,7 @@ def load_medals_gdp_and_population_aligned(
 	use_population_mean		: bool				= False,
 	remove_boycott			: bool				= False,
 	use_separate_host_vars	: bool				= False,
+	use_separate_close_vars	: bool				= False,
 	medals_data_type		: DsMedalsDataType	= DsMedalsDataType.DEFAULT,
 	gdp_data_type			: DsGdpDataType		= DsGdpDataType.DEFAULT,
 	population_data_type	: DsPopDataType		= DsPopDataType.DEFAULT,
@@ -930,27 +974,26 @@ def load_medals_gdp_and_population_aligned(
 		DF_COL_AM_HISTORY	: medals_df[DF_COL_AM_HISTORY],
 		DF_COL_GDP			: gdp_shifted,
 		DF_COL_POPULATION	: population_shifted,
-		DF_COL_IS_BOYCOTT	: medals_df['Is_Boycott']
+		DF_COL_IS_BOYCOTT	: medals_df[DF_COL_IS_BOYCOTT]
 	})
 
 	# Drop rows with NaN values
 	merged_df = merged_df.dropna()
 
 
+	# Load all Olympic years and their hosts
+	hosting_schedule		= _get_hosting_schedule(medals_season, medals_dataset_path=medals_dataset_path)
+	hosting_schedule_dict	= hosting_schedule['NOC'].to_dict()
+	all_olympic_years		= sorted(hosting_schedule.index.tolist())
+	col_olympic_years		= [y for y in all_olympic_years if year_start <= y <= year_end]
+
 	# Add many new columns all at once, for performance reasons
 	new_cols = {}
 
 	# Handle hosting columns
 	if use_separate_host_vars:
-		# Load all Olympic years and their hosts
-		hosting_schedule			= _get_hosting_schedule(medals_season, medals_dataset_path=medals_dataset_path)
-		hosting_schedule_filtered	= hosting_schedule[
-			(hosting_schedule.index >= year_start) & (hosting_schedule.index <= year_end)
-		]
-		olympic_years = sorted(hosting_schedule_filtered.index.tolist())
-
 		# Add OG<year>, PRE<year>, POST<year> columns
-		for olympic_year in olympic_years:
+		for olympic_year in col_olympic_years:
 			og_col_name		= DF_COL_IS_HOST_OG_YEAR(	olympic_year)
 			pre_col_name	= DF_COL_IS_HOST_PRE_YEAR(	olympic_year)
 			post_col_name	= DF_COL_IS_HOST_POST_YEAR(	olympic_year)
@@ -969,12 +1012,42 @@ def load_medals_gdp_and_population_aligned(
 			new_cols[post_col_name] = (country == prev_host and (merged_df.index == olympic_year))
 	else:
 		# Use original Is_Host column
-		new_cols['Is_Host']	= medals_df['Is_Host']
+		new_cols[DF_COL_IS_HOST] = medals_df[DF_COL_IS_HOST]
+
+	# Handle close to host columns
+	if use_separate_close_vars:
+		for olympic_year in col_olympic_years:
+			# IS_HOST_CLOSE: 1 if this country is close to the host country that year, but not the host itself
+			host_country = hosting_schedule_dict.get(olympic_year)
+			
+			def is_host_close_year(group):
+				return (country in group) and (host_country in group) and (country != host_country) and (merged_df.index == olympic_year)
+
+			new_cols[DF_COL_IS_HOST_CLOSE_CENTER_YEAR(olympic_year)]	= is_host_close_year(CLOSE_GROUP_EU_CENTRAL)
+			new_cols[DF_COL_IS_HOST_CLOSE_GMT1_YEAR(olympic_year)]		= is_host_close_year(CLOSE_GROUP_EU_GMT1)
+			new_cols[DF_COL_IS_HOST_CLOSE_MAIN_YEAR(olympic_year)]		= is_host_close_year(CLOSE_GROUP_EU_MAIN)
+			new_cols[DF_COL_IS_HOST_CLOSE_WEST_YEAR(olympic_year)]		= is_host_close_year(CLOSE_GROUP_EU_WEST)
+			new_cols[DF_COL_IS_HOST_CLOSE_WIDE_YEAR(olympic_year)]		= is_host_close_year(CLOSE_GROUP_EU_WIDE)
+	else:
+		# IS_HOST_CLOSE: 1 if this country is close to the host country that year, but not the host itself
+		# hosts in merged_df
+		merged_years_host = merged_df.index.map(hosting_schedule_dict)
+
+		def is_host_close(group):
+			# The host for the current year is the one in the group, and current country is not it
+			return (country in group) & (merged_years_host.isin(group)) & (~medals_df[DF_COL_IS_HOST])
+
+		new_cols[DF_COL_IS_HOST_CLOSE_CENTER]	= is_host_close(CLOSE_GROUP_EU_CENTRAL)
+		new_cols[DF_COL_IS_HOST_CLOSE_GMT1]		= is_host_close(CLOSE_GROUP_EU_GMT1)
+		new_cols[DF_COL_IS_HOST_CLOSE_MAIN]		= is_host_close(CLOSE_GROUP_EU_MAIN)
+		new_cols[DF_COL_IS_HOST_CLOSE_WEST]		= is_host_close(CLOSE_GROUP_EU_WEST)
+		new_cols[DF_COL_IS_HOST_CLOSE_WIDE]		= is_host_close(CLOSE_GROUP_EU_WIDE)
+
 
 	# Add Year Dummy Variables
 	# Use ALL possible Olympic years to ensure column consistency across countries (and avoid NaN)
 	# exclude the last year to avoid dummy variable trap (perfect multicollinearity): const already has its role
-	for year in olympic_years[:-1]:
+	for year in all_olympic_years[:-1]:
 		new_cols[DF_COL_YEAR_DUMMY(year)] = (merged_df.index == year)
 	
 	new_cols[DF_COL_IS_COMMUNIST] = country in COMMUNIST_BLOC_COUNTRIES
@@ -985,7 +1058,7 @@ def load_medals_gdp_and_population_aligned(
 	# Optionally remove years affected by boycotts
 	if remove_boycott:
 		merged_df = merged_df[~merged_df.index.isin([YEAR_BOYCOTT_URS, YEAR_BOYCOTT_USA])]
-	
+
 	return merged_df, country_name
 
 
@@ -1001,6 +1074,7 @@ def load_stacked_countries(
 	use_population_mean		: bool				= False,
 	remove_boycott			: bool				= False,
 	use_separate_host_vars	: bool				= False,
+	use_separate_close_vars	: bool				= False,
 	medals_data_type		: DsMedalsDataType	= DsMedalsDataType.DEFAULT,
 	gdp_data_type			: DsGdpDataType		= DsGdpDataType.DEFAULT,
 	population_data_type	: DsPopDataType		= DsPopDataType.DEFAULT,
@@ -1056,6 +1130,7 @@ def load_stacked_countries(
 				use_population_mean		= use_population_mean,
 				remove_boycott			= remove_boycott,
 				use_separate_host_vars	= use_separate_host_vars,
+				use_separate_close_vars	= use_separate_close_vars,
 				medals_data_type		= medals_data_type,
 				gdp_data_type			= gdp_data_type,
 				population_data_type	= population_data_type,
@@ -1085,8 +1160,8 @@ def load_stacked_countries(
 	global_df = pd.concat(all_countries_data)
 
 	# Prune empty separate host columns
-	if use_separate_host_vars:
-		host_cols = [c for c in global_df.columns if any(c.startswith(pre) for pre in ['OG', 'PRE', 'POST'])]
+	if use_separate_host_vars or use_separate_close_vars:
+		host_cols = [c for c in global_df.columns if any(c.startswith(pre) for pre in ['OG', 'PRE', 'POST', 'CLOSE'])]
 		# Keep only columns that have at least one True/1 value
 		cols_to_drop = [c for c in host_cols if not global_df[c].any()]
 		if cols_to_drop:
@@ -1108,8 +1183,8 @@ def load_stacked_countries(
 	if not use_separate_host_vars:
 		# Create Pre and Post using pandas groupby shift
 		# shift(-1) looks at the NEXT row. shift(1) looks at the PREVIOUS row.
-		global_df[DF_COL_IS_HOST_PRE]	= global_df.groupby('NOC')[DF_COL_IS_HOST].shift(-1).fillna(0)
-		global_df[DF_COL_IS_HOST_POST]	= global_df.groupby('NOC')[DF_COL_IS_HOST].shift(1).fillna(0)
+		global_df[DF_COL_IS_HOST_PRE]	= global_df.groupby('NOC')[DF_COL_IS_HOST].shift(-1).fillna('False').astype(bool)
+		global_df[DF_COL_IS_HOST_POST]	= global_df.groupby('NOC')[DF_COL_IS_HOST].shift(1).fillna('False').astype(bool)
 
 	# Clean up any remaining NaNs
 	global_df = global_df.dropna()

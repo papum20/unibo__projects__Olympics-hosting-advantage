@@ -82,6 +82,9 @@ ZINB richiede nessuna colonna vuota:
 
 >Why fewer hosts are significant in OLS than ZINB: ZINB evaluates the jump from 0 to 5 medals (a massive mathematical leap for a small country). OLS evaluates the jump from 2% to 3% of the global medal share. ZINB is much more sensitive to "breakout" performances by smaller host nations, which is why more Host dummies light up in that model.  
 
+**LOG-DIFF**: con `Year` dummy, matrice singolare. Bisogna usare `LOG` (per GDP e POP).  
+* singolare = probabilmente collinearità perfetta, o quasi. Forse perché i log-diff hanno meno variabilità
+
 #### 1996
 
 ```sh

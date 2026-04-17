@@ -29,6 +29,7 @@ YEAR_BOYCOTT_URS	= 1980	# hosted by URS, boycotted by USA bloc
 YEAR_BOYCOTT_USA	= 1984
 
 # Columns names in returned DataFrames
+DF_COL_AM_HISTORY	= 'Avg_Medals_History'
 DF_COL_GDP			= 'GDP'
 DF_COL_IS_BOYCOTT	= 'Is_Boycott'
 DF_COL_IS_COMMUNIST	= 'Is_Communist'
@@ -38,6 +39,9 @@ DF_COL_IS_HOST_POST	= 'Is_Host_Post'
 DF_COL_MEDALS		= 'Medals'
 DF_COL_POPULATION	= 'Population'
 
+def DF_COL_YEAR_DUMMY(year: int) -> str:
+	return f'YEAR{year}'
+
 def DF_COL_IS_HOST_OG_YEAR(year: int) -> str:
 	return f'OG{year}'
 
@@ -46,6 +50,20 @@ def DF_COL_IS_HOST_PRE_YEAR(year: int) -> str:
 
 def DF_COL_IS_HOST_POST_YEAR(year: int) -> str:
 	return f'POST{year}'
+
+
+def is_dfCol_yearDummy(col_name: str) -> bool:
+	return col_name.startswith('YEAR') and col_name[4:].isdigit()
+
+def is_dfCol_isHostOg_separate(col_name: str) -> bool:
+	return col_name.startswith('OG') and col_name[2:].isdigit()
+
+def is_dfCol_isHostPre_separate(col_name: str) -> bool:
+	return col_name.startswith('PRE') and col_name[3:].isdigit()
+
+def is_dfCol_isHostPost_separate(col_name: str) -> bool:
+	return col_name.startswith('POST') and col_name[4:].isdigit()
+
 
 COMMUNIST_BLOC_COUNTRIES = {
 	'ALB', 'BGD', 'BLR', 'BGR', 'CHN', 'CUB', 'CSK', 'DDR', 'EST', 'HUN', 'KAZ',
@@ -140,12 +158,14 @@ IOC_TO_NOC = {
 
 class DsGdpDataType(Enum):
 	DEFAULT		= "default"
+	LN			= "ln"
 	# first difference of logarithms (GDP growth rate)
 	LN_DIFF		= "ln_diff"
 
 
 class DsPopDataType(Enum):
 	DEFAULT		= "default"
+	LN			= "ln"
 	# first difference of logarithms (growth rate)
 	LN_DIFF		= "ln_diff"
 
@@ -164,15 +184,22 @@ class DsMedalsDataType(Enum):
 #
 
 
+def get_series_log(series: pd.Series) -> pd.Series:
+	"""Helper function to get the natural log of a series.
+	@param series: pandas Series values indexed by year
+	@return: pandas Series of log values
+	"""
+	return pd.Series(np.log(series), index=series.index)
+
 def get_series_log_diff(series: pd.Series) -> pd.Series:
 	"""Helper function to get the log-differenced series.
 	@param series: pandas Series values indexed by year
 	@return: pandas Series of log-differenced values (growth rates)
 	"""
 	# Take the natural log of the series
-	ln_series = np.log(series)
+	ln_series = pd.Series(np.log(series), index=series.index)
 	# Take the first difference of the log (% growth rate)
-	growth_rate = ln_series.diff().dropna()	# type: ignore
+	growth_rate = ln_series.diff().dropna()
 	return growth_rate
 
 def get_medal_series_percentage(country_series: pd.Series, full_df: pd.DataFrame) -> pd.Series:
@@ -271,7 +298,9 @@ def load_gdppc_maddison_series(
 	# Get country name from the first row metadata (optional, fallback to country code)
 	country_name = country_code
 	
-	if data_type == DsGdpDataType.LN_DIFF:
+	if data_type == DsGdpDataType.LN:
+		gdppc_series = get_series_log(gdppc_series)
+	elif data_type == DsGdpDataType.LN_DIFF:
 		gdppc_series = get_series_log_diff(gdppc_series)
 	
 	return gdppc_series, ioc_to_noc(country_name)
@@ -305,7 +334,9 @@ def load_gdppc_extended_series(
 	
 	# If year_end <= 2022, just return the Maddison data
 	if year_end <= GDP_MADDISON_YEAR_LAST:
-		if data_type == DsGdpDataType.LN_DIFF:
+		if data_type == DsGdpDataType.LN:
+			gdppc_series = get_series_log(gdppc_series)
+		elif data_type == DsGdpDataType.LN_DIFF:
 			gdppc_series = get_series_log_diff(gdppc_series)
 		return gdppc_series, country_name
 	
@@ -319,7 +350,9 @@ def load_gdppc_extended_series(
 	
 	if country_df.empty:
 		# If no percentage data available, just return Maddison data
-		if data_type == DsGdpDataType.LN_DIFF:
+		if data_type == DsGdpDataType.LN:
+			gdppc_series = get_series_log(gdppc_series)
+		elif data_type == DsGdpDataType.LN_DIFF:
 			gdppc_series = get_series_log_diff(gdppc_series)
 		return gdppc_series, country_name
 	
@@ -347,7 +380,9 @@ def load_gdppc_extended_series(
 	gdppc_series = pd.Series(extended_values, name='GDP_per_capita')
 	gdppc_series = gdppc_series.sort_index()
 	
-	if data_type == DsGdpDataType.LN_DIFF:
+	if data_type == DsGdpDataType.LN:
+		gdppc_series = get_series_log(gdppc_series)
+	elif data_type == DsGdpDataType.LN_DIFF:
 		gdppc_series = get_series_log_diff(gdppc_series)
 	
 	return gdppc_series, country_name
@@ -396,7 +431,9 @@ def load_gdp_wbod_series(
 	# Create pandas Series with Year as index
 	gdp_series = pd.Series(gdp_values, index=valid_years, name='GDP')
 
-	if data_type == DsGdpDataType.LN_DIFF:
+	if data_type == DsGdpDataType.LN:
+		gdp_series = get_series_log(gdp_series)
+	elif data_type == DsGdpDataType.LN_DIFF:
 		gdp_series = get_series_log_diff(gdp_series)	
 	
 	# The country filter was already applied using 'Country Code' from the dataset, 
@@ -454,6 +491,53 @@ def get_all_countries_list(
 	return countries
 
 
+def get_averageMedals_history_byYear(
+	country			: str,
+	year_start		: int	= MEDALS_FULL_YEAR_FIRST,
+	year_end		: int	= MEDALS_FULL_YEAR_LAST,
+	medals_season	: str	= 'S',
+	dataset_path	: str	= DS_MEDALS_FULL_PATH
+) -> pd.Series:
+	"""Get the average medals history by year for a specific country.
+	The history for year `t` goes from the first year the country appears in the dataset to `t-1`.
+	@param country: Country code (NOC) to filter by.
+	@param medals_season: Season of medals to include (S for Summer, W for Winter, B for Both).
+	@return: A pandas Series indexed by Year with average medals as values.
+	"""
+	df = pd.read_csv(dataset_path, usecols=['Year', 'Season', 'NOC', 'Total_Medals'])
+	
+	# Convert OAR and ROC to RUS
+	df['NOC'] = df['NOC'].replace(NOC_TO_RUS)
+	
+	medals_df = df[df['NOC'] == country]
+
+	# Filter by medals season
+	if medals_season == 'S':
+		medals_df = medals_df[medals_df['Season'] == 'Summer']
+	elif medals_season == 'W':
+		medals_df = medals_df[medals_df['Season'] == 'Winter']
+	elif medals_season == 'B':
+		medals_df = medals_df[medals_df['Season'].isin(['Summer', 'Winter'])]
+
+
+	# Sort the data chronologically for each country
+	medals_df = medals_df.sort_values(by=['NOC', 'Year'])
+
+	# Calculate the Expanding Mean of their Medal Share
+	# We use .shift(1) so the current year's medals aren't included in the past average
+	medals_df['AM'] = medals_df.groupby('NOC')['Total_Medals'].transform(lambda x: x.shift(1).expanding().mean())
+
+	# Fill any NaNs (for a country's very first Olympics) with 0
+	medals_df['AM'] = medals_df['AM'].fillna(0)
+
+
+	# Set index to Year for easy merging
+	am_series = medals_df.set_index('Year')['AM']
+
+	# Filter by selected year range
+	return am_series[(am_series.index >= year_start) & (am_series.index <= year_end)]
+
+
 def load_medals(
 	country			: str|None			= None,
 	year_start		: int				= MEDALS_FULL_YEAR_FIRST,
@@ -509,10 +593,22 @@ def load_medals(
 	# Set Year as index
 	medals_df = medals_df.set_index('Year')
 
+	if country:
+		# Join the AM history series (Pandas aligns automatically by the 'Year' index)
+		medals_df[DF_COL_AM_HISTORY] = get_averageMedals_history_byYear(
+			country=country,
+			year_start=year_start,
+			year_end=year_end,
+			medals_season=medals_season,
+			dataset_path=dataset_path
+		)
+
 	if data_type == DsMedalsDataType.LN_DIFF:
-		medals_df['Total_Medals'] = get_series_log_diff(medals_df['Total_Medals'])
+		medals_df['Total_Medals']		= get_series_log_diff(medals_df['Total_Medals'])
+		medals_df[DF_COL_AM_HISTORY]	= get_series_log_diff(medals_df[DF_COL_AM_HISTORY])
 	elif data_type == DsMedalsDataType.PERCENTAGE:
-		medals_df['Total_Medals'] = get_medal_series_percentage(medals_df['Total_Medals'], df)
+		medals_df['Total_Medals']		= get_medal_series_percentage(medals_df['Total_Medals'], df)
+		medals_df[DF_COL_AM_HISTORY]	= get_medal_series_percentage(medals_df[DF_COL_AM_HISTORY], df)
 	
 	return medals_df
 
@@ -601,7 +697,9 @@ def load_population_maddison_series(
 	# Get country name from the first row metadata (optional, fallback to country code)
 	country_name = country_code
 	
-	if data_type == DsPopDataType.LN_DIFF:
+	if data_type == DsPopDataType.LN:
+		population_series = get_series_log(population_series)
+	elif data_type == DsPopDataType.LN_DIFF:
 		population_series = get_series_log_diff(population_series)
 	
 	return population_series, ioc_to_noc(country_name)
@@ -633,7 +731,9 @@ def load_population_extended_series(
 	
 	# If year_end <= 2022, just return the Maddison data
 	if year_end <= POPULATION_MADDISON_YEAR_LAST:
-		if data_type == DsPopDataType.LN_DIFF:
+		if data_type == DsPopDataType.LN:
+			population_series = get_series_log(population_series)
+		elif data_type == DsPopDataType.LN_DIFF:
 			population_series = get_series_log_diff(population_series)
 		return population_series, country_name
 	
@@ -647,7 +747,9 @@ def load_population_extended_series(
 	
 	if country_df.empty:
 		# If no WBOD data available, just return Maddison data
-		if data_type == DsPopDataType.LN_DIFF:
+		if data_type == DsPopDataType.LN:
+			population_series = get_series_log(population_series)
+		elif data_type == DsPopDataType.LN_DIFF:
 			population_series = get_series_log_diff(population_series)
 		return population_series, country_name
 	
@@ -663,7 +765,7 @@ def load_population_extended_series(
 			pop_value = country_data[year_str]
 			if pd.notna(pop_value):
 				try:
-					extended_values[year] = float(pop_value)
+					extended_values[year] = float(pop_value) / 1000.0
 				except (ValueError, TypeError):
 					pass
 	
@@ -671,7 +773,9 @@ def load_population_extended_series(
 	population_series = pd.Series(extended_values, name='Population')
 	population_series = population_series.sort_index()
 	
-	if data_type == DsPopDataType.LN_DIFF:
+	if data_type == DsPopDataType.LN:
+		population_series = get_series_log(population_series)
+	elif data_type == DsPopDataType.LN_DIFF:
 		population_series = get_series_log_diff(population_series)
 	
 	return population_series, country_name
@@ -879,10 +983,18 @@ def load_medals_gdp_and_population_aligned(
 	# Merge the two series
 	merged_df = pd.DataFrame({
 		DF_COL_MEDALS		: medals_df['Total_Medals'],
+		DF_COL_AM_HISTORY	: medals_df[DF_COL_AM_HISTORY],
 		DF_COL_GDP			: gdp_shifted,
 		DF_COL_POPULATION	: population_shifted,
 		DF_COL_IS_BOYCOTT	: medals_df['Is_Boycott']
 	})
+
+	# Drop rows with NaN values
+	merged_df = merged_df.dropna()
+
+
+	# Add many new columns all at once, for performance reasons
+	new_cols = {}
 
 	# Handle hosting columns
 	if use_separate_host_vars:
@@ -891,37 +1003,43 @@ def load_medals_gdp_and_population_aligned(
 		
 		# Add OG<year>, PRE<year>, POST<year> columns
 		for olympic_year in hosting_schedule.index:
-			og_col_name		= f'OG{olympic_year}'
-			pre_col_name	= f'PRE{olympic_year}'
-			post_col_name	= f'POST{olympic_year}'
-			
+			og_col_name		= DF_COL_IS_HOST_OG_YEAR(	olympic_year)
+			pre_col_name	= DF_COL_IS_HOST_PRE_YEAR(	olympic_year)
+			post_col_name	= DF_COL_IS_HOST_POST_YEAR(	olympic_year)
+
 			# OG: 1 if this country hosted that year
-			merged_df[og_col_name] = (country == hosting_schedule.loc[olympic_year, 'NOC'] and (merged_df.index == olympic_year))
+			new_cols[og_col_name] = (country == hosting_schedule.loc[olympic_year, 'NOC'] and (merged_df.index == olympic_year))
 			
 			# PRE: 1 if this country hosts next Olympics
 			next_year_idx	= hosting_schedule.index.get_loc(olympic_year) + 1	# type: ignore
 			next_host		= hosting_schedule.iloc[next_year_idx]['NOC'] if next_year_idx < len(hosting_schedule) else None
-			merged_df[pre_col_name] = (country == next_host and (merged_df.index == olympic_year))
+			new_cols[pre_col_name] = (country == next_host and (merged_df.index == olympic_year))
 			
 			# POST: 1 if this country hosted previous Olympics
 			prev_year_idx	= hosting_schedule.index.get_loc(olympic_year) - 1	# type: ignore
 			prev_host		= hosting_schedule.iloc[prev_year_idx]['NOC'] if prev_year_idx >= 0 else None
-			merged_df[post_col_name] = (country == prev_host and (merged_df.index == olympic_year))
+			new_cols[post_col_name] = (country == prev_host and (merged_df.index == olympic_year))
 	else:
 		# Use original Is_Host column
-		merged_df['Is_Host']	= medals_df['Is_Host']
-	
-	# Drop rows with NaN values
-	merged_df = merged_df.dropna()
+		new_cols['Is_Host']	= medals_df['Is_Host']
 
+	# Add Year Dummy Variables
+	# exclude the last year to avoid dummy variable trap (perfect multicollinearity): const already has its role
+	for year in merged_df.index[:-1]:
+		new_cols[DF_COL_YEAR_DUMMY(year)] = (merged_df.index == year)
+	
 	# add Is_Communist column
-	merged_df[DF_COL_IS_COMMUNIST] = country in COMMUNIST_BLOC_COUNTRIES
+	new_cols[DF_COL_IS_COMMUNIST] = country in COMMUNIST_BLOC_COUNTRIES
+
+	# Join all new columns at once
+	merged_df = pd.concat([merged_df, pd.DataFrame(new_cols, index=merged_df.index)], axis=1)
 
 	# Optionally remove years affected by boycotts
 	if remove_boycott:
 		merged_df = merged_df[~merged_df.index.isin([YEAR_BOYCOTT_URS, YEAR_BOYCOTT_USA])]
 	
 	return merged_df, country_name
+
 
 
 def load_stacked_countries(
@@ -976,6 +1094,7 @@ def load_stacked_countries(
 		if is_verbose:
 			print(f"Using all countries from medals dataset: {', '.join(countries_list)}")
 
+	skipped_teams = []
 	for noc in countries_list:
 		try:
 			country_df, country_name = load_medals_gdp_and_population_aligned(
@@ -1008,8 +1127,11 @@ def load_stacked_countries(
 			all_countries_names.append(country_name)
 		except Exception as e:
 			# Some small countries might not have GDP data in Maddison, skip them safely
+			skipped_teams.append(noc)
 			if is_verbose:
 				print(f"Skipped {noc}: {e}")
+		
+	print(f"\nFinished loading data for {len(all_countries_data)} teams. Skipped {len(skipped_teams)} teams with missing data: {', '.join(skipped_teams)}")
 
 	# Stack them all together into one giant "Long Format" DataFrame
 	global_df = pd.concat(all_countries_data)
@@ -1039,8 +1161,8 @@ def load_stacked_countries(
 	if not use_separate_host_vars:
 		# Create Pre and Post using pandas groupby shift
 		# shift(-1) looks at the NEXT row. shift(1) looks at the PREVIOUS row.
-		global_df[DF_COL_IS_HOST_PRE]	= global_df.groupby('NOC')[DF_COL_IS_HOST].shift(-1).fillna(0).astype(int)
-		global_df[DF_COL_IS_HOST_POST]	= global_df.groupby('NOC')[DF_COL_IS_HOST].shift(1).fillna(0).astype(int)
+		global_df[DF_COL_IS_HOST_PRE]	= global_df.groupby('NOC')[DF_COL_IS_HOST].shift(-1).fillna(0)
+		global_df[DF_COL_IS_HOST_POST]	= global_df.groupby('NOC')[DF_COL_IS_HOST].shift(1).fillna(0)
 
 	# Clean up any remaining NaNs
 	global_df = global_df.dropna()

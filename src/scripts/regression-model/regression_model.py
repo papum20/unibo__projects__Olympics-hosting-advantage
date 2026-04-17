@@ -6,6 +6,7 @@ import os
 from typing import Literal
 
 import matplotlib.pyplot as plt
+import numpy as np
 import pandas as pd
 import statsmodels.api as sm
 from statsmodels.tsa.stattools import adfuller, grangercausalitytests
@@ -21,6 +22,7 @@ from util.load_ds import (
 	DsPopDataType,
 	DS_GDP_WBOD_PATH,
 	DS_GDPPC_MADDISON_PATH,
+	DF_COL_AM_HISTORY,
 	DF_COL_GDP,
 	DF_COL_IS_BOYCOTT,
 	DF_COL_IS_COMMUNIST,
@@ -29,9 +31,10 @@ from util.load_ds import (
 	DF_COL_IS_HOST_POST,
 	DF_COL_MEDALS,
 	DF_COL_POPULATION,
-	DF_COL_IS_HOST_OG_YEAR,
-	DF_COL_IS_HOST_PRE_YEAR,
-	DF_COL_IS_HOST_POST_YEAR
+	is_dfCol_yearDummy,
+	is_dfCol_isHostOg_separate,
+	is_dfCol_isHostPre_separate,
+	is_dfCol_isHostPost_separate
 )
 from util.plot_gdp import plot_gdp
 from util.plot_medals import plot_medals
@@ -42,6 +45,7 @@ from util.common import Logger, print_ds
 PLOT_OUT_PATH = 'out/plot/'
 
 CTRL_VARS_DICT = {
+	'AM':		DF_COL_AM_HISTORY,
 	'GDP':		DF_COL_GDP,
 	'POP':		DF_COL_POPULATION,
 	'BOYCOTT':	DF_COL_IS_BOYCOTT,
@@ -50,46 +54,9 @@ CTRL_VARS_DICT = {
 	'PRE':		DF_COL_IS_HOST_PRE,
 	'POST':		DF_COL_IS_HOST_POST
 }
-CTRL_VARS = CTRL_VARS_DICT.keys()
-
-
-
-def perform_granger_manual(merged_df: pd.DataFrame, ctrl_vars=CTRL_VARS):
-	"""
-	Do Granger manually, without lag, possibly using an already lagged dataset.
-	Granger wouldn't allow to not use lags, so we need to use a standard OLS regression.
-	"""
-
-	# ADF GDP
-	result = adfuller(merged_df[DF_COL_GDP], regression='c')
-	print(f'ADF Statistic: {result[0]}')
-	print(f'p-value: {result[1]}')
-
-	# ADF medals
-	result = adfuller(merged_df[DF_COL_MEDALS], regression='c')
-	print(f'ADF Statistic: {result[0]}')
-	print(f'p-value: {result[1]}')
-
-	# Granger (manual)
-	# Equation: Medal_Share = intercept + coefficient * ln_GDP_Lag_2
-
-	# X = predictor
-	# X (predictors) with multiple variables
-	# OLS requires numbers, not bool
-	ctrl_vars_cols = [CTRL_VARS_DICT.get(var) for var in ctrl_vars if var in CTRL_VARS_DICT]
-	X = merged_df[ctrl_vars_cols]
-	for col in [DF_COL_IS_BOYCOTT, DF_COL_IS_COMMUNIST, DF_COL_IS_HOST]:
-		if col in X.columns:
-			X[col] = X[col].astype(int)
-
-	# Y = what we are predicting
-	Y = merged_df[DF_COL_MEDALS]
-
-	# Add a constant (intercept) to the model
-	X = sm.add_constant(X)
-
-	model = sm.OLS(Y, X).fit()
-	print(model.summary())
+CTRL_VARS = set(CTRL_VARS_DICT.keys()) | {
+	'YEAR'
+}
 
 
 
@@ -110,6 +77,7 @@ def perform_global_panel_regression(
 	# Define our variables
 	Y = global_df[DF_COL_MEDALS]
 	
+	col_headers = global_df.columns
 	predictors = []
 	
 	# Include all the control variables in X
@@ -117,16 +85,15 @@ def perform_global_panel_regression(
 	predictors += [CTRL_VARS_DICT.get(var) for var in ctrl_vars
 		if var in CTRL_VARS_DICT and var not in ['HOST', 'PRE', 'POST']]
 
+	if 'YEAR' in ctrl_vars:
+		predictors += [col for col in col_headers if is_dfCol_yearDummy(col)]
 
 	if use_separate_host_vars:
-		years		= global_df['Year'].unique()
-		col_headers = global_df.columns
 		if 'HOST' in ctrl_vars:
-			predictors += [col for col in col_headers for year in years if col == DF_COL_IS_HOST_OG_YEAR(year)]
-		if 'PRE' in ctrl_vars:
-			predictors += [col for col in col_headers for year in years if col == DF_COL_IS_HOST_PRE_YEAR(year)]
+			predictors += [col for col in col_headers if is_dfCol_isHostOg_separate(col)]
+			predictors += [col for col in col_headers if is_dfCol_isHostPre_separate(col)]
 		if 'POST' in ctrl_vars:
-			predictors += [col for col in col_headers for year in years if col == DF_COL_IS_HOST_POST_YEAR(year)]
+			predictors += [col for col in col_headers if is_dfCol_isHostPost_separate(col)]
 	else:
 		if 'HOST' in ctrl_vars:
 			predictors += [DF_COL_IS_HOST]
@@ -152,6 +119,27 @@ def perform_global_panel_regression(
 	
 	X = sm.add_constant(X)
 
+	# Check for rank sufficiency
+	rank = np.linalg.matrix_rank(X.values)	# type: ignore
+	if rank < X.shape[1]:
+		print(f"Warning: Matrix is rank deficient ({rank} < {X.shape[1]}). "
+			  "Check for collinear predictors.")
+
+	# Add near-zero variance check
+	#low_variance = X.columns[X.var() < 1e-6].tolist()
+	#if low_variance:
+	#	print(f"Warning: These columns have near-zero variance and may cause singularity: {low_variance}")
+	#if use_zinb:
+	#	try:
+	#		# Try adding a small amount of regularization or changing the solver if it fails
+	#		model = ZeroInflatedNegativeBinomialP(Y, X).fit(cov_type=cov_type, maxiter=500, method='bfgs')
+	#	except np.linalg.LinAlgError:
+	#		print("Singular matrix detected in ZINB. Standardizing X to improve condition number...")
+	#		# Center and scale non-dummy variables (GDP, Population)
+	#		X['GDP'] = (X['GDP'] - X['GDP'].mean()) / X['GDP'].std()
+	#		X['Population'] = (X['Population'] - X['Population'].mean()) / X['Population'].std()
+	#		model = ZeroInflatedNegativeBinomialP(Y, X).fit(cov_type=cov_type, maxiter=500, method='bfgs')
+
 	# Run the massive multi-variable OLS
 	# HC3 is standard for robust errors (heteroskedasticity-consistent)
 	if use_zinb:
@@ -159,10 +147,9 @@ def perform_global_panel_regression(
 	else:
 		model = sm.OLS(Y, X).fit(cov_type=cov_type)
 	print(model.summary())
-	
 
 
-def perform_tests(merged_df):
+def perform_adf(merged_df):
 	
 	# ADF GDP
 	result = adfuller(merged_df[DF_COL_GDP], regression='c')
@@ -173,6 +160,9 @@ def perform_tests(merged_df):
 	result = adfuller(merged_df[DF_COL_MEDALS], regression='c')
 	print(f'ADF Statistic: {result[0]}')
 	print(f'p-value: {result[1]}')
+
+
+def perform_granger(merged_df):
 
 	# Granger
 	# maxlag=2 means we check the previous 1 and 2 Olympics
@@ -353,9 +343,33 @@ if __name__ == "__main__":
 	)
 
 	parser.add_argument(
+		'--gdp-log',
+		action='store_true',
+		help='Use GDP logarithms (gdp-logdiff has priority) (flag, no value needed)'
+	)
+
+	parser.add_argument(
+		'--gdp-logdiff',
+		action='store_true',
+		help='Use GDP logarithms difference (gdp-logdiff has priority) (flag, no value needed)'
+	)
+
+	parser.add_argument(
 		'--pop-avg',
 		action='store_true',
 		help='Use 4-year geometric mean of population instead of raw values (flag, no value needed)'
+	)
+
+	parser.add_argument(
+		'--pop-log',
+		action='store_true',
+		help='Use population logarithms (pop-logdiff has priority) (flag, no value needed)'
+	)
+
+	parser.add_argument(
+		'--pop-logdiff',
+		action='store_true',
+		help='Use population logarithms difference (pop-logdiff has priority) (flag, no value needed)'
 	)
 	
 	parser.add_argument(
@@ -418,6 +432,9 @@ if __name__ == "__main__":
 	use_reg_zinb		= args.reg_zinb
 	use_reg_hc0			= args.reg_hc0
 	use_reg_hc3			= args.reg_hc3
+
+	gdp_type = DsGdpDataType.LN_DIFF if args.gdp_logdiff else DsGdpDataType.LN if args.gdp_log else DsGdpDataType.DEFAULT
+	pop_type = DsPopDataType.LN_DIFF if args.pop_logdiff else DsPopDataType.LN if args.pop_log else DsPopDataType.DEFAULT
 	
 	log_output			= args.log
 	verbose				= args.verbose
@@ -456,7 +473,7 @@ if __name__ == "__main__":
 		noc = noc_list[0]
 	
 		gdp_series, country_name = load_gdp_series(noc, year_start=year_start, year_end=year_end,
-										data_type=DsGdpDataType.LN_DIFF, dataset_path=DS_GDP_PATH)
+										data_type=gdp_type, dataset_path=DS_GDP_PATH)
 
 		medals_series = load_medals_series(country=noc, medals_season=medals_season,
 							year_start=year_start, year_end=year_end, data_type=DsMedalsDataType.PERCENTAGE)
@@ -470,7 +487,8 @@ if __name__ == "__main__":
 		print_ds(merged_df[DF_COL_GDP],	f"{country_name} GDP series",	verbose)
 		print_ds(merged_df[DF_COL_MEDALS],	f"{noc} medals series",			verbose)
 
-		perform_tests(merged_df)
+		perform_adf(merged_df)
+		perform_granger(merged_df)
 
 		# Plot
 		plot_gdp(gdp_series, noc, country_name, actual_year_start, actual_year_end, y_min=None,
@@ -523,8 +541,8 @@ if __name__ == "__main__":
 			use_population_mean		= use_population_mean,
 			use_separate_host_vars	= use_sep_host_vars,
 			medals_data_type		= medals_data_type,
-			gdp_data_type			= DsGdpDataType.LN_DIFF,
-			population_data_type	= DsPopDataType.LN_DIFF,
+			gdp_data_type			= gdp_type,
+			population_data_type	= pop_type,
 			gdp_dataset_path		= DS_GDP_PATH,
 			is_verbose				= verbose
 		)
@@ -540,11 +558,11 @@ if __name__ == "__main__":
 			print(merged_df.to_string())
 
 		if len(noc_list) == 1:
-			perform_granger_manual(merged_df, ctrl_vars=ctrl_vars)
+			perform_adf(merged_df)
+			perform_granger(merged_df)
 
-		else:
-			perform_global_panel_regression(merged_df, use_separate_host_vars=use_sep_host_vars, ctrl_vars=ctrl_vars,
-				cov_type=cov_type, use_zinb=use_reg_zinb)
+		perform_global_panel_regression(merged_df, use_separate_host_vars=use_sep_host_vars, ctrl_vars=ctrl_vars,
+			cov_type=cov_type, use_zinb=use_reg_zinb)
 
 		# Plot
 

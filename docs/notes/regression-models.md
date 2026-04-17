@@ -224,6 +224,12 @@ You can just add these three lines of code right before you run your OLS:
 ```
 
 
+### Average Medals
+
+Media delle medaglie, prese dallo storico complessivo (tutte le edizioni in cui il Paese appare) fino all'anno prima di quello in questione.  
+In data science, if you calculate a country's average using the years 1964 to 2024, and then plug that average into the row for the year 1964... you have committed Look-Ahead Bias (Data Leakage). You are using future events (medals won in 2024) to predict past events (medals won in 1964).  
+
+
 ### Fix for 0/inf
 
 `0`/`inf`/etc. with logs (error): do `ln(x + 1)` instead of `ln(x)`.  

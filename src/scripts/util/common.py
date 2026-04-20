@@ -18,6 +18,24 @@ class Logger():
 	#	self.terminal   = sys.stdout
 	#	self.log        = open(log_file, "w")
 
+	ctrl_vars_str = {
+		"HOST"			: "H",
+		"AM"			: "M",
+		"YEAR"			: "Y",
+		"PRE"			: "Pr",
+		"POST"			: "Po",
+		"GDP"			: "G",
+		"POP"			: "P",
+		"COMM"			: "C",
+		"BOYCOTT_URS"	: "B",
+		"BOYCOTT_USA"	: "",
+		"CLOSE_GMT1"	: "CG1",
+		"CLOSE_WIDE"	: "Cwd",
+		"CLOSE_MAIN"	: "CM",
+		"CLOSE_WEST"	: "CW",
+		"CLOSE_CENTER"	: "CC"
+	}
+
 	def __init__(
 		self,
 		noc				: list[str]|None,
@@ -27,6 +45,8 @@ class Logger():
 		cov_type		: str,
 		use_gpd_avg		: bool,
 		use_pop_avg		: bool,
+		gdp_type		: str,
+		pop_type		: str,
 		sep_host_vars	: bool,
 		sep_close_vars	: bool,
 		ctrl_vars		: list[str],
@@ -34,13 +54,13 @@ class Logger():
 	):
 		timestamp	= datetime.now().strftime("%Y%m%d-%H%M%S")
 		noc_str		= '+'.join(noc) if noc else 'all'
-		ctrl_str	= '+'.join(ctrl_vars)
+		ctrl_str	= '+'.join([self.ctrl_vars_str.get(var, var) for var in ctrl_vars]) if ctrl_vars else 'none'
 		
 		filename = (
 			f"out_regression_{timestamp}_{noc_str}_"
-			f"{year_start}-{year_end}_{reg_type}_{cov_type}_"
-			f"gdp-avg-{use_gpd_avg}_pop-avg-{use_pop_avg}_"
-			f"sep-host-{sep_host_vars}_sep-close-{sep_close_vars}_{ctrl_str}_{tag}.txt"
+			f"{year_start}-{year_end}_{reg_type}-{cov_type}_"
+			f"gdp-{gdp_type}-avg{int(use_gpd_avg)}_pop{pop_type}-avg{int(use_pop_avg)}_"
+			f"sep-host{int(sep_host_vars)}_sep-close{int(sep_close_vars)}_{ctrl_str}_{tag}.txt"
 		)
 		
 		log_path = os.path.join(LOG_REGRESSION_OUT_PATH, filename)

@@ -24,7 +24,8 @@ from util.load_ds import (
 	DS_GDPPC_MADDISON_PATH,
 	DF_COL_AM_HISTORY,
 	DF_COL_GDP,
-	DF_COL_IS_BOYCOTT,
+	DF_COL_IS_BOYCOTT_URS,
+	DF_COL_IS_BOYCOTT_USA,
 	DF_COL_IS_COMMUNIST,
 	DF_COL_IS_HOST,
 	DF_COL_IS_HOST_PRE,
@@ -58,7 +59,8 @@ CTRL_VARS_DICT = {
 	'AM'			: DF_COL_AM_HISTORY,
 	'GDP'			: DF_COL_GDP,
 	'POP'			: DF_COL_POPULATION,
-	'BOYCOTT'		: DF_COL_IS_BOYCOTT,
+	'BOYCOTT_URS'	: DF_COL_IS_BOYCOTT_URS,
+	'BOYCOTT_USA'	: DF_COL_IS_BOYCOTT_USA,
 	'COMM'			: DF_COL_IS_COMMUNIST,
 	'HOST'			: DF_COL_IS_HOST,
 	'PRE'			: DF_COL_IS_HOST_PRE,
@@ -316,324 +318,340 @@ def plot_merged_series2(medals_series, gdp_series, country_code, country_name, o
 
 if __name__ == "__main__":
 
-	parser = argparse.ArgumentParser(
-		description='Perform ADF stationarity test on Olympic medals data'
-	)
-	
-	# Required arguments
-	parser.add_argument(
-		'-s', '--season',
-		type=str,
-		default='S',
-		choices=['S', 'W', 'B'],
-		help='Season: S (Summer), W (Winter), B (Both) - default: S'
-	)
-	
-	# Optional arguments
-	parser.add_argument(
-		'-n', '--noc',
-		type=str,
-		nargs='+',
-		default=[],
-		help='Country code(s) (NOC) - space-separated list - default: all countries (no filter)'
-	)
-	
-	parser.add_argument(
-		'--start-year',
-		type=int,
-		default=1896,
-		help='Starting year for the data - default: 1896'
-	)
-	
-	parser.add_argument(
-		'--end-year',
-		type=int,
-		default=2026,
-		help='Ending year for the data - default: 2026'
-	)
-	
-	parser.add_argument(
-		'--max-lag',
-		type=int,
-		default=7,
-		help='Maximum lag for the Granger causality test - default: 7'
-	)
+	try:
 
-	parser.add_argument(
-		'--ctrl-vars',
-		type=str,
-		nargs='+',
-		default=CTRL_VARS,
-		help=f'Custom control variables to include in the regression (space-separated list), in [{", ".join(CTRL_VARS)}]'
-	)
-
-	parser.add_argument(
-		'--exclude-boycott',
-		action='store_true',
-		help='Exclude boycott years from the analysis (flag, no value needed)'
-	)
-
-	parser.add_argument(
-		'--gdp-avg',
-		action='store_true',
-		help='Use 4-year geometric mean of GDP instead of raw values (flag, no value needed)'
-	)
-
-	parser.add_argument(
-		'--gdp-tot',
-		action='store_true',
-		help='Use GDP instead of GDPpc (flag, no value needed)'
-	)
-
-	parser.add_argument(
-		'--gdp-log',
-		action='store_true',
-		help='Use GDP logarithms (gdp-logdiff has priority) (flag, no value needed)'
-	)
-
-	parser.add_argument(
-		'--gdp-logdiff',
-		action='store_true',
-		help='Use GDP logarithms difference (gdp-logdiff has priority) (flag, no value needed)'
-	)
-
-	parser.add_argument(
-		'--pop-avg',
-		action='store_true',
-		help='Use 4-year geometric mean of population instead of raw values (flag, no value needed)'
-	)
-
-	parser.add_argument(
-		'--pop-log',
-		action='store_true',
-		help='Use population logarithms (pop-logdiff has priority) (flag, no value needed)'
-	)
-
-	parser.add_argument(
-		'--pop-logdiff',
-		action='store_true',
-		help='Use population logarithms difference (pop-logdiff has priority) (flag, no value needed)'
-	)
-	
-	parser.add_argument(
-		'--sep-host',
-		action='store_true',
-		help='Use separate binary variables for hosting, pre-hosting, and post-hosting and YEAR instead of a single Is_Host variable (flag, no value needed)'
-	)
-	
-	parser.add_argument(
-		'--sep-close',
-		action='store_true',
-		help='Use separate binary variables for close to host variables (flag, no value needed)'
-	)
-	
-	parser.add_argument(
-		'--reg-zinb',
-		action='store_true',
-		help='Use Zero-Inflated Negative Binomial regression (flag, no value needed)'
-	)
-	
-	parser.add_argument(
-		'--reg-hc0',
-		action='store_true',
-		help='Use HC0, for robust errors (HC0 has priority) (flag, no value needed)'
-	)
-
-	parser.add_argument(
-		'--reg-hc3',
-		action='store_true',
-		help='Use HC3, for robust errors (HC0 has priority) (flag, no value needed)'
-	)
-	
-	parser.add_argument(
-		'--save',
-		action='store_true',
-		help='Save plots to file (flag, no value needed)'
-	)
-
-	parser.add_argument(
-		'--log',
-		action='store_true',
-		help='Save output to a log file in out/regression/ (flag, no value needed)'
-	)
-
-	parser.add_argument(
-		'-v', '--verbose',
-		action='store_true',
-		help='Verbose output (flag, no value needed)'
-	)
-	
-	args = parser.parse_args()
-
-	noc_list: list[str]	= args.noc
-	medals_season		= args.season
-	save_plot_flag		= args.save
-	year_start			= args.start_year
-	year_end			= args.end_year
-	max_lag				= args.max_lag
-	
-	ctrl_vars			= args.ctrl_vars
-	exclude_boycott		= args.exclude_boycott
-	use_gdp_mean		= args.gdp_avg
-	use_gdp_tot			= args.gdp_tot
-	use_population_mean	= args.pop_avg
-	use_sep_host_vars	= args.sep_host
-	use_sep_close_vars	= args.sep_close
-	use_reg_zinb		= args.reg_zinb
-	use_reg_hc0			= args.reg_hc0
-	use_reg_hc3			= args.reg_hc3
-
-	gdp_type = DsGdpDataType.LN_DIFF if args.gdp_logdiff else DsGdpDataType.LN if args.gdp_log else DsGdpDataType.DEFAULT
-	pop_type = DsPopDataType.LN_DIFF if args.pop_logdiff else DsPopDataType.LN if args.pop_log else DsPopDataType.DEFAULT
-	
-	log_output			= args.log
-	verbose				= args.verbose
-
-	if any(var not in CTRL_VARS for var in ctrl_vars):
-		print(f"Error: Invalid control variable specified in --ctrl-vars-custom. Allowed values are: {', '.join(CTRL_VARS)}")
-		sys.exit(1)
-
-	DS_GDP_PATH = DS_GDP_WBOD_PATH if use_gdp_tot else DS_GDPPC_MADDISON_PATH
-
-	cov_type='HC0' if use_reg_hc0 else 'HC3' if use_reg_hc3 else 'nonrobust'
-
-
-	if log_output:
-		sys.stdout = Logger(
-			noc=noc_list,
-			year_start=year_start,
-			year_end=year_end,
-			reg_type='ZINB' if use_reg_zinb else 'OLS',
-			cov_type=cov_type,
-			use_gpd_avg=use_gdp_mean,
-			use_pop_avg=use_population_mean,
-			sep_host_vars=use_sep_host_vars,
-			sep_close_vars=use_sep_close_vars,
-			ctrl_vars=ctrl_vars
+		parser = argparse.ArgumentParser(
+			description='Perform ADF stationarity test on Olympic medals data'
 		)
-
-	print(f"Running with args: {args}")
-
-
-	#
-	# Granger
-	#
-
-	if len(noc_list) == 1:
-	
-		noc = noc_list[0]
-	
-		gdp_series, country_name = load_gdp_series(noc, year_start=year_start, year_end=year_end,
-										data_type=gdp_type, dataset_path=DS_GDP_PATH)
-
-		medals_series = load_medals_series(country=noc, medals_season=medals_season,
-							year_start=year_start, year_end=year_end, data_type=DsMedalsDataType.PERCENTAGE)
-
-		merged_df = merge_series(medals_series, gdp_series, series1_name=DF_COL_MEDALS, series2_name=DF_COL_GDP)
-
-		actual_year_start	= max(merged_df.index.min(), year_start)
-		actual_year_end		= min(merged_df.index.max(), year_end)
-		print(f"Using data from {actual_year_start} to {actual_year_end} (requested: {year_start}-{year_end})")
-
-		print_ds(merged_df[DF_COL_GDP],	f"{country_name} GDP series",	verbose)
-		print_ds(merged_df[DF_COL_MEDALS],	f"{noc} medals series",			verbose)
-
-		perform_adf(merged_df)
-		perform_granger(merged_df)
-
-		# Plot
-		plot_gdp(gdp_series, noc, country_name, actual_year_start, actual_year_end, y_min=None,
-			out_file_tag='log_diff', save=save_plot_flag)
-
-		plot_medals(medals_series, noc, actual_year_start, actual_year_end, medals_season=medals_season,
-			out_file_tag='perc', save=save_plot_flag)
 		
-		plot_merged_series2(merged_df[DF_COL_MEDALS], merged_df[DF_COL_GDP], noc, country_name,
-				out_file_tag=f'{actual_year_start}-{actual_year_end}', save=save_plot_flag)
-
-
-	#
-	# Granger (manual)
-	#
-
-	for shift in range(1, max_lag + 1):
-		print(f"\nGranger causality test (manual) with lag {shift}:")
-
-		#if len(noc_list) == 1:
-		#	noc = noc_list[0]
-
-		#	merged_df, country_name = load_medals_gdp_and_population_aligned(
-		#		noc,
-		#		medals_season			= medals_season,
-		#		year_start				= year_start,
-		#		year_end				= year_end,
-		#		gdp_year_shift			= shift,
-		#		remove_boycott			= exclude_boycott,
-		#		use_gdp_mean			= use_gdp_mean,
-		#		use_population_mean		= use_population_mean,
-		#		use_separate_host_vars	= use_sep_host_vars,
-		#		medals_data_type		= DsMedalsDataType.PERCENTAGE,
-		#		gdp_data_type			= DsGdpDataType.LN_DIFF,
-		#		population_data_type	= DsPopDataType.LN_DIFF,
-		#		gdp_dataset_path		= DS_GDP_PATH
-		#	)
-		#else:
-
-		medals_data_type = DsMedalsDataType.DEFAULT if use_reg_zinb else DsMedalsDataType.PERCENTAGE
-
-		merged_df, country_name = load_stacked_countries(
-			countries_list			= noc_list,
-			medals_season			= medals_season,
-			year_start				= year_start,
-			year_end				= year_end,
-			gdp_year_shift			= shift,
-			remove_boycott			= exclude_boycott,
-			use_gdp_mean			= use_gdp_mean,
-			use_population_mean		= use_population_mean,
-			use_separate_host_vars	= use_sep_host_vars,
-			use_separate_close_vars	= use_sep_close_vars,
-			medals_data_type		= medals_data_type,
-			gdp_data_type			= gdp_type,
-			population_data_type	= pop_type,
-			gdp_dataset_path		= DS_GDP_PATH,
-			is_verbose				= verbose
+		# Required arguments
+		parser.add_argument(
+			'-s', '--season',
+			type=str,
+			default='S',
+			choices=['S', 'W', 'B'],
+			help='Season: S (Summer), W (Winter), B (Both) - default: S'
+		)
+		
+		# Optional arguments
+		parser.add_argument(
+			'-n', '--noc',
+			type=str,
+			nargs='+',
+			default=[],
+			help='Country code(s) (NOC) - space-separated list - default: all countries (no filter)'
+		)
+		
+		parser.add_argument(
+			'--start-year',
+			type=int,
+			default=1896,
+			help='Starting year for the data - default: 1896'
+		)
+		
+		parser.add_argument(
+			'--end-year',
+			type=int,
+			default=2026,
+			help='Ending year for the data - default: 2026'
+		)
+		
+		parser.add_argument(
+			'--max-lag',
+			type=int,
+			default=7,
+			help='Maximum lag for the Granger causality test - default: 7'
 		)
 
-		actual_year_start	= max(merged_df.index.min(), year_start)
-		actual_year_end		= min(merged_df.index.max(), year_end)
-		print(f"Using data from {actual_year_start} to {actual_year_end} (requested: {year_start}-{year_end})")
+		parser.add_argument(
+			'--ctrl-vars',
+			type=str,
+			nargs='+',
+			default=CTRL_VARS,
+			help=f'Custom control variables to include in the regression (space-separated list), in [{", ".join(CTRL_VARS)}]'
+		)
 
-		print_ds(merged_df,		f"{country_name} stacked data",			verbose, n=20)
+		parser.add_argument(
+			'--exclude-boycott',
+			action='store_true',
+			help='Exclude boycott years from the analysis (flag, no value needed)'
+		)
 
-		if verbose:
-			print("\nMerged DataFrame:")
-			print(merged_df.to_string())
+		parser.add_argument(
+			'--gdp-avg',
+			action='store_true',
+			help='Use 4-year geometric mean of GDP instead of raw values (flag, no value needed)'
+		)
+
+		parser.add_argument(
+			'--gdp-tot',
+			action='store_true',
+			help='Use GDP instead of GDPpc (flag, no value needed)'
+		)
+
+		parser.add_argument(
+			'--gdp-log',
+			action='store_true',
+			help='Use GDP logarithms (gdp-logdiff has priority) (flag, no value needed)'
+		)
+
+		parser.add_argument(
+			'--gdp-logdiff',
+			action='store_true',
+			help='Use GDP logarithms difference (gdp-logdiff has priority) (flag, no value needed)'
+		)
+
+		parser.add_argument(
+			'--pop-avg',
+			action='store_true',
+			help='Use 4-year geometric mean of population instead of raw values (flag, no value needed)'
+		)
+
+		parser.add_argument(
+			'--pop-log',
+			action='store_true',
+			help='Use population logarithms (pop-logdiff has priority) (flag, no value needed)'
+		)
+
+		parser.add_argument(
+			'--pop-logdiff',
+			action='store_true',
+			help='Use population logarithms difference (pop-logdiff has priority) (flag, no value needed)'
+		)
+		
+		parser.add_argument(
+			'--sep-host',
+			action='store_true',
+			help='Use separate binary variables for hosting, pre-hosting, and post-hosting and YEAR instead of a single Is_Host variable (flag, no value needed)'
+		)
+		
+		parser.add_argument(
+			'--sep-close',
+			action='store_true',
+			help='Use separate binary variables for close to host variables (flag, no value needed)'
+		)
+		
+		parser.add_argument(
+			'--reg-zinb',
+			action='store_true',
+			help='Use Zero-Inflated Negative Binomial regression (flag, no value needed)'
+		)
+		
+		parser.add_argument(
+			'--reg-hc0',
+			action='store_true',
+			help='Use HC0, for robust errors (HC0 has priority) (flag, no value needed)'
+		)
+
+		parser.add_argument(
+			'--reg-hc3',
+			action='store_true',
+			help='Use HC3, for robust errors (HC0 has priority) (flag, no value needed)'
+		)
+		
+		parser.add_argument(
+			'--save',
+			action='store_true',
+			help='Save plots to file (flag, no value needed)'
+		)
+
+		parser.add_argument(
+			'--log',
+			action='store_true',
+			help='Save output to a log file in out/regression/ (flag, no value needed)'
+		)
+
+		parser.add_argument(
+			'-v', '--verbose',
+			action='store_true',
+			help='Verbose output (flag, no value needed)'
+		)
+		
+		args = parser.parse_args()
+
+		noc_list: list[str]	= args.noc
+		medals_season		= args.season
+		save_plot_flag		= args.save
+		year_start			= args.start_year
+		year_end			= args.end_year
+		max_lag				= args.max_lag
+		
+		ctrl_vars			= args.ctrl_vars
+		exclude_boycott		= args.exclude_boycott
+		use_gdp_mean		= args.gdp_avg
+		use_gdp_tot			= args.gdp_tot
+		use_population_mean	= args.pop_avg
+		use_sep_host_vars	= args.sep_host
+		use_sep_close_vars	= args.sep_close
+		use_reg_zinb		= args.reg_zinb
+		use_reg_hc0			= args.reg_hc0
+		use_reg_hc3			= args.reg_hc3
+
+		gdp_type = DsGdpDataType.LN_DIFF if args.gdp_logdiff else DsGdpDataType.LN if args.gdp_log else DsGdpDataType.DEFAULT
+		pop_type = DsPopDataType.LN_DIFF if args.pop_logdiff else DsPopDataType.LN if args.pop_log else DsPopDataType.DEFAULT
+
+		if 'BOYCOTT' in ctrl_vars:
+			ctrl_vars.remove('BOYCOTT')
+			ctrl_vars += ['BOYCOTT_URS', 'BOYCOTT_USA']
+		
+		log_output			= args.log
+		verbose				= args.verbose
+
+		if any(var not in CTRL_VARS for var in ctrl_vars):
+			print(f"Error: Invalid control variable specified in --ctrl-vars-custom. Allowed values are: {', '.join(CTRL_VARS)}")
+			sys.exit(1)
+
+		DS_GDP_PATH = DS_GDP_WBOD_PATH if use_gdp_tot else DS_GDPPC_MADDISON_PATH
+
+		cov_type='HC0' if use_reg_hc0 else 'HC3' if use_reg_hc3 else 'nonrobust'
+
+
+		if log_output:
+			sys.stdout = Logger(
+				noc=noc_list,
+				year_start=year_start,
+				year_end=year_end,
+				reg_type='ZINB' if use_reg_zinb else 'OLS',
+				cov_type=cov_type,
+				gdp_type=gdp_type.name,
+				pop_type=pop_type.name,
+				use_gpd_avg=use_gdp_mean,
+				use_pop_avg=use_population_mean,
+				sep_host_vars=use_sep_host_vars,
+				sep_close_vars=use_sep_close_vars,
+				ctrl_vars=ctrl_vars
+			)
+
+		print(f"Running with args: {args}")
+
+
+		#
+		# Granger
+		#
 
 		if len(noc_list) == 1:
+		
+			noc = noc_list[0]
+		
+			gdp_series, country_name = load_gdp_series(noc, year_start=year_start, year_end=year_end,
+											data_type=gdp_type, dataset_path=DS_GDP_PATH)
+
+			medals_series = load_medals_series(country=noc, medals_season=medals_season,
+								year_start=year_start, year_end=year_end, data_type=DsMedalsDataType.PERCENTAGE)
+
+			merged_df = merge_series(medals_series, gdp_series, series1_name=DF_COL_MEDALS, series2_name=DF_COL_GDP)
+
+			actual_year_start	= max(merged_df.index.min(), year_start)
+			actual_year_end		= min(merged_df.index.max(), year_end)
+			print(f"Using data from {actual_year_start} to {actual_year_end} (requested: {year_start}-{year_end})")
+
+			print_ds(merged_df[DF_COL_GDP],	f"{country_name} GDP series",	verbose)
+			print_ds(merged_df[DF_COL_MEDALS],	f"{noc} medals series",			verbose)
+
 			perform_adf(merged_df)
 			perform_granger(merged_df)
 
-		perform_global_panel_regression(merged_df, use_separate_host_vars=use_sep_host_vars, use_separate_close_vars=use_sep_close_vars, ctrl_vars=ctrl_vars,
-			cov_type=cov_type, use_zinb=use_reg_zinb)
-
-		# Plot
-
-		if len(noc_list) == 1:
-
-			gdp_series		= pd.Series(merged_df[DF_COL_GDP],		name='GDP')
-			medals_series	= pd.Series(merged_df[DF_COL_MEDALS],	name='Medals')
-
-			
-			tag_boycott		= f'boycott{"N" if exclude_boycott else "Y"}'
-			tag_ctrl_vars	= f'ctrl{"+".join(ctrl_vars)}'
-			tag_gdp_mean	= f'gdpmean{"Y" if use_gdp_mean else "N"}'
-			
+			# Plot
 			plot_gdp(gdp_series, noc, country_name, actual_year_start, actual_year_end, y_min=None,
-				out_file_tag=f'log_diff_{tag_boycott}_{tag_ctrl_vars}_{tag_gdp_mean}_shift{shift}', save=save_plot_flag)
+				out_file_tag='log_diff', save=save_plot_flag)
 
 			plot_medals(medals_series, noc, actual_year_start, actual_year_end, medals_season=medals_season,
-				out_file_tag=f'perc_{tag_boycott}_{tag_ctrl_vars}_{tag_gdp_mean}', save=save_plot_flag)
+				out_file_tag='perc', save=save_plot_flag)
 			
 			plot_merged_series2(merged_df[DF_COL_MEDALS], merged_df[DF_COL_GDP], noc, country_name,
-					out_file_tag=f'{actual_year_start}-{actual_year_end}_shift{shift}_{tag_boycott}_{tag_ctrl_vars}_{tag_gdp_mean}', save=save_plot_flag)
+					out_file_tag=f'{actual_year_start}-{actual_year_end}', save=save_plot_flag)
+
+
+		#
+		# Granger (manual)
+		#
+
+		for shift in range(1, max_lag + 1):
+			print(f"\nGranger causality test (manual) with lag {shift}:")
+
+			#if len(noc_list) == 1:
+			#	noc = noc_list[0]
+
+			#	merged_df, country_name = load_medals_gdp_and_population_aligned(
+			#		noc,
+			#		medals_season			= medals_season,
+			#		year_start				= year_start,
+			#		year_end				= year_end,
+			#		gdp_year_shift			= shift,
+			#		remove_boycott			= exclude_boycott,
+			#		use_gdp_mean			= use_gdp_mean,
+			#		use_population_mean		= use_population_mean,
+			#		use_separate_host_vars	= use_sep_host_vars,
+			#		medals_data_type		= DsMedalsDataType.PERCENTAGE,
+			#		gdp_data_type			= DsGdpDataType.LN_DIFF,
+			#		population_data_type	= DsPopDataType.LN_DIFF,
+			#		gdp_dataset_path		= DS_GDP_PATH
+			#	)
+			#else:
+
+			medals_data_type = DsMedalsDataType.DEFAULT if use_reg_zinb else DsMedalsDataType.PERCENTAGE
+
+			merged_df, country_name = load_stacked_countries(
+				countries_list			= noc_list,
+				medals_season			= medals_season,
+				year_start				= year_start,
+				year_end				= year_end,
+				gdp_year_shift			= shift,
+				remove_boycott			= exclude_boycott,
+				use_gdp_mean			= use_gdp_mean,
+				use_population_mean		= use_population_mean,
+				use_separate_host_vars	= use_sep_host_vars,
+				use_separate_close_vars	= use_sep_close_vars,
+				medals_data_type		= medals_data_type,
+				gdp_data_type			= gdp_type,
+				population_data_type	= pop_type,
+				gdp_dataset_path		= DS_GDP_PATH,
+				is_verbose				= verbose
+			)
+
+			actual_year_start	= max(merged_df.index.min(), year_start)
+			actual_year_end		= min(merged_df.index.max(), year_end)
+			print(f"Using data from {actual_year_start} to {actual_year_end} (requested: {year_start}-{year_end})")
+
+			print_ds(merged_df,		f"{country_name} stacked data",			verbose, n=20)
+
+			if verbose:
+				print("\nMerged DataFrame:")
+				print(merged_df.to_string())
+
+			if len(noc_list) == 1:
+				perform_adf(merged_df)
+				perform_granger(merged_df)
+
+			perform_global_panel_regression(merged_df, use_separate_host_vars=use_sep_host_vars, use_separate_close_vars=use_sep_close_vars, ctrl_vars=ctrl_vars,
+				cov_type=cov_type, use_zinb=use_reg_zinb)
+
+			# Plot
+
+			if len(noc_list) == 1:
+
+				gdp_series		= pd.Series(merged_df[DF_COL_GDP],		name='GDP')
+				medals_series	= pd.Series(merged_df[DF_COL_MEDALS],	name='Medals')
+
+				
+				tag_boycott		= f'boycott{"N" if exclude_boycott else "Y"}'
+				tag_ctrl_vars	= f'ctrl{"+".join(ctrl_vars)}'
+				tag_gdp_mean	= f'gdpmean{"Y" if use_gdp_mean else "N"}'
+				
+				plot_gdp(gdp_series, noc, country_name, actual_year_start, actual_year_end, y_min=None,
+					out_file_tag=f'log_diff_{tag_boycott}_{tag_ctrl_vars}_{tag_gdp_mean}_shift{shift}', save=save_plot_flag)
+
+				plot_medals(medals_series, noc, actual_year_start, actual_year_end, medals_season=medals_season,
+					out_file_tag=f'perc_{tag_boycott}_{tag_ctrl_vars}_{tag_gdp_mean}', save=save_plot_flag)
+				
+				plot_merged_series2(merged_df[DF_COL_MEDALS], merged_df[DF_COL_GDP], noc, country_name,
+						out_file_tag=f'{actual_year_start}-{actual_year_end}_shift{shift}_{tag_boycott}_{tag_ctrl_vars}_{tag_gdp_mean}', save=save_plot_flag)
+
+
+
+	except Exception as e:
+		# so will also print to log
+		print(f"[ERROR]: {e}")
+		raise e
+
 

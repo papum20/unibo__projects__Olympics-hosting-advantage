@@ -22,6 +22,25 @@ Stazionarietà:
       - e.g. ITA up to 2020 no, but in 2020 there was a significant drop, and apparently ending like this makes it non-stationary
 
 
+## Tests/comparisons
+
+Boycott sempre con 1964, se non YEAR.  
+
+AM+Host: GDP+POP+COMM vs None.  
+AM+Host+Year: GDP+POP+COMM vs None.  
+AM+Host sep-host: GDP+POP+COMM vs None.  
+
+AM+Host+Pre+Post: GDP+POP+COMM vs None.  
+AM+Host+Pre+Post sep-host: GDP+POP+COMM vs None.  
+
+CLOSE:
+AM+Host+Pre+Post+Year: GDP+POP+COMM vs None.  
+AM+Host+Pre+Post+Year sep-host: GDP+POP+COMM vs None.  
+AM+Host+Pre+Post+Year sep-close: GDP+POP+COMM vs None.  
+AM+Host+Pre+Post+Year sep-host sep-close: GDP+POP+COMM vs None.  
+
+
+
 ## Results
 
 *Is_Communist* sempre significativo.  
@@ -84,6 +103,11 @@ ZINB richiede nessuna colonna vuota:
 
 **LOG-DIFF**: con `Year` dummy, matrice singolare. Bisogna usare `LOG` (per GDP e POP).  
 * singolare = probabilmente collinearità perfetta, o quasi. Forse perché i log-diff hanno meno variabilità
+
+**YEAR**: con `sep-host` spesso singolare, quindi non si possono analizzare insieme...  
+* tipo, no se aggiungi altre var (`GDP`, etc.)
+
+Host Pre Post sep-host: singolare.  
 
 #### 1996
 

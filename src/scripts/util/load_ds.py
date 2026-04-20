@@ -31,7 +31,8 @@ YEAR_BOYCOTT_USA	= 1984
 # Columns names in returned DataFrames
 DF_COL_AM_HISTORY			= 'Avg_Medals_History'
 DF_COL_GDP					= 'GDP'
-DF_COL_IS_BOYCOTT			= 'Is_Boycott'
+DF_COL_IS_BOYCOTT_URS		= f'Is_Boycott{YEAR_BOYCOTT_URS}'
+DF_COL_IS_BOYCOTT_USA		= f'Is_Boycott{YEAR_BOYCOTT_USA}'
 DF_COL_IS_COMMUNIST			= 'Is_Communist'
 DF_COL_IS_HOST				= 'Is_Host'
 DF_COL_IS_HOST_PRE			= 'Is_Host_Pre'
@@ -570,7 +571,8 @@ def load_medals(
 		'Is_Host'		: 'any'  # True if any entry for that year is a host
 	}).reset_index()
 	
-	medals_df['Is_Boycott'] = medals_df['Year'].isin([YEAR_BOYCOTT_URS, YEAR_BOYCOTT_USA])
+	medals_df[f'Is_Boycott{YEAR_BOYCOTT_URS}'] = medals_df['Year'].isin([YEAR_BOYCOTT_URS])
+	medals_df[f'Is_Boycott{YEAR_BOYCOTT_USA}'] = medals_df['Year'].isin([YEAR_BOYCOTT_USA])
 	
 	# Set index to Year early to ensure transformations align correctly
 	medals_df = medals_df.set_index('Year').sort_index()
@@ -970,11 +972,12 @@ def load_medals_gdp_and_population_aligned(
 	
 	# Merge the two series
 	merged_df = pd.DataFrame({
-		DF_COL_MEDALS		: medals_df['Total_Medals'],
-		DF_COL_AM_HISTORY	: medals_df[DF_COL_AM_HISTORY],
-		DF_COL_GDP			: gdp_shifted,
-		DF_COL_POPULATION	: population_shifted,
-		DF_COL_IS_BOYCOTT	: medals_df[DF_COL_IS_BOYCOTT]
+		DF_COL_MEDALS			: medals_df['Total_Medals'],
+		DF_COL_AM_HISTORY		: medals_df[DF_COL_AM_HISTORY],
+		DF_COL_GDP				: gdp_shifted,
+		DF_COL_POPULATION		: population_shifted,
+		DF_COL_IS_BOYCOTT_URS	: medals_df[DF_COL_IS_BOYCOTT_URS],
+		DF_COL_IS_BOYCOTT_USA	: medals_df[DF_COL_IS_BOYCOTT_USA]
 	})
 
 	# Drop rows with NaN values
@@ -1009,6 +1012,7 @@ def load_medals_gdp_and_population_aligned(
 			# POST: 1 if this country hosted previous Olympics
 			prev_year_idx	= hosting_schedule.index.get_loc(olympic_year) - 1	# type: ignore
 			prev_host		= hosting_schedule.iloc[prev_year_idx]['NOC'] if prev_year_idx >= 0 else None
+			#prev_host		= hosting_schedule.iloc[prev_year_idx]['NOC'] if prev_year_idx >= 0 and olympic_year != col_olympic_years[0] else None
 			new_cols[post_col_name] = (country == prev_host and (merged_df.index == olympic_year))
 	else:
 		# Use original Is_Host column

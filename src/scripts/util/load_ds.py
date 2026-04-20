@@ -1194,3 +1194,55 @@ def load_stacked_countries(
 	global_df = global_df.dropna()
 
 	return global_df, '+'.join(all_countries_names)
+
+
+
+def save_stacked_countries_to_csv(
+	output_path				: str,
+	countries_list			: list[str]|None	= None,
+	year_start				: int				= MEDALS_FULL_YEAR_FIRST,
+	year_end				: int				= MEDALS_FULL_YEAR_LAST,
+	medals_season			: str				= 'S',
+	gdp_year_shift			: int				= 0,
+	population_year_shift	: int				= 0,
+	use_gdp_mean			: bool				= False,
+	use_population_mean		: bool				= False,
+	remove_boycott			: bool				= False,
+	use_separate_host_vars	: bool				= False,
+	use_separate_close_vars	: bool				= False,
+	medals_data_type		: DsMedalsDataType	= DsMedalsDataType.DEFAULT,
+	gdp_data_type			: DsGdpDataType		= DsGdpDataType.DEFAULT,
+	population_data_type	: DsPopDataType		= DsPopDataType.DEFAULT,
+	is_verbose				: bool				= True
+) -> None:
+	"""Load stacked country data and save it to a CSV file.
+	@param output_path: Path where the CSV file will be saved.
+	@param ...: Other parameters are passed directly to load_stacked_countries.
+	"""
+	global_df, _ = load_stacked_countries(
+		countries_list			= countries_list,
+		year_start				= year_start,
+		year_end				= year_end,
+		medals_season			= medals_season,
+		gdp_year_shift			= gdp_year_shift,
+		population_year_shift	= population_year_shift,
+		use_gdp_mean			= use_gdp_mean,
+		use_population_mean		= use_population_mean,
+		remove_boycott			= remove_boycott,
+		use_separate_host_vars	= use_separate_host_vars,
+		use_separate_close_vars	= use_separate_close_vars,
+		medals_data_type		= medals_data_type,
+		gdp_data_type			= gdp_data_type,
+		population_data_type	= population_data_type,
+		is_verbose				= is_verbose
+	)
+	
+	global_df.to_csv(output_path, index=False)
+	
+	if is_verbose:
+		print(f"Dataset successfully saved to {output_path}")
+
+save_stacked_countries_to_csv(
+	output_path				= 'dataset/generated_olympic-panel-dataset.csv',
+	is_verbose				= True
+)

@@ -1237,12 +1237,26 @@ def save_stacked_countries_to_csv(
 		is_verbose				= is_verbose
 	)
 	
+	# Identify columns to remove
+	cols_to_remove = [
+		DF_COL_IS_BOYCOTT_URS, 
+		DF_COL_IS_BOYCOTT_USA, 
+		DF_COL_AM_HISTORY
+	]
+	
+	# Also remove all YEAR dummy columns (YEAR1896, YEAR1900, etc.)
+	year_dummy_cols = [c for c in global_df.columns if is_dfCol_yearDummy(c)]
+	cols_to_remove.extend(year_dummy_cols)
+	
+	# Drop existing columns safely
+	global_df = global_df.drop(columns=[c for c in cols_to_remove if c in global_df.columns])
+	
 	global_df.to_csv(output_path, index=False)
 	
 	if is_verbose:
 		print(f"Dataset successfully saved to {output_path}")
 
-save_stacked_countries_to_csv(
-	output_path				= 'dataset/generated_olympic-panel-dataset.csv',
-	is_verbose				= True
-)
+#save_stacked_countries_to_csv(
+#	output_path				= 'dataset/generated_olympic-panel-dataset.csv',
+#	is_verbose				= True
+#)

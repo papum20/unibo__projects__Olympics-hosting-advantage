@@ -107,6 +107,12 @@ ZINB richiede nessuna colonna vuota:
 **YEAR**: con `sep-host` spesso singolare, quindi non si possono analizzare insieme...  
 * tipo, no se aggiungi altre var (`GDP`, etc.)
 
+**AM**: in realtà, è quasi sempre questo il motivo per matrice singolare
+* predice troppo le medaglie
+  * soprattutto per i tanti Paesi con 0 medaglie (predizione perfetta)
+* nel paper forse funziona meglio perché diviso per sport non è esattamente 0
+* VIF leggermente più alto (1.3-1.5, contro le altre var con 1-1.1, eccetto quelle tipo GDP POP CLOSE_*)
+
 Host Pre Post sep-host: singolare.  
 
 #### 1996

@@ -1053,6 +1053,8 @@ def load_medals_gdp_and_population_aligned(
 	# exclude the last year to avoid dummy variable trap (perfect multicollinearity): const already has its role
 	for year in all_olympic_years[:-1]:
 		new_cols[DF_COL_YEAR_DUMMY(year)] = (merged_df.index == year)
+
+	#pd.get_dummies(df['Year'], drop_first=True)
 	
 	new_cols[DF_COL_IS_COMMUNIST] = country in COMMUNIST_BLOC_COUNTRIES
 
@@ -1256,7 +1258,12 @@ def save_stacked_countries_to_csv(
 	if is_verbose:
 		print(f"Dataset successfully saved to {output_path}")
 
-#save_stacked_countries_to_csv(
-#	output_path				= 'dataset/generated_olympic-panel-dataset.csv',
-#	is_verbose				= True
-#)
+
+
+#if __name__ == "__main__":
+#	
+#	save_stacked_countries_to_csv(
+#		output_path				= 'dataset/generated_olympic-panel-dataset.csv',
+#		is_verbose				= True
+#	)
+

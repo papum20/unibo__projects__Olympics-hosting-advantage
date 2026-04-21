@@ -9,8 +9,9 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 import statsmodels.api as sm
-from statsmodels.tsa.stattools import adfuller, grangercausalitytests
+from statsmodels.stats.outliers_influence import variance_inflation_factor
 from statsmodels.discrete.count_model import ZeroInflatedNegativeBinomialP
+from statsmodels.tsa.stattools import adfuller, grangercausalitytests
 
 from util.load_ds import (
 	load_gdp_series,
@@ -160,6 +161,15 @@ def perform_global_panel_regression(
 	if cols_before != cols_after:
 		print(f"Removed {cols_before - cols_after} empty/zero predictor columns.")
 		print(f"Kept predictors ({cols_after}): {X.columns.tolist()}")
+
+
+	# Check for multicollinearity using VIF
+	vif_data = pd.DataFrame()
+	vif_data["feature"] = X.columns
+
+	vif_data["VIF"] = [variance_inflation_factor(X.values, i)
+							for i in range(len(X.columns))]
+	print("Check multiocollinearity using VIF:\n" + vif_data.to_string())
 
 
 	X = sm.add_constant(X)

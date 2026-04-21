@@ -21,24 +21,7 @@ TIMESTAMP_DIR="out/scripts/regression/${TIMESTAMP}"
 
 # Create the exact requested directory structure
 mkdir -p "$TIMESTAMP_DIR"
-mkdir -p "$TIMESTAMP_DIR/Am-Host/"
-mkdir -p "$TIMESTAMP_DIR/Am-Host-Year/"
 
-mkdir -p "$TIMESTAMP_DIR/Am-Host-Pre-Post/"
-mkdir -p "$TIMESTAMP_DIR/Am-Host-Pre-Post_sep-host/"
-
-mkdir -p "$TIMESTAMP_DIR/Am-Host-Pre-Post-Close/"
-mkdir -p "$TIMESTAMP_DIR/Am-Host-Pre-Post-Close_sep-close/"
-
-mkdir -p "$TIMESTAMP_DIR/Am-Host-Close/"
-mkdir -p "$TIMESTAMP_DIR/Am-Host-Close_sep-close/"
-mkdir -p "$TIMESTAMP_DIR/Am-Host-Close_sep-host/"
-mkdir -p "$TIMESTAMP_DIR/Am-Host-Close_sep-host-close/"
-
-mkdir -p "$TIMESTAMP_DIR/Am-Host-Pre-Post-Close-gmt1_sep-host/"
-mkdir -p "$TIMESTAMP_DIR/Am-Host-Pre-Post-Close-gmt1_sep-host-close/"
-mkdir -p "$TIMESTAMP_DIR/Am-Host-Pre-Post-Close-wide_sep-host/"
-mkdir -p "$TIMESTAMP_DIR/Am-Host-Pre-Post-Close-wide_sep-host-close/"
 
 COMMON_ARGS="-s $SEASON --gdp-avg --gdp-log --pop-avg --pop-log --log --save --reg-zinb"
 
@@ -55,7 +38,7 @@ run_test() {
 	local vars="$base_vars"
 	local lag=1
 
-	if [ "$sep_host_flag" = "true" ]; then args="$args --sep-host"; fi
+	if [ "$sep_host_flag" = "true" ];  then args="$args --sep-host";  fi
 	if [ "$sep_close_flag" = "true" ]; then args="$args --sep-close"; fi
 
 	# Apply GDP, POP, COMM and adjust lag
@@ -87,83 +70,181 @@ for YEAR in 1964 1996; do
 
 		if [ "$YEAR" -eq 1996 ]; then COV_TYPE="--reg-hc3"; else COV_TYPE="--reg-hc0"; fi
 		
-		#ok with AM
 		run_test "$YEAR" "$COV_TYPE" "$WITH_GPC" "false" "false" "HOST"
-		#ok with AM
-		run_test "$YEAR" "$COV_TYPE" "$WITH_GPC" "false" "false" "HOST YEAR"
-		#ok with AM
 		run_test "$YEAR" "$COV_TYPE" "$WITH_GPC" "false" "false" "HOST PRE POST"
+		run_test "$YEAR" "$COV_TYPE" "$WITH_GPC" "true"  "false" "HOST PRE POST"
+		
+		CLOSE_VARS="HOST PRE POST CLOSE_CENTER CLOSE_GMT1 CLOSE_MAIN CLOSE_WEST CLOSE_WIDE"
+		run_test "$YEAR" "$COV_TYPE" "$WITH_GPC" "false" "false" "$CLOSE_VARS"
+		run_test "$YEAR" "$COV_TYPE" "$WITH_GPC" "false" "true"  "$CLOSE_VARS"
+
+		CLOSE_VARS="HOST CLOSE_CENTER CLOSE_GMT1 CLOSE_MAIN CLOSE_WEST CLOSE_WIDE"
+		run_test "$YEAR" "$COV_TYPE" "$WITH_GPC" "false" "false" "$CLOSE_VARS"
+		run_test "$YEAR" "$COV_TYPE" "$WITH_GPC" "false" "true"  "$CLOSE_VARS"
+		run_test "$YEAR" "$COV_TYPE" "$WITH_GPC" "true"  "false" "$CLOSE_VARS"
+		run_test "$YEAR" "$COV_TYPE" "$WITH_GPC" "true"  "true"  "$CLOSE_VARS"
+
+		CLOSE_VARS="HOST PRE POST CLOSE_WIDE"
+		run_test "$YEAR" "$COV_TYPE" "$WITH_GPC" "false" "false" "$CLOSE_VARS"
+		run_test "$YEAR" "$COV_TYPE" "$WITH_GPC" "false" "true"  "$CLOSE_VARS"
+		run_test "$YEAR" "$COV_TYPE" "$WITH_GPC" "true"  "false" "$CLOSE_VARS"
+		run_test "$YEAR" "$COV_TYPE" "$WITH_GPC" "true"  "true"  "$CLOSE_VARS"
+
+		wait
+
+		CLOSE_VARS="HOST PRE POST CLOSE_GMT1"
+		run_test "$YEAR" "$COV_TYPE" "$WITH_GPC" "false" "false" "$CLOSE_VARS"
+		run_test "$YEAR" "$COV_TYPE" "$WITH_GPC" "false" "true"  "$CLOSE_VARS"
+		run_test "$YEAR" "$COV_TYPE" "$WITH_GPC" "true"  "false" "$CLOSE_VARS"
+		run_test "$YEAR" "$COV_TYPE" "$WITH_GPC" "true"  "true"  "$CLOSE_VARS"
+
+		CLOSE_VARS="HOST PRE POST CLOSE_CENTER"
+		run_test "$YEAR" "$COV_TYPE" "$WITH_GPC" "false" "false" "$CLOSE_VARS"
+		run_test "$YEAR" "$COV_TYPE" "$WITH_GPC" "false" "true"  "$CLOSE_VARS"
+		run_test "$YEAR" "$COV_TYPE" "$WITH_GPC" "true"  "false" "$CLOSE_VARS"
+		run_test "$YEAR" "$COV_TYPE" "$WITH_GPC" "true"  "true"  "$CLOSE_VARS"
+
+		CLOSE_VARS="HOST PRE POST CLOSE_MAIN"
+		run_test "$YEAR" "$COV_TYPE" "$WITH_GPC" "false" "false" "$CLOSE_VARS"
+		run_test "$YEAR" "$COV_TYPE" "$WITH_GPC" "false" "true"  "$CLOSE_VARS"
+		run_test "$YEAR" "$COV_TYPE" "$WITH_GPC" "true"  "false" "$CLOSE_VARS"
+		run_test "$YEAR" "$COV_TYPE" "$WITH_GPC" "true"  "true"  "$CLOSE_VARS"
+
+		CLOSE_VARS="HOST PRE POST CLOSE_WEST"
+		run_test "$YEAR" "$COV_TYPE" "$WITH_GPC" "false" "false" "$CLOSE_VARS"
+		run_test "$YEAR" "$COV_TYPE" "$WITH_GPC" "false" "true"  "$CLOSE_VARS"
+		run_test "$YEAR" "$COV_TYPE" "$WITH_GPC" "true"  "false" "$CLOSE_VARS"
+		run_test "$YEAR" "$COV_TYPE" "$WITH_GPC" "true"  "true"  "$CLOSE_VARS"
+
+		wait
+		
+
+		# YEAR
+
+		run_test "$YEAR" "$COV_TYPE" "$WITH_GPC" "true" "false" "HOST PRE POST YEAR"
+
+		CLOSE_VARS="HOST PRE POST YEAR CLOSE_CENTER CLOSE_GMT1 CLOSE_MAIN CLOSE_WEST CLOSE_WIDE"
+		run_test "$YEAR" "$COV_TYPE" "$WITH_GPC" "false" "false" "$CLOSE_VARS"
+		run_test "$YEAR" "$COV_TYPE" "$WITH_GPC" "false" "true"  "$CLOSE_VARS"
+
+		CLOSE_VARS="HOST YEAR CLOSE_CENTER CLOSE_GMT1 CLOSE_MAIN CLOSE_WEST CLOSE_WIDE"
+		run_test "$YEAR" "$COV_TYPE" "$WITH_GPC" "false" "false" "$CLOSE_VARS"
+		run_test "$YEAR" "$COV_TYPE" "$WITH_GPC" "false" "true"  "$CLOSE_VARS"
+		run_test "$YEAR" "$COV_TYPE" "$WITH_GPC" "true"  "false" "$CLOSE_VARS"
+
+		CLOSE_VARS="HOST PRE POST YEAR CLOSE_WIDE"
+		run_test "$YEAR" "$COV_TYPE" "$WITH_GPC" "true" "false" "$CLOSE_VARS"
+		run_test "$YEAR" "$COV_TYPE" "$WITH_GPC" "true" "true"  "$CLOSE_VARS"
+
+		CLOSE_VARS="HOST PRE POST CLOSE_GMT1"
+		run_test "$YEAR" "$COV_TYPE" "$WITH_GPC" "true" "false" "$CLOSE_VARS"
+		run_test "$YEAR" "$COV_TYPE" "$WITH_GPC" "true" "true"  "$CLOSE_VARS"
+
+		wait
+
+
+		# AM
+
+		run_test "$YEAR" "$COV_TYPE" "$WITH_GPC" "false" "false" "HOST"
+		run_test "$YEAR" "$COV_TYPE" "$WITH_GPC" "false" "false" "HOST PRE POST"
+		run_test "$YEAR" "$COV_TYPE" "$WITH_GPC" "true"  "false" "HOST PRE POST"
 		
 		
 		# CLOSE variations (Am-Host-Pre-Post-Close)
-		CLOSE_VARS="HOST PRE POST CLOSE_CENTER CLOSE_GMT1 CLOSE_MAIN CLOSE_WEST CLOSE_WIDE"
-		
-		#ok with AM
-		run_test "$YEAR" "$COV_TYPE" "$WITH_GPC" "false" "false" "$CLOSE_VARS" # standard
-		#ok with AM
-		run_test "$YEAR" "$COV_TYPE" "$WITH_GPC" "false" "true" "$CLOSE_VARS"  # sep-close
+		CLOSE_VARS="AM HOST PRE POST CLOSE_CENTER CLOSE_GMT1 CLOSE_MAIN CLOSE_WEST CLOSE_WIDE"
+		run_test "$YEAR" "$COV_TYPE" "$WITH_GPC" "false" "false" "$CLOSE_VARS"
+		run_test "$YEAR" "$COV_TYPE" "$WITH_GPC" "true"  "true"  "$CLOSE_VARS"
 
-		CLOSE_VARS="HOST CLOSE_CENTER CLOSE_GMT1 CLOSE_MAIN CLOSE_WEST CLOSE_WIDE"
-		
-		#ok with AM
-		run_test "$YEAR" "$COV_TYPE" "$WITH_GPC" "false" "false" "$CLOSE_VARS" # standard
-		#ok with AM
-		run_test "$YEAR" "$COV_TYPE" "$WITH_GPC" "false" "true" "$CLOSE_VARS"  # sep-close
+		CLOSE_VARS="AM HOST CLOSE_CENTER CLOSE_GMT1 CLOSE_MAIN CLOSE_WEST CLOSE_WIDE"
+		run_test "$YEAR" "$COV_TYPE" "$WITH_GPC" "false" "false" "$CLOSE_VARS"
+		run_test "$YEAR" "$COV_TYPE" "$WITH_GPC" "false" "true"  "$CLOSE_VARS"
 
-		run_test "$YEAR" "$COV_TYPE" "$WITH_GPC" "true" "false" "$CLOSE_VARS"  # sep-host
-		run_test "$YEAR" "$COV_TYPE" "$WITH_GPC" "true" "true" "$CLOSE_VARS"   # sep-host-close
 
-		CLOSE_VARS="HOST PRE POST CLOSE_WIDE"
+		# AM YEAR
 
-		run_test "$YEAR" "$COV_TYPE" "$WITH_GPC" "true" "false" "$CLOSE_VARS"  # sep-host
-		run_test "$YEAR" "$COV_TYPE" "$WITH_GPC" "true" "true" "$CLOSE_VARS"   # sep-host-close
+		run_test "$YEAR" "$COV_TYPE" "$WITH_GPC" "false" "false" "AM HOST YEAR"
+		run_test "$YEAR" "$COV_TYPE" "$WITH_GPC" "true"  "false" "AM HOST YEAR"
 
-		CLOSE_VARS="HOST PRE POST CLOSE_GMT1"
-
-		run_test "$YEAR" "$COV_TYPE" "$WITH_GPC" "true" "false" "$CLOSE_VARS"  # sep-host
-		run_test "$YEAR" "$COV_TYPE" "$WITH_GPC" "true" "true" "$CLOSE_VARS"   # sep-host-close
-
-		# Am-Host-Pre-Post_sep-host
-		#ok with AM
-		run_test "$YEAR" "$COV_TYPE" "$WITH_GPC" "true" "false" "HOST PRE POST"
+		wait
 
 	done
 done
+
+
+
+YEAR=1996
+COV_TYPE="--reg-hc3"
+
+for WITH_GPC in false true; do
+
+	run_test "$YEAR" "$COV_TYPE" "$WITH_GPC" "false" "false" "HOST YEAR"
+	run_test "$YEAR" "$COV_TYPE" "$WITH_GPC" "false" "false" "HOST PRE POST YEAR"
+
+	CLOSE_VARS="HOST PRE POST YEAR CLOSE_CENTER CLOSE_GMT1 CLOSE_MAIN CLOSE_WEST CLOSE_WIDE"
+	run_test "$YEAR" "$COV_TYPE" "$WITH_GPC" "false" "false" "$CLOSE_VARS"
+	run_test "$YEAR" "$COV_TYPE" "$WITH_GPC" "false" "true"  "$CLOSE_VARS"
+	run_test "$YEAR" "$COV_TYPE" "$WITH_GPC" "true"  "false" "$CLOSE_VARS"
+	run_test "$YEAR" "$COV_TYPE" "$WITH_GPC" "true"  "true"  "$CLOSE_VARS"
+	
+	wait
+
+done
+
+
 
 echo "Waiting for all background processes to finish..."
 wait
 echo "Regressions complete."
 
 # ================================
-# 2. FILE SORTING
+# 2. AUTOMATED FILE SORTING
 # ================================
 
 echo "Sorting log files into directory structure..."
 
 BASE_OUT="out/scripts/regression"
 
-# 1. Move CLOSE variants first (most specific)
-find "$BASE_OUT" -maxdepth 1 -type f -name '*sep-host0*' -name '*sep-close1*' -name '*Pr+Po*' -name '*CC+CG1+CM+CW+Cwd*' -exec mv {} "$TIMESTAMP_DIR/Am-Host-Pre-Post-Close_sep-close/" \;
-find "$BASE_OUT" -maxdepth 1 -type f -name '*sep-host0*' -name '*sep-close0*' -name '*Pr+Po*' -name '*CC+CG1+CM+CW+Cwd*' -exec mv {} "$TIMESTAMP_DIR/Am-Host-Pre-Post-Close/" \;
+# Find all files in the current run (maxdepth 1)
+# Naming pattern: *sep-closeX_VAR1+VAR2*
+find "$BASE_OUT" -maxdepth 1 -type f -name "*sep-close*" -print0 | while IFS= read -r -d '' FILE; do
+    FILENAME=$(basename "$FILE")
 
-find "$BASE_OUT" -maxdepth 1 -type f -name '*sep-host0*' -name '*sep-close0*' -name '*CC+CG1+CM+CW+Cwd*' -exec mv {} "$TIMESTAMP_DIR/Am-Host-Close/" \;
-find "$BASE_OUT" -maxdepth 1 -type f -name '*sep-host0*' -name '*sep-close1*' -name '*CC+CG1+CM+CW+Cwd*' -exec mv {} "$TIMESTAMP_DIR/Am-Host-Close_sep-close/" \;
-find "$BASE_OUT" -maxdepth 1 -type f -name '*sep-host1*' -name '*sep-close0*' -name '*CC+CG1+CM+CW+Cwd*' -exec mv {} "$TIMESTAMP_DIR/Am-Host-Close_sep-host/" \;
-find "$BASE_OUT" -maxdepth 1 -type f -name '*sep-host1*' -name '*sep-close1*' -name '*CC+CG1+CM+CW+Cwd*' -exec mv {} "$TIMESTAMP_DIR/Am-Host-Close_sep-host-close/" \;
+    # 1. Extract the variable part after sep-closeX_
+    # Matches everything between 'sep-close' + one digit + '_' and the next '.' or end of string
+	VARS_PART=$(echo "$FILENAME" | sed -E 's/.*sep-close[0-9]_(.*)_\..*/\1/')
 
-find "$BASE_OUT" -maxdepth 1 -type f -name '*sep-host1*' -name '*sep-close1*' -name '*CG1*' -exec mv {} "$TIMESTAMP_DIR/Am-Host-Pre-Post-Close-gmt1_sep-host-close/" \;
-find "$BASE_OUT" -maxdepth 1 -type f -name '*sep-host1*' -name '*sep-close0*' -name '*CG1*' -exec mv {} "$TIMESTAMP_DIR/Am-Host-Pre-Post-Close-gmt1_sep-host/" \;
-find "$BASE_OUT" -maxdepth 1 -type f -name '*sep-host1*' -name '*sep-close1*' -name '*Cwd*' -exec mv {} "$TIMESTAMP_DIR/Am-Host-Pre-Post-Close-wide_sep-host-close/" \;
-find "$BASE_OUT" -maxdepth 1 -type f -name '*sep-host1*' -name '*sep-close0*' -name '*Cwd*' -exec mv {} "$TIMESTAMP_DIR/Am-Host-Pre-Post-Close-wide_sep-host/" \;
+    # 2. Extract flags
+    SEP_HOST=$(echo "$FILENAME" | grep -o "sep-host[0-1]" | sed 's/sep-host//')
+    SEP_CLOSE=$(echo "$FILENAME" | grep -o "sep-close[0-1]" | sed 's/sep-close//')
 
-# 2. Move PRE+POST variants (excluding CLOSE which are already moved)
-find "$BASE_OUT" -maxdepth 1 -type f -name "*+Pr+Po*" -name "*sep-host1*" -exec mv {} "$TIMESTAMP_DIR/Am-Host-Pre-Post_sep-host/" \;
-find "$BASE_OUT" -maxdepth 1 -type f -name "*+Pr+Po*" -name "*sep-host0*" -exec mv {} "$TIMESTAMP_DIR/Am-Host-Pre-Post/" \;
+    # 3. Clean VARS_PART: Remove G, B, P, C if they are isolated (not part of a word)
+    # This handles GDP, POP, COMM, BOYCOTT by only matching single letters G, B, P, C 
+    # surrounded by '+' or at boundaries.
+    CLEAN_VARS=$(echo "$VARS_PART" | sed -E 's/\b(G|B|P|C)\b//g' | sed -E 's/\+\+/\+/g' | sed 's/^\+//;s/\+$//')
+    
+    # 4. Construct folder name
+    # Replace '+' with '-' and handle abbreviations if preferred (e.g., 'Pr+Po' -> 'Pre-Post')
+    DIR_NAME=$(echo "$CLEAN_VARS" | sed 's/\+/ /g' | xargs | sed 's/ /-/g')
 
-# 3. Move YEAR variants (excluding PRE+POST and CLOSE which are already moved)
-find "$BASE_OUT" -maxdepth 1 -type f -name "*+Y*" -name "*sep-host0*" -exec mv {} "$TIMESTAMP_DIR/Am-Host-Year/" \;
+    # Handle the "AM HOST" vs "HOST" prefixing logic if needed, 
+    # but based on your request, we use the extracted part.
+    if [ -z "$DIR_NAME" ]; then DIR_NAME="Baseline"; fi
 
-# 4. Move baseline AM+HOST variants (Everything else remaining)
-find "$BASE_OUT" -maxdepth 1 -type f -name "*M+H*" -name "*sep-host0*" -exec mv {} "$TIMESTAMP_DIR/Am-Host/" \;
+    # 5. Append suffix based on flags
+    SUFFIX=""
+    if [ "$SEP_HOST" -eq 1 ] && [ "$SEP_CLOSE" -eq 1 ]; then
+        SUFFIX="_sep-host-close"
+    elif [ "$SEP_HOST" -eq 1 ]; then
+        SUFFIX="_sep-host"
+    elif [ "$SEP_CLOSE" -eq 1 ]; then
+        SUFFIX="_sep-close"
+    fi
+    
+    FINAL_DIR="$TIMESTAMP_DIR/${DIR_NAME}${SUFFIX}"
+
+    # 6. Move the file
+    mkdir -p "$FINAL_DIR"
+    mv "$FILE" "$FINAL_DIR/"
+done
 
 echo "All logs processed and moved to $TIMESTAMP_DIR successfully."

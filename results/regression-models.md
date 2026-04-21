@@ -115,6 +115,24 @@ ZINB richiede nessuna colonna vuota:
 
 Host Pre Post sep-host: singolare.  
 
+1964, YEAR (no AM):
+* error `HessianInversionWarning: Inverting hessian failed, no bse or cov_params available` with added GDP POP COMM for:
+  * HOST
+  * HOST PRE POST
+  * HOST PRE POST CLOSE
+  * HOST CLOSE sep-host-close
+
+ok with AM:
+* HOST
+* HOST YEAR
+* HOST PRE POST
+* HOST PRE POST sep-host
+* HOST PRE POST CLOSE 
+* HOST PRE POST CLOSE sep-close
+* HOST CLOSE 
+* HOST CLOSE sep-close 
+
+
 #### 1996
 
 ```sh

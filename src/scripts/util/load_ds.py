@@ -974,8 +974,8 @@ def load_medals_gdp_and_population_aligned(
 	merged_df = pd.DataFrame({
 		DF_COL_MEDALS			: medals_df['Total_Medals'],
 		DF_COL_AM_HISTORY		: medals_df[DF_COL_AM_HISTORY],
-		DF_COL_GDP				: gdp_shifted,
-		DF_COL_POPULATION		: population_shifted,
+		DF_COL_GDP				: gdp_shifted.reindex(medals_df.index),
+		DF_COL_POPULATION		: population_shifted.reindex(medals_df.index),
 		DF_COL_IS_BOYCOTT_URS	: medals_df[DF_COL_IS_BOYCOTT_URS],
 		DF_COL_IS_BOYCOTT_USA	: medals_df[DF_COL_IS_BOYCOTT_USA]
 	})
@@ -1016,7 +1016,7 @@ def load_medals_gdp_and_population_aligned(
 			new_cols[post_col_name] = (country == prev_host and (merged_df.index == olympic_year))
 	else:
 		# Use original Is_Host column
-		new_cols[DF_COL_IS_HOST] = medals_df[DF_COL_IS_HOST]
+		new_cols[DF_COL_IS_HOST] = medals_df.loc[merged_df.index, DF_COL_IS_HOST]
 
 	# Handle close to host columns
 	if use_separate_close_vars:
@@ -1039,7 +1039,7 @@ def load_medals_gdp_and_population_aligned(
 
 		def is_host_close(group):
 			# The host for the current year is the one in the group, and current country is not it
-			return (country in group) & (merged_years_host.isin(group)) & (~medals_df[DF_COL_IS_HOST])
+			return (country in group) & (merged_years_host.isin(group)) & (~medals_df.loc[merged_df.index, DF_COL_IS_HOST])
 
 		new_cols[DF_COL_IS_HOST_CLOSE_CENTER]	= is_host_close(CLOSE_GROUP_EU_CENTRAL)
 		new_cols[DF_COL_IS_HOST_CLOSE_GMT1]		= is_host_close(CLOSE_GROUP_EU_GMT1)
@@ -1189,8 +1189,8 @@ def load_stacked_countries(
 	if not use_separate_host_vars:
 		# Create Pre and Post using pandas groupby shift
 		# shift(-1) looks at the NEXT row. shift(1) looks at the PREVIOUS row.
-		global_df[DF_COL_IS_HOST_PRE]	= global_df.groupby('NOC')[DF_COL_IS_HOST].shift(-1).fillna('False').astype(bool)
-		global_df[DF_COL_IS_HOST_POST]	= global_df.groupby('NOC')[DF_COL_IS_HOST].shift(1).fillna('False').astype(bool)
+		global_df[DF_COL_IS_HOST_PRE]	= global_df.groupby('NOC')[DF_COL_IS_HOST].shift(-1).fillna(False).astype(bool)
+		global_df[DF_COL_IS_HOST_POST]	= global_df.groupby('NOC')[DF_COL_IS_HOST].shift(1).fillna(False).astype(bool)
 
 	# Clean up any remaining NaNs
 	global_df = global_df.dropna()

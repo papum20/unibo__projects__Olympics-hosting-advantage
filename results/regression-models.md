@@ -119,19 +119,28 @@ Host Pre Post sep-host: singolare.
 * error `HessianInversionWarning: Inverting hessian failed, no bse or cov_params available` with added GDP POP COMM for:
   * HOST
   * HOST PRE POST
+  * HOST PRE POST sep-host
   * HOST PRE POST CLOSE
+  * HOST PRE POST CLOSE_WIDE sep-host
+  * HOST PRE POST CLOSE_WIDE sep-host-close
+  * HOST CLOSE
+  * HOST CLOSE sep-host
   * HOST CLOSE sep-host-close
 
 ok with AM:
 * HOST
 * HOST YEAR
 * HOST PRE POST
-* HOST PRE POST sep-host
 * HOST PRE POST CLOSE 
 * HOST PRE POST CLOSE sep-close
 * HOST CLOSE 
 * HOST CLOSE sep-close 
 
+other errors:
+* (1996) HOST
+* (1996) HOST PRE POST
+* (1996) HOST PRE POST CLOSE_CENTER
+* (1996 GPD) HOST PRE POST CLOSE_WIDE sep-close
 
 #### 1996
 

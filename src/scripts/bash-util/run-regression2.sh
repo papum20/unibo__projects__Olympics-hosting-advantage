@@ -98,12 +98,6 @@ for YEAR in 1964 1996; do
 		run_test "$YEAR" "$COV_TYPE" "$WITH_GPC" "true"  "false" "$CLOSE_VARS"
 		run_test "$YEAR" "$COV_TYPE" "$WITH_GPC" "true"  "true"  "$CLOSE_VARS"
 
-		CLOSE_VARS="HOST PRE POST CLOSE_CENTER"
-		run_test "$YEAR" "$COV_TYPE" "$WITH_GPC" "false" "false" "$CLOSE_VARS"
-		run_test "$YEAR" "$COV_TYPE" "$WITH_GPC" "false" "true"  "$CLOSE_VARS"
-		run_test "$YEAR" "$COV_TYPE" "$WITH_GPC" "true"  "false" "$CLOSE_VARS"
-		run_test "$YEAR" "$COV_TYPE" "$WITH_GPC" "true"  "true"  "$CLOSE_VARS"
-
 		CLOSE_VARS="HOST PRE POST CLOSE_MAIN"
 		run_test "$YEAR" "$COV_TYPE" "$WITH_GPC" "false" "false" "$CLOSE_VARS"
 		run_test "$YEAR" "$COV_TYPE" "$WITH_GPC" "false" "true"  "$CLOSE_VARS"
@@ -112,9 +106,7 @@ for YEAR in 1964 1996; do
 
 		CLOSE_VARS="HOST PRE POST CLOSE_WEST"
 		run_test "$YEAR" "$COV_TYPE" "$WITH_GPC" "false" "false" "$CLOSE_VARS"
-		run_test "$YEAR" "$COV_TYPE" "$WITH_GPC" "false" "true"  "$CLOSE_VARS"
 		run_test "$YEAR" "$COV_TYPE" "$WITH_GPC" "true"  "false" "$CLOSE_VARS"
-		run_test "$YEAR" "$COV_TYPE" "$WITH_GPC" "true"  "true"  "$CLOSE_VARS"
 
 		wait
 		
@@ -130,13 +122,8 @@ for YEAR in 1964 1996; do
 		CLOSE_VARS="HOST YEAR CLOSE_CENTER CLOSE_GMT1 CLOSE_MAIN CLOSE_WEST CLOSE_WIDE"
 		run_test "$YEAR" "$COV_TYPE" "$WITH_GPC" "false" "false" "$CLOSE_VARS"
 		run_test "$YEAR" "$COV_TYPE" "$WITH_GPC" "false" "true"  "$CLOSE_VARS"
-		run_test "$YEAR" "$COV_TYPE" "$WITH_GPC" "true"  "false" "$CLOSE_VARS"
 
 		CLOSE_VARS="HOST PRE POST YEAR CLOSE_WIDE"
-		run_test "$YEAR" "$COV_TYPE" "$WITH_GPC" "true" "false" "$CLOSE_VARS"
-		run_test "$YEAR" "$COV_TYPE" "$WITH_GPC" "true" "true"  "$CLOSE_VARS"
-
-		CLOSE_VARS="HOST PRE POST CLOSE_GMT1"
 		run_test "$YEAR" "$COV_TYPE" "$WITH_GPC" "true" "false" "$CLOSE_VARS"
 		run_test "$YEAR" "$COV_TYPE" "$WITH_GPC" "true" "true"  "$CLOSE_VARS"
 
@@ -145,15 +132,13 @@ for YEAR in 1964 1996; do
 
 		# AM
 
-		run_test "$YEAR" "$COV_TYPE" "$WITH_GPC" "false" "false" "HOST"
-		run_test "$YEAR" "$COV_TYPE" "$WITH_GPC" "false" "false" "HOST PRE POST"
-		run_test "$YEAR" "$COV_TYPE" "$WITH_GPC" "true"  "false" "HOST PRE POST"
+		run_test "$YEAR" "$COV_TYPE" "$WITH_GPC" "false" "false" "AM HOST"
+		run_test "$YEAR" "$COV_TYPE" "$WITH_GPC" "false" "false" "AM HOST PRE POST"
 		
 		
 		# CLOSE variations (Am-Host-Pre-Post-Close)
 		CLOSE_VARS="AM HOST PRE POST CLOSE_CENTER CLOSE_GMT1 CLOSE_MAIN CLOSE_WEST CLOSE_WIDE"
 		run_test "$YEAR" "$COV_TYPE" "$WITH_GPC" "false" "false" "$CLOSE_VARS"
-		run_test "$YEAR" "$COV_TYPE" "$WITH_GPC" "true"  "true"  "$CLOSE_VARS"
 
 		CLOSE_VARS="AM HOST CLOSE_CENTER CLOSE_GMT1 CLOSE_MAIN CLOSE_WEST CLOSE_WIDE"
 		run_test "$YEAR" "$COV_TYPE" "$WITH_GPC" "false" "false" "$CLOSE_VARS"
@@ -163,11 +148,28 @@ for YEAR in 1964 1996; do
 		# AM YEAR
 
 		run_test "$YEAR" "$COV_TYPE" "$WITH_GPC" "false" "false" "AM HOST YEAR"
-		run_test "$YEAR" "$COV_TYPE" "$WITH_GPC" "true"  "false" "AM HOST YEAR"
 
 		wait
 
 	done
+done
+
+
+
+YEAR=1964
+COV_TYPE="--reg-hc0"
+
+for WITH_GPC in false true; do
+
+	run_test "$YEAR" "$COV_TYPE" "$WITH_GPC" "false" "false" "HOST YEAR"
+	run_test "$YEAR" "$COV_TYPE" "$WITH_GPC" "false" "false" "HOST PRE POST YEAR"
+    
+    CLOSE_VARS="HOST PRE POST CLOSE_CENTER"
+    run_test "$YEAR" "$COV_TYPE" "$WITH_GPC" "false" "false" "$CLOSE_VARS"
+    run_test "$YEAR" "$COV_TYPE" "$WITH_GPC" "true"  "false" "$CLOSE_VARS"
+	
+	wait
+
 done
 
 
@@ -185,7 +187,10 @@ for WITH_GPC in false true; do
 	run_test "$YEAR" "$COV_TYPE" "$WITH_GPC" "false" "true"  "$CLOSE_VARS"
 	run_test "$YEAR" "$COV_TYPE" "$WITH_GPC" "true"  "false" "$CLOSE_VARS"
 	run_test "$YEAR" "$COV_TYPE" "$WITH_GPC" "true"  "true"  "$CLOSE_VARS"
-	
+
+	CLOSE_VARS="HOST YEAR CLOSE_CENTER CLOSE_GMT1 CLOSE_MAIN CLOSE_WEST CLOSE_WIDE"
+	run_test "$YEAR" "$COV_TYPE" "$WITH_GPC" "true"  "false" "$CLOSE_VARS"
+
 	wait
 
 done

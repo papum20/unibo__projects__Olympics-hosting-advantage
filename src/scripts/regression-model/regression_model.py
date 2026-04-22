@@ -164,12 +164,16 @@ def perform_global_panel_regression(
 
 
 	# Check for multicollinearity using VIF
-	vif_data = pd.DataFrame()
-	vif_data["feature"] = X.columns
+	try:
+		vif_data = pd.DataFrame()
+		vif_data["feature"] = X.columns
 
-	vif_data["VIF"] = [variance_inflation_factor(X.values, i)
-							for i in range(len(X.columns))]
-	print("Check multiocollinearity using VIF:\n" + vif_data.to_string())
+		vif_data["VIF"] = [variance_inflation_factor(X.values, i)
+								for i in range(len(X.columns))]
+		print("Check multiocollinearity using VIF:\n" + vif_data.to_string())
+	except Exception as e:
+		print(f"Error calculating VIF: {e}")
+		print("Skipping VIF calculation.")
 
 
 	X = sm.add_constant(X)

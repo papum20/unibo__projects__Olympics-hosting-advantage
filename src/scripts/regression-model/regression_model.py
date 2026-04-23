@@ -371,6 +371,12 @@ if __name__ == "__main__":
 		)
 		
 		parser.add_argument(
+			'--min-lag',
+			type=int,
+			default=0,
+			help='Minimum lag for the Granger causality test - default: 0'
+		)
+		parser.add_argument(
 			'--max-lag',
 			type=int,
 			default=7,
@@ -488,6 +494,7 @@ if __name__ == "__main__":
 		save_plot_flag		= args.save
 		year_start			= args.start_year
 		year_end			= args.end_year
+		min_lag				= args.min_lag
 		max_lag				= args.max_lag
 		
 		ctrl_vars			= args.ctrl_vars
@@ -580,7 +587,7 @@ if __name__ == "__main__":
 		# Granger (manual)
 		#
 
-		for shift in range(0, max_lag + 1):
+		for shift in range(min_lag, max_lag + 1):
 			print(f"\nGranger causality test (manual) with lag {shift}:")
 
 			#if len(noc_list) == 1:

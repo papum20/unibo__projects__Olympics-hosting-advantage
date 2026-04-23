@@ -34,18 +34,22 @@ run_test() {
 	local sep_close_flag=$5
 	local base_vars=$6
 	local use_var_boycott=$7
+	local use_var_comm=$8
+	local min_lag=$9
+	local max_lag=${10}
 
 	local args="--start-year $start_year $cov_type"
 	local vars="$base_vars"
-	local lag=1
 
 	if [ "$sep_host_flag" = "true" ];  then args="$args --sep-host";  fi
 	if [ "$sep_close_flag" = "true" ]; then args="$args --sep-close"; fi
 
 	# Apply GDP, POP, COMM and adjust lag
 	if [ "$with_gpc" = "true" ]; then
-		vars="$vars GDP POP COMM"
-		lag=11
+		vars="$vars GDP POP"
+		if [ "$use_var_comm" = "true" ]; then
+			vars="$vars COMM"
+		fi
 	fi
 
 	# Add Boycott for 1964 if YEAR is NOT in the variables
@@ -55,7 +59,7 @@ run_test() {
         fi
 	fi
 
-	args="$args --max-lag $lag"
+	args="$args --min-lag $min_lag --max-lag $max_lag"
 
 	python3 -u src/scripts/regression-model/regression_model.py \
 		$COMMON_ARGS $args --ctrl-vars $vars &
@@ -63,115 +67,73 @@ run_test() {
 	sleep 0.1 # slight delay to prevent filename timestamp collisions
 }
 
+
+
+CLOSE_VARS="CLOSE_CENTER CLOSE_GMT1 CLOSE_MAIN CLOSE_WEST CLOSE_WIDE"
+
 for YEAR in 1964 1996; do
 	
 	if [ "$YEAR" -eq 1996 ]; then COV_TYPE="--reg-hc3"; else COV_TYPE="--reg-hc0"; fi
 	
 
 	for WITH_GPC in false true; do
+
+		MIN_LAG=0
+		if [ "$WITH_GPC" = "true" ]; then MAX_LAG=11; else MAX_LAG=0; fi
 		
-		run_test "$YEAR" "$COV_TYPE" "$WITH_GPC" "false" "false" "HOST PRE POST" "true"
-
-
-
-		run_test "$YEAR" "$COV_TYPE" "$WITH_GPC" "false" "false" "HOST"
-		run_test "$YEAR" "$COV_TYPE" "$WITH_GPC" "true"  "false" "HOST PRE POST"
-		
-		CLOSE_VARS="HOST PRE POST CLOSE_CENTER CLOSE_GMT1 CLOSE_MAIN CLOSE_WEST CLOSE_WIDE"
-		run_test "$YEAR" "$COV_TYPE" "$WITH_GPC" "false" "false" "$CLOSE_VARS"
-		run_test "$YEAR" "$COV_TYPE" "$WITH_GPC" "false" "true"  "$CLOSE_VARS"
-
-		CLOSE_VARS="HOST CLOSE_CENTER CLOSE_GMT1 CLOSE_MAIN CLOSE_WEST CLOSE_WIDE"
-		run_test "$YEAR" "$COV_TYPE" "$WITH_GPC" "false" "false" "$CLOSE_VARS"
-		run_test "$YEAR" "$COV_TYPE" "$WITH_GPC" "false" "true"  "$CLOSE_VARS"
-		run_test "$YEAR" "$COV_TYPE" "$WITH_GPC" "true"  "false" "$CLOSE_VARS"
-		run_test "$YEAR" "$COV_TYPE" "$WITH_GPC" "true"  "true"  "$CLOSE_VARS"
-
-		CLOSE_VARS="HOST PRE POST CLOSE_WIDE"
-		run_test "$YEAR" "$COV_TYPE" "$WITH_GPC" "false" "false" "$CLOSE_VARS"
-		run_test "$YEAR" "$COV_TYPE" "$WITH_GPC" "false" "true"  "$CLOSE_VARS"
-		run_test "$YEAR" "$COV_TYPE" "$WITH_GPC" "true"  "false" "$CLOSE_VARS"
-		run_test "$YEAR" "$COV_TYPE" "$WITH_GPC" "true"  "true"  "$CLOSE_VARS"
-
-		wait
-
-		CLOSE_VARS="HOST PRE POST CLOSE_GMT1"
-		run_test "$YEAR" "$COV_TYPE" "$WITH_GPC" "false" "false" "$CLOSE_VARS"
-		run_test "$YEAR" "$COV_TYPE" "$WITH_GPC" "false" "true"  "$CLOSE_VARS"
-		run_test "$YEAR" "$COV_TYPE" "$WITH_GPC" "true"  "false" "$CLOSE_VARS"
-		run_test "$YEAR" "$COV_TYPE" "$WITH_GPC" "true"  "true"  "$CLOSE_VARS"
-
-		CLOSE_VARS="HOST PRE POST CLOSE_MAIN"
-		run_test "$YEAR" "$COV_TYPE" "$WITH_GPC" "false" "false" "$CLOSE_VARS"
-		run_test "$YEAR" "$COV_TYPE" "$WITH_GPC" "false" "true"  "$CLOSE_VARS"
-		run_test "$YEAR" "$COV_TYPE" "$WITH_GPC" "true"  "false" "$CLOSE_VARS"
-		run_test "$YEAR" "$COV_TYPE" "$WITH_GPC" "true"  "true"  "$CLOSE_VARS"
-
-		CLOSE_VARS="HOST PRE POST CLOSE_WEST"
-		run_test "$YEAR" "$COV_TYPE" "$WITH_GPC" "false" "false" "$CLOSE_VARS"
-		run_test "$YEAR" "$COV_TYPE" "$WITH_GPC" "true"  "false" "$CLOSE_VARS"
-
-		wait
-		
+		run_test "$YEAR" "$COV_TYPE" "$WITH_GPC" "false" "false" "HOST PRE POST" "true" "true" $MIN_LAG $MAX_LAG
 
 		# YEAR
-
-		run_test "$YEAR" "$COV_TYPE" "$WITH_GPC" "false" "false" "HOST YEAR" "true"
-		run_test "$YEAR" "$COV_TYPE" "$WITH_GPC" "true"  "false" "HOST YEAR" "true"
-		run_test "$YEAR" "$COV_TYPE" "$WITH_GPC" "false" "false" "HOST PRE POST YEAR" "true"
-		run_test "$YEAR" "$COV_TYPE" "$WITH_GPC" "true"  "false" "HOST PRE POST YEAR" "true"
-
-
-
-		CLOSE_VARS="HOST PRE POST YEAR CLOSE_CENTER CLOSE_GMT1 CLOSE_MAIN CLOSE_WEST CLOSE_WIDE"
-		run_test "$YEAR" "$COV_TYPE" "$WITH_GPC" "false" "false" "$CLOSE_VARS"
-		run_test "$YEAR" "$COV_TYPE" "$WITH_GPC" "false" "true"  "$CLOSE_VARS"
-
-		CLOSE_VARS="HOST YEAR CLOSE_CENTER CLOSE_GMT1 CLOSE_MAIN CLOSE_WEST CLOSE_WIDE"
-		run_test "$YEAR" "$COV_TYPE" "$WITH_GPC" "false" "false" "$CLOSE_VARS"
-		run_test "$YEAR" "$COV_TYPE" "$WITH_GPC" "false" "true"  "$CLOSE_VARS"
-
-		CLOSE_VARS="HOST PRE POST YEAR CLOSE_WIDE"
-		run_test "$YEAR" "$COV_TYPE" "$WITH_GPC" "true" "false" "$CLOSE_VARS"
-		run_test "$YEAR" "$COV_TYPE" "$WITH_GPC" "true" "true"  "$CLOSE_VARS"
-
-		wait
-
+		run_test "$YEAR" "$COV_TYPE" "$WITH_GPC" "false" "false" "HOST YEAR" "true" "true" $MIN_LAG $MAX_LAG
+		run_test "$YEAR" "$COV_TYPE" "$WITH_GPC" "true"  "false" "HOST YEAR" "true" "true" $MIN_LAG $MAX_LAG
+		run_test "$YEAR" "$COV_TYPE" "$WITH_GPC" "false" "false" "HOST PRE POST YEAR" "true" "true" $MIN_LAG $MAX_LAG
+		run_test "$YEAR" "$COV_TYPE" "$WITH_GPC" "true"  "false" "HOST PRE POST YEAR" "true" "true" $MIN_LAG $MAX_LAG
 
 		# AM
+		run_test "$YEAR" "$COV_TYPE" "$WITH_GPC" "true"  "false" "AM HOST"			"true" "true" $MIN_LAG $MAX_LAG
+		run_test "$YEAR" "$COV_TYPE" "$WITH_GPC" "false" "false" "AM HOST PRE POST" "true" "true" $MIN_LAG $MAX_LAG
 
-		run_test "$YEAR" "$COV_TYPE" "$WITH_GPC" "true"  "false" "AM HOST" "true"
-		run_test "$YEAR" "$COV_TYPE" "$WITH_GPC" "false" "false" "AM HOST PRE POST" "true"
-
-		CLOSE_VARS="CLOSE_CENTER CLOSE_GMT1 CLOSE_MAIN CLOSE_WEST CLOSE_WIDE" "true"
-		run_test "$YEAR" "$COV_TYPE" "$WITH_GPC" "false" "true" "AM HOST PRE POST $CLOSE_VARS" "true"
-
-		
-		
-
-		CLOSE_VARS="AM HOST CLOSE_CENTER CLOSE_GMT1 CLOSE_MAIN CLOSE_WEST CLOSE_WIDE"
-		run_test "$YEAR" "$COV_TYPE" "$WITH_GPC" "false" "false" "$CLOSE_VARS"
-		run_test "$YEAR" "$COV_TYPE" "$WITH_GPC" "false" "true"  "$CLOSE_VARS"
-
+		run_test "$YEAR" "$COV_TYPE" "$WITH_GPC" "false" "true" "AM HOST PRE POST $CLOSE_VARS"	"true" "true" $MIN_LAG $MAX_LAG
 
 		# AM YEAR
-
-		run_test "$YEAR" "$COV_TYPE" "$WITH_GPC" "false" "false" "AM HOST YEAR" "true"
+		run_test "$YEAR" "$COV_TYPE" "$WITH_GPC" "false" "false" "AM HOST YEAR" "true" "true" $MIN_LAG $MAX_LAG
 
 		wait
 
 	done
 
-
 	WITH_GPC="true"
 	
-	CLOSE_VARS="CLOSE_CENTER CLOSE_GMT1 CLOSE_MAIN CLOSE_WEST CLOSE_WIDE" "true"
-	run_test "$YEAR" "$COV_TYPE" "$WITH_GPC" "true"  "true"  "HOST $CLOSE_VARS" "true"
-	run_test "$YEAR" "$COV_TYPE" "$WITH_GPC" "false" "false" "HOST PRE POST $CLOSE_VARS" "true"
-	run_test "$YEAR" "$COV_TYPE" "$WITH_GPC" "false" "true"  "HOST PRE POST $CLOSE_VARS" "true"
-	run_test "$YEAR" "$COV_TYPE" "$WITH_GPC" "true"  "true"  "HOST PRE POST $CLOSE_VARS" "true"
-	run_test "$YEAR" "$COV_TYPE" "$WITH_GPC" "false" "true"  "HOST PRE POST YEAR $CLOSE_VARS" "true"
-	run_test "$YEAR" "$COV_TYPE" "$WITH_GPC" "false" "true"  "AM HOST PRE POST $CLOSE_VARS" "true"
+	# CLOSE
+	run_test "$YEAR" "$COV_TYPE" "$WITH_GPC" "true"  "true"  "HOST $CLOSE_VARS" 				"true" "true" $MIN_LAG $MAX_LAG
+	run_test "$YEAR" "$COV_TYPE" "$WITH_GPC" "false" "false" "HOST PRE POST $CLOSE_VARS"		"true" "true" $MIN_LAG $MAX_LAG
+	run_test "$YEAR" "$COV_TYPE" "$WITH_GPC" "false" "true"  "HOST PRE POST $CLOSE_VARS"		"true" "true" $MIN_LAG $MAX_LAG
+	run_test "$YEAR" "$COV_TYPE" "$WITH_GPC" "true"  "true"  "HOST PRE POST $CLOSE_VARS"		"true" "true" $MIN_LAG $MAX_LAG
+	run_test "$YEAR" "$COV_TYPE" "$WITH_GPC" "false" "true"  "HOST PRE POST YEAR $CLOSE_VARS"	"true" "true" $MIN_LAG $MAX_LAG
+	run_test "$YEAR" "$COV_TYPE" "$WITH_GPC" "false" "true"  "AM HOST PRE POST $CLOSE_VARS"		"true" "true" $MIN_LAG $MAX_LAG
+
+	# lags 12 to 28, with a step of 4
+	for MIN_LAG in 12 16 20 24 28; do
+
+		MAX_LAG=$MIN_LAG
+
+		run_test "$YEAR" "$COV_TYPE" "$WITH_GPC" "true"  "false" "HOST PRE POST"		"true" "true" $MIN_LAG $MAX_LAG
+		run_test "$YEAR" "$COV_TYPE" "$WITH_GPC" "false" "false" "AM HOST PRE POST"		"true" "true" $MIN_LAG $MAX_LAG
+		run_test "$YEAR" "$COV_TYPE" "$WITH_GPC" "true"  "false" "AM HOST PRE POST"		"true" "true" $MIN_LAG $MAX_LAG
+		run_test "$YEAR" "$COV_TYPE" "$WITH_GPC" "true"  "false" "HOST PRE POST YEAR"	"true" "true" $MIN_LAG $MAX_LAG
+
+		wait
+	done
+
+
+	COV_TYPE=""
+	MIN_LAG=0
+	MAX_LAG=11
+
+	run_test "$YEAR" "$COV_TYPE" "$WITH_GPC" "false" "false" "HOST PRE POST YEAR $CLOSE_VARS"	"true" "true" $MIN_LAG $MAX_LAG
+	run_test "$YEAR" "$COV_TYPE" "$WITH_GPC" "false" "true"  "HOST PRE POST $CLOSE_VARS"		"true" "true" $MIN_LAG $MAX_LAG
+	run_test "$YEAR" "$COV_TYPE" "$WITH_GPC" "true"  "true"  "HOST $CLOSE_VARS"					"true" "true" $MIN_LAG $MAX_LAG
+
 
 done
 
@@ -180,36 +142,23 @@ done
 YEAR=1964
 COV_TYPE="--reg-hc0"
 
-for WITH_GPC in false true; do
-
-
-
-
-
-
-	run_test "$YEAR" "$COV_TYPE" "$WITH_GPC" "false" "false" "HOST YEAR"
-	run_test "$YEAR" "$COV_TYPE" "$WITH_GPC" "false" "false" "HOST PRE POST YEAR"
-    
-    CLOSE_VARS="HOST PRE POST CLOSE_CENTER"
-    run_test "$YEAR" "$COV_TYPE" "$WITH_GPC" "false" "false" "$CLOSE_VARS"
-    run_test "$YEAR" "$COV_TYPE" "$WITH_GPC" "true"  "false" "$CLOSE_VARS"
-	
-	wait
-
-done
-
 WITH_GPC="true"
+MIN_LAG=0
+MAX_LAG=11
+		
+run_test "$YEAR" "$COV_TYPE" "$WITH_GPC" "true" "false" "HOST PRE POST"			"false" "true" $MIN_LAG $MAX_LAG
+run_test "$YEAR" "$COV_TYPE" "$WITH_GPC" "true" "false" "HOST PRE POST"			"true"  "true" $MIN_LAG $MAX_LAG
+run_test "$YEAR" "$COV_TYPE" "$WITH_GPC" "true" "false" "AM HOST PRE POST"		"false" "true" $MIN_LAG $MAX_LAG
+run_test "$YEAR" "$COV_TYPE" "$WITH_GPC" "true" "false" "AM HOST PRE POST"		"true"  "true" $MIN_LAG $MAX_LAG
+run_test "$YEAR" "$COV_TYPE" "$WITH_GPC" "true" "false" "HOST PRE POST YEAR"	"false" "true" $MIN_LAG $MAX_LAG
+run_test "$YEAR" "$COV_TYPE" "$WITH_GPC" "true" "false" "HOST PRE POST YEAR"	"true"  "true" $MIN_LAG $MAX_LAG
 
-run_test "$YEAR" "$COV_TYPE" "$WITH_GPC" "true" "false" "HOST PRE POST" "false"
-run_test "$YEAR" "$COV_TYPE" "$WITH_GPC" "true" "false" "HOST PRE POST" "true"
-run_test "$YEAR" "$COV_TYPE" "$WITH_GPC" "true" "false" "AM HOST PRE POST" "false"
-run_test "$YEAR" "$COV_TYPE" "$WITH_GPC" "true" "false" "AM HOST PRE POST" "true"
-run_test "$YEAR" "$COV_TYPE" "$WITH_GPC" "true" "false" "HOST PRE POST YEAR" "false"
-run_test "$YEAR" "$COV_TYPE" "$WITH_GPC" "true" "false" "HOST PRE POST YEAR" "true"
+run_test "$YEAR" "$COV_TYPE" "$WITH_GPC" "true" "false" "HOST PRE POST"			"true" "false" $MIN_LAG $MAX_LAG
+run_test "$YEAR" "$COV_TYPE" "$WITH_GPC" "true" "false" "HOST PRE POST YEAR"	"true" "false" $MIN_LAG $MAX_LAG
+run_test "$YEAR" "$COV_TYPE" "$WITH_GPC" "true" "false" "AM HOST PRE POST"		"true" "false" $MIN_LAG $MAX_LAG
 
-run_test "$YEAR" "$COV_TYPE" "$WITH_GPC" "true" "false" "HOST PRE POST COMM" "true"
-run_test "$YEAR" "$COV_TYPE" "$WITH_GPC" "true" "false" "HOST PRE POST YEAR COMM" "true"
-run_test "$YEAR" "$COV_TYPE" "$WITH_GPC" "true" "false" "AM HOST PRE POST COMM" "true"
+wait
+
 
 
 YEAR=1996
@@ -217,37 +166,44 @@ COV_TYPE="--reg-hc3"
 
 for WITH_GPC in false true; do
 
-	run_test "$YEAR" "$COV_TYPE" "$WITH_GPC" "true" "false" "HOST PRE POST" "true"
-	run_test "$YEAR" "$COV_TYPE" "$WITH_GPC" "true" "false" "HOST PRE POST YEAR" "true"
+	MIN_LAG=0
+	if [ "$WITH_GPC" = "true" ]; then MAX_LAG=11; else MAX_LAG=0; fi
 
-	CLOSE_VARS="CLOSE_CENTER CLOSE_GMT1 CLOSE_MAIN CLOSE_WEST CLOSE_WIDE" "true"
-	run_test "$YEAR" "$COV_TYPE" "$WITH_GPC" "true" "false" "HOST PRE POST YEAR $CLOSE_VARS" "true"
-
-
-
-	run_test "$YEAR" "$COV_TYPE" "$WITH_GPC" "false" "false" "HOST YEAR"
-	run_test "$YEAR" "$COV_TYPE" "$WITH_GPC" "false" "false" "HOST PRE POST YEAR"
-
-	CLOSE_VARS="HOST PRE POST YEAR CLOSE_CENTER CLOSE_GMT1 CLOSE_MAIN CLOSE_WEST CLOSE_WIDE"
-	run_test "$YEAR" "$COV_TYPE" "$WITH_GPC" "false" "false" "$CLOSE_VARS"
-	run_test "$YEAR" "$COV_TYPE" "$WITH_GPC" "false" "true"  "$CLOSE_VARS"
-	run_test "$YEAR" "$COV_TYPE" "$WITH_GPC" "true"  "false" "$CLOSE_VARS"
-	run_test "$YEAR" "$COV_TYPE" "$WITH_GPC" "true"  "true"  "$CLOSE_VARS"
-
-	CLOSE_VARS="HOST YEAR CLOSE_CENTER CLOSE_GMT1 CLOSE_MAIN CLOSE_WEST CLOSE_WIDE"
-	run_test "$YEAR" "$COV_TYPE" "$WITH_GPC" "true"  "false" "$CLOSE_VARS"
-
-	wait
+	run_test "$YEAR" "$COV_TYPE" "$WITH_GPC" "true" "false" "HOST PRE POST"			"true" "true" $MIN_LAG $MAX_LAG
+	run_test "$YEAR" "$COV_TYPE" "$WITH_GPC" "true" "false" "HOST PRE POST YEAR"	"true" "true" $MIN_LAG $MAX_LAG
+	# CLOSE
+	run_test "$YEAR" "$COV_TYPE" "$WITH_GPC" "true" "false" "HOST PRE POST YEAR $CLOSE_VARS" "true" "true" $MIN_LAG $MAX_LAG
 
 done
 
 WITH_GPC="true"
+MIN_LAG=0
+MAX_LAG=11
 
-run_test "$YEAR" "$COV_TYPE" "$WITH_GPC" "true" "false" "HOST PRE POST YEAR CLOSE_WIDE" "true"
-run_test "$YEAR" "$COV_TYPE" "$WITH_GPC" "true" "false" "HOST PRE POST YEAR COMM" "true"
-run_test "$YEAR" "$COV_TYPE" "$WITH_GPC" "true" "false" "AM HOST PRE POST" "true"
-run_test "$YEAR" "$COV_TYPE" "$WITH_GPC" "true" "false" "AM HOST PRE POST COMM" "true"
+run_test "$YEAR" "$COV_TYPE" "$WITH_GPC" "true" "false" "HOST PRE POST YEAR CLOSE_WIDE" "true" "true" $MIN_LAG $MAX_LAG
+run_test "$YEAR" "$COV_TYPE" "$WITH_GPC" "true" "false" "HOST PRE POST YEAR COMM"		"true" "true" $MIN_LAG $MAX_LAG
+run_test "$YEAR" "$COV_TYPE" "$WITH_GPC" "true" "false" "AM HOST PRE POST"				"true" "true" $MIN_LAG $MAX_LAG
+run_test "$YEAR" "$COV_TYPE" "$WITH_GPC" "true" "false" "AM HOST PRE POST COMM" 		"true" "true" $MIN_LAG $MAX_LAG
 
+wait
+
+
+
+COV_TYPE="--reg-hc0"
+
+for YEAR in 1932 1896; do
+
+	run_test "$YEAR" "$COV_TYPE" "$WITH_GPC" "true"  "false" "HOST PRE POST"		"true" "true" $MIN_LAG $MAX_LAG
+	run_test "$YEAR" "$COV_TYPE" "$WITH_GPC" "false" "false" "AM HOST PRE POST"		"true" "true" $MIN_LAG $MAX_LAG
+	run_test "$YEAR" "$COV_TYPE" "$WITH_GPC" "true"  "false" "AM HOST PRE POST"		"true" "true" $MIN_LAG $MAX_LAG
+	run_test "$YEAR" "$COV_TYPE" "$WITH_GPC" "true"  "false" "HOST PRE POST YEAR"	"true" "true" $MIN_LAG $MAX_LAG
+
+	# CLOSE
+	run_test "$YEAR" "$COV_TYPE" "$WITH_GPC" "true"  "true"  "HOST $CLOSE_VARS"				"true" "true" $MIN_LAG $MAX_LAG
+	run_test "$YEAR" "$COV_TYPE" "$WITH_GPC" "false" "false" "HOST PRE POST $CLOSE_VARS"	"true" "true" $MIN_LAG $MAX_LAG
+	run_test "$YEAR" "$COV_TYPE" "$WITH_GPC" "false" "true"  "AM HOST PRE POST $CLOSE_VARS"	"true" "true" $MIN_LAG $MAX_LAG
+
+done
 
 
 

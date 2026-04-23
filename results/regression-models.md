@@ -76,7 +76,6 @@ Ours:
   * H+Pr+Po+G+P+B sep-host: C/None
   * M+H+Pr+Po+G+P+B sep-host: C/None
   * Y+H+Pr+Po+G+P+B sep-host: C/None
-TODO...
 * more lags
   * all 0-11
   * H+Pr+Po+G+P+C+B sep-host: 12-30
@@ -88,14 +87,18 @@ TODO...
   * M+H+Pr+Po+G+P+C+B:
   * M+H+Pr+Po+G+P+C+B sep-host: 
   * Y+H+Pr+Po+G+P+C+B sep-host: 
-  * show impact of CLOSE on prev years:
+  * show impact of CLOSE on prev years (probably higher, given the times):
     * H+Pr+Po+Y+G+P+C+CLOSE: 
     * M+H+Pr+Po+G+P+C+CLOSE sep-close:
-  * H+G+P+C sep-host-close: 
+ 	* H+G+P+C+CLOSE sep-host-close: 
 * same for W too
-* cov types conflicts:
-  * TODO
-* errors
+* cov types conflicts (1964, 1996):
+  * H+Pr+Po+Y+G+P+C: nonrobust/HC0/HC3
+  * H+Pr+Po+G+P+C+CLOSE sep-close: nonrobust/HC0/HC3
+  * H+G+P+C+CLOSE sep-host-close: nonrobust/HC0/HC3
+* errors: list in report...
+
+TODO: check uncommitted lines for COMM, on desktop
 
 
 ## Results

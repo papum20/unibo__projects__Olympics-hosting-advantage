@@ -40,6 +40,63 @@ AM+Host+Pre+Post+Year sep-close: GDP+POP+COMM vs None.
 AM+Host+Pre+Post+Year sep-host sep-close: GDP+POP+COMM vs None.  
 
 
+Paper:
+* M+H+Y: G+P+C vs None
+* M+H+Y sep-host: G+P+C vs None
+* M+H+Pr+Po+Y sep-host: G+P+C vs None
+* M not very significant
+
+Ours:
+* repeat for comparison and consistency/robustness check (esp. from 1996, also earlier years for added results)
+  * M+H+Y: G+P+C vs None
+  * H+Y sep-host: G+P+C vs None (M+Y doesn't work)
+  * M+H sep-host: G+P+C vs None (M+Y doesn't work)
+  * H+Pr+Po+Y sep-host: G+P+C vs None (M doesn't work) (1964 doesn't work)
+* repeat M significance (ravlue low but visible change, some vars change esp. post a lot, host little) (esp. from 1996, also earlier years for added results)
+  * H+Y: (G+P+C/None) + (M/None)
+  * H+Pr+Po: (G+P+C/None) + (M/None) (Y doesn't work; Y instead of M has similar results)
+* show Y significance (low, rvalue +0.003, but sep pre and post worsen with it)
+  * H+Pr+Po: (G+P+C/None) + (Y/None)
+  * H+Pr+Po sep-host: (G+P+C/None) + (Y/None) (1964 doesn't work)
+* close
+  * H+Pr+Po+G+P+C+CLOSE sep-close: Y/M/None (show impact of Y - none - and M - high)
+  * H+Pr+Po+G+P+C+CLOSE sep-close: sep-host/None (show impact of sep-host on CLOSE - None)
+  * H+Pr+Po+Y sep-host: (G+P+C/None) + (CLOSE/None) (1964 doesn't work) (show impact of CLOSE on others - no change)
+  * H+Pr+Po+Y+G+P+C: CLOSE/None (also for 1964) (show impact of CLOSE on others - no change)
+  * M+H+Pr+Po+CLOSE sep-close: G+P+C/None (show impact of G+P+C on CLOSE - None; also mention it's the same for other configs)
+  * H+Pr+Po+Y+G+P+C sep-host: CLOSE vs Cwd (1964 doesn't work) (show impact of all CLOSE on only one of them - None; also mention it's the same for others of CLOSE)
+  * H+G+P+C sep-host-close: (at least this works for 1964 too, for compare w/o CLOSE or w/ prev years)
+* show P more significant with all countries
+  * TODO
+* show B significance (for B years, so 1964)
+  * H+Pr+Po+G+P+C sep-host: B/None
+  * M+H+Pr+Po+G+P+C sep-host: B/None
+  * Y+H+Pr+Po+G+P+C sep-host: B/None
+* show significance of C
+  * H+Pr+Po+G+P+B sep-host: C/None
+  * M+H+Pr+Po+G+P+B sep-host: C/None
+  * Y+H+Pr+Po+G+P+B sep-host: C/None
+TODO...
+* more lags
+  * all 0-11
+  * H+Pr+Po+G+P+C+B sep-host: 12-30
+  * M+H+Pr+Po+G+P+C+B: 12-30
+  * M+H+Pr+Po+G+P+C+B sep-host: 12-30
+  * Y+H+Pr+Po+G+P+C+B sep-host: 12-30
+* more years (1932 after WWI; 1896 all) (lag 11)
+  * H+Pr+Po+G+P+C+B sep-host:
+  * M+H+Pr+Po+G+P+C+B:
+  * M+H+Pr+Po+G+P+C+B sep-host: 
+  * Y+H+Pr+Po+G+P+C+B sep-host: 
+  * show impact of CLOSE on prev years:
+    * H+Pr+Po+Y+G+P+C+CLOSE: 
+    * M+H+Pr+Po+G+P+C+CLOSE sep-close:
+  * H+G+P+C sep-host-close: 
+* same for W too
+* cov types conflicts:
+  * TODO
+* errors
+
 
 ## Results
 

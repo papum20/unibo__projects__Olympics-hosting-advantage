@@ -580,7 +580,7 @@ if __name__ == "__main__":
 		# Granger (manual)
 		#
 
-		for shift in range(1, max_lag + 1):
+		for shift in range(0, max_lag + 1):
 			print(f"\nGranger causality test (manual) with lag {shift}:")
 
 			#if len(noc_list) == 1:

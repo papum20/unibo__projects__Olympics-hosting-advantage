@@ -98,8 +98,6 @@ Ours:
   * H+G+P+C+CLOSE sep-host-close: nonrobust/HC0/HC3
 * errors: list in report...
 
-TODO: check uncommitted lines for COMM, on desktop
-
 
 ## Results
 

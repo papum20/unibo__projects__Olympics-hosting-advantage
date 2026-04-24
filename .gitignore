@@ -9,3 +9,16 @@ out/scripts/**/**
 
 # cache
 __pycache__/
+.DS_Store
+
+# Latex
+main.synctex.gz
+main.pdf
+main.out
+main.log
+main.fls
+main.fdb_latexmk
+main.dvi
+main.blg
+main.bbl
+main.aux

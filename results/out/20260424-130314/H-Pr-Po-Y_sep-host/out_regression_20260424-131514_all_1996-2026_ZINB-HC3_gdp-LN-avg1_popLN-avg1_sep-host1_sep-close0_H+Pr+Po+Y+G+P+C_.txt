@@ -1,0 +1,120 @@
+Running with args: Namespace(season='W', noc=[], start_year=1996, end_year=2026, min_lag=16, max_lag=16, ctrl_vars=['HOST', 'PRE', 'POST', 'YEAR', 'GDP', 'POP', 'COMM'], exclude_boycott=False, gdp_avg=True, gdp_tot=False, gdp_log=True, gdp_logdiff=False, pop_avg=True, pop_log=True, pop_logdiff=False, sep_host=True, sep_close=False, reg_zinb=True, reg_hc0=False, reg_hc3=True, save=True, log=True, verbose=False)
+
+Granger causality test (manual) with lag 16:
+
+Finished loading data for 166 teams. Skipped 46 teams with missing data: SCG, BAH, TGA, BRU, SOM, SUR, PNG, SMR, MDV, SOL, IVB, VIN, CAY, AND, ANT, SKN, BER, ISV, GUM, LIE, FIJ, GRN, ASA, AHO, NRU, MON, ARU, GUY, BIZ, SAM, VAN, BHU, COK, PLW, IOA, ERI, FSM, TLS, KIR, MHL, TUV, KOS, ROT, SSD, AIN, EOR
+Using data from 1996 to 417 (requested: 1996-2026)
+Loaded data for USA+GER+RUS+CHN+AUS+FRA+ITA+KOR+CUB+UKR+CAN+HUN+NED+ROU+ESP+POL+BRA+GBR+BLR+BUL+JPN+KAZ+CZE+GRE+KEN+SWE+NOR+SUI+TUR+NGR+DEN+NZL+JAM+BEL+RSA+PRK+FIN+IRL+INA+ALG+ETH+ARG+SVK+AUT+IRI+MAS+UZB+GEO+SLO+POR+MAR+CRO+MDA+TTO+ARM+NAM+THA+AZE+IND+MEX+UGA+SYR+PUR+TUN+LTU+ISR+TPE+MGL+LAT+CRC+PHI+ECU+HKG+ZAM+BDI+MOZ+EST+PAK+EGY+LBA+QAT+COM+CHA+UAE+SGP+CMR+CIV+GHA+VEN+PLE+SUD+DMA+HAI+BEN+NCA+IRQ+MTN+TOG+KUW+KSA+BRU+OMA+YEM+JOR+BAN+DOM+KGZ+ISL+DJI+GBS+SLE+COD+LAO+CPV+CYP+HON+COL+CHI+PER+GEQ+TKM+SEY+STP+CGO+BOT+LCA+URU+PAN+PAR+MRI+ESA+CAF+ALB+SRI+ANG+ZIM+GUA+NEP+MLT+TJK+MKD+GAB+BOL+MLI+VIE+LIB+LBR+BAR+BIH+SEN+GUI+LUX+GAM+AFG+CAM+TAN+MYA+RWA+BUR+NIG+LES+SWZ+MAW+MAD+SRB+MNE stacked data (tail 20):
+     Year  Medals  Avg_Medals_History        GDP  Population  Is_Boycott1980  Is_Boycott1984  OG1998  PRE1998  POST1998  OG2002  PRE2002  POST2002  OG2006  PRE2006  POST2006  OG2010  PRE2010  POST2010  OG2014  PRE2014  POST2014  OG2018  PRE2018  POST2018  OG2022  PRE2022  POST2022  Is_Host_Close_Center  Is_Host_Close_GMT1  Is_Host_Close_Main  Is_Host_Close_West  Is_Host_Close_Wide  YEAR1924  YEAR1928  YEAR1932  YEAR1936  YEAR1948  YEAR1952  YEAR1956  YEAR1960  YEAR1964  YEAR1968  YEAR1972  YEAR1976  YEAR1980  YEAR1984  YEAR1988  YEAR1992  YEAR1994  YEAR1998  YEAR2002  YEAR2006  YEAR2010  YEAR2014  YEAR2018  YEAR2022  Is_Communist  NOC
+61   2018       1            1.166667   8.605731   10.695393           False           False   False    False     False   False    False     False   False    False     False   False    False     False   False    False     False   False    False     False   False    False     False                 False               False               False               False               False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False      True     False          True  UKR
+62   2022       1            1.142857   9.010609   10.665200           False           False   False    False     False   False    False     False   False    False     False   False    False     False   False    False     False   False    False     False   False    False     False                 False               False               False               False               False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False      True          True  UKR
+379  1998       0            0.000000   9.227580    8.070375           False           False   False    False     False   False    False     False   False    False     False   False    False     False   False    False     False   False    False     False   False    False     False                 False               False               False               False               False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False      True     False     False     False     False     False     False         False  URU
+0    1998      13            8.352941  10.299059   12.509947           False           False   False     True     False   False    False     False   False    False     False   False    False     False   False    False     False   False    False     False   False    False     False                 False               False               False               False               False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False      True     False     False     False     False     False     False         False  USA
+1    2002      34            8.611111  10.381181   12.554724           False           False   False    False     False    True    False     False   False    False     False   False    False     False   False    False     False   False    False     False   False    False     False                 False               False               False               False               False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False      True     False     False     False     False     False         False  USA
+2    2006      25            9.947368  10.493266   12.591969           False           False   False    False     False   False    False     False   False    False      True   False    False     False   False    False     False   False    False     False   False    False     False                 False               False               False               False               False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False      True     False     False     False     False         False  USA
+3    2010      37           10.700000  10.533659   12.629185           False           False   False    False     False   False    False     False   False    False     False   False    False     False   False    False     False   False    False     False   False    False     False                 False               False               False               False               False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False      True     False     False     False         False  USA
+4    2014      28           11.952381  10.624407   12.660222           False           False   False    False     False   False    False     False   False    False     False   False    False     False   False    False     False   False    False     False   False    False     False                 False               False               False               False               False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False      True     False     False         False  USA
+5    2018      23           12.681818  10.728696   12.688297           False           False   False    False     False   False    False     False   False    False     False   False    False     False   False    False     False   False    False     False   False    False     False                 False               False               False               False               False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False      True     False         False  USA
+6    2022      25           13.130435  10.798201   12.710736           False           False   False    False     False   False    False     False   False    False     False   False    False     False   False    False     False   False    False     False   False    False     False                 False               False               False               False               False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False      True         False  USA
+249  1998       0            1.000000   8.925912   10.073926           False           False   False    False     False   False    False     False   False    False     False   False    False     False   False    False     False   False    False     False   False    False     False                 False               False               False               False               False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False      True     False     False     False     False     False     False          True  UZB
+250  2002       0            0.500000   8.886173   10.134604           False           False   False    False     False   False    False     False   False    False     False   False    False     False   False    False     False   False    False     False   False    False     False                 False               False               False               False               False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False      True     False     False     False     False     False          True  UZB
+251  2006       0            0.333333   8.841234   10.181165           False           False   False    False     False   False    False     False   False    False     False   False    False     False   False    False     False   False    False     False   False    False     False                 False               False               False               False               False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False      True     False     False     False     False          True  UZB
+252  2010       0            0.250000   8.603812   10.221021           False           False   False    False     False   False    False     False   False    False     False   False    False     False   False    False     False   False    False     False   False    False     False                 False               False               False               False               False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False      True     False     False     False          True  UZB
+253  2014       0            0.200000   8.416963   10.258742           False           False   False    False     False   False    False     False   False    False     False   False    False     False   False    False     False   False    False     False   False    False     False                 False               False               False               False               False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False      True     False     False          True  UZB
+350  1998       0            0.000000   9.688542   10.004822           False           False   False    False     False   False    False     False   False    False     False   False    False     False   False    False     False   False    False     False   False    False     False                 False               False               False               False               False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False      True     False     False     False     False     False     False         False  VEN
+351  2002       0            0.000000   9.524389   10.077514           False           False   False    False     False   False    False     False   False    False     False   False    False     False   False    False     False   False    False     False   False    False     False                 False               False               False               False               False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False      True     False     False     False     False     False         False  VEN
+352  2006       0            0.000000   9.512721   10.144706           False           False   False    False     False   False    False     False   False    False     False   False    False     False   False    False     False   False    False     False   False    False     False                 False               False               False               False               False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False      True     False     False     False     False         False  VEN
+353  2014       0            0.000000   9.586788   10.271309           False           False   False    False     False   False    False     False   False    False     False   False    False     False   False    False     False   False    False     False   False    False     False                 False               False               False               False               False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False      True     False     False         False  VEN
+384  2014       0            0.000000   7.727704    9.480806           False           False   False    False     False   False    False     False   False    False     False   False    False     False   False    False     False   False    False     False   False    False     False                 False               False               False               False               False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False      True     False     False         False  ZIM
+
+--- Running Global Panel OLS Regression ---
+predictors = ['GDP', 'Population', 'Is_Communist', 'YEAR1924', 'YEAR1928', 'YEAR1932', 'YEAR1936', 'YEAR1948', 'YEAR1952', 'YEAR1956', 'YEAR1960', 'YEAR1964', 'YEAR1968', 'YEAR1972', 'YEAR1976', 'YEAR1980', 'YEAR1984', 'YEAR1988', 'YEAR1992', 'YEAR1994', 'YEAR1998', 'YEAR2002', 'YEAR2006', 'YEAR2010', 'YEAR2014', 'YEAR2018', 'YEAR2022', 'OG1998', 'OG2002', 'OG2006', 'OG2010', 'OG2014', 'OG2018', 'OG2022', 'PRE1998', 'PRE2002', 'PRE2006', 'PRE2010', 'PRE2014', 'PRE2018', 'PRE2022', 'POST1998', 'POST2002', 'POST2006', 'POST2010', 'POST2014', 'POST2018', 'POST2022']
+len(predictors) = 48
+Removed 17 empty/zero predictor columns.
+Kept predictors (31): ['GDP', 'Population', 'Is_Communist', 'YEAR1998', 'YEAR2002', 'YEAR2006', 'YEAR2010', 'YEAR2014', 'YEAR2018', 'YEAR2022', 'OG1998', 'OG2002', 'OG2006', 'OG2010', 'OG2014', 'OG2018', 'OG2022', 'PRE1998', 'PRE2002', 'PRE2006', 'PRE2010', 'PRE2014', 'PRE2018', 'PRE2022', 'POST1998', 'POST2002', 'POST2006', 'POST2010', 'POST2014', 'POST2018', 'POST2022']
+Check multiocollinearity using VIF:
+         feature        VIF
+0            GDP   1.343314
+1     Population   1.161694
+2   Is_Communist   1.146294
+3       YEAR1998  35.699319
+4       YEAR2002  38.165055
+5       YEAR2006  40.267517
+6       YEAR2010  41.216376
+7       YEAR2014  42.723822
+8       YEAR2018  19.181554
+9       YEAR2022  19.567289
+10        OG1998   1.023105
+11        OG2002   1.030654
+12        OG2006   1.018564
+13        OG2010   1.018392
+14        OG2014   1.028837
+15        OG2018   1.037518
+16        OG2022   1.067182
+17       PRE1998   1.030631
+18       PRE2002   1.018393
+19       PRE2006   1.018181
+20       PRE2010   1.029257
+21       PRE2014   1.015660
+22       PRE2018   1.068364
+23       PRE2022   1.038431
+24      POST1998   1.016812
+25      POST2002   1.022646
+26      POST2006   1.031421
+27      POST2010   1.019347
+28      POST2014   1.018205
+29      POST2018   1.051730
+30      POST2022   1.037884
+Warning: Matrix is rank deficient (31 < 32). Check for collinear predictors.
+Optimization terminated successfully.
+         Current function value: 1.851084
+         Iterations: 137
+         Function evaluations: 140
+         Gradient evaluations: 140
+                     ZeroInflatedNegativeBinomialP Regression Results                    
+=========================================================================================
+Dep. Variable:                            Medals   No. Observations:                  418
+Model:             ZeroInflatedNegativeBinomialP   Df Residuals:                      387
+Method:                                      MLE   Df Model:                           30
+Date:                           Fri, 24 Apr 2026   Pseudo R-squ.:                  0.1266
+Time:                                   13:15:20   Log-Likelihood:                -773.75
+converged:                                  True   LL-Null:                       -885.89
+Covariance Type:                             HC3   LLR p-value:                 1.298e-31
+=================================================================================
+                    coef    std err          z      P>|z|      [0.025      0.975]
+---------------------------------------------------------------------------------
+inflate_const   -13.4853      1.684     -8.008      0.000     -16.786     -10.185
+const           -21.7123     15.326     -1.417      0.157     -51.752       8.327
+GDP               2.0930      0.149     14.024      0.000       1.801       2.386
+Population        0.5764      0.060      9.617      0.000       0.459       0.694
+Is_Communist      0.8398      0.241      3.481      0.000       0.367       1.313
+YEAR1998         -3.3280     14.321     -0.232      0.816     -31.396      24.740
+YEAR2002         -3.2781     14.315     -0.229      0.819     -31.335      24.779
+YEAR2006         -3.3677     14.398     -0.234      0.815     -31.588      24.852
+YEAR2010         -3.2519     14.283     -0.228      0.820     -31.247      24.743
+YEAR2014         -3.3567     14.322     -0.234      0.815     -31.427      24.713
+YEAR2018         -3.2140     14.287     -0.225      0.822     -31.215      24.788
+YEAR2022         -3.4096     14.275     -0.239      0.811     -31.388      24.568
+OG1998           -0.3237      0.288     -1.124      0.261      -0.888       0.241
+OG2002           -0.4469      0.305     -1.465      0.143      -1.045       0.151
+OG2006           -0.0386      0.243     -0.159      0.873      -0.514       0.437
+OG2010            0.6616      0.239      2.767      0.006       0.193       1.130
+OG2014            1.9147      0.307      6.230      0.000       1.312       2.517
+OG2018            0.4516      0.189      2.392      0.017       0.082       0.822
+OG2022            0.4959      0.364      1.362      0.173      -0.218       1.210
+PRE1998          -1.1630      0.318     -3.662      0.000      -1.785      -0.541
+PRE2002           0.2972      0.239      1.245      0.213      -0.171       0.765
+PRE2006           0.6973      0.238      2.925      0.003       0.230       1.164
+PRE2010           0.6746      0.292      2.314      0.021       0.103       1.246
+PRE2014           0.1794      0.244      0.735      0.463      -0.299       0.658
+PRE2018           0.3591      0.375      0.958      0.338      -0.376       1.094
+PRE2022          -0.2636      0.197     -1.336      0.181      -0.650       0.123
+POST1998          2.2003      0.257      8.577      0.000       1.697       2.703
+POST2002         -2.1930      0.263     -8.351      0.000      -2.708      -1.678
+POST2006         -0.9212      0.315     -2.926      0.003      -1.538      -0.304
+POST2010         -1.1180      0.245     -4.564      0.000      -1.598      -0.638
+POST2014          0.5218      0.245      2.129      0.033       0.041       1.002
+POST2018          0.6194      0.276      2.240      0.025       0.078       1.161
+POST2022         -0.2974      0.195     -1.521      0.128      -0.681       0.086
+alpha             1.8294      0.216      8.456      0.000       1.405       2.253
+=================================================================================

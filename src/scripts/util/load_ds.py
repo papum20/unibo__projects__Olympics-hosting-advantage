@@ -4,6 +4,7 @@ import numpy as np
 import pandas as pd
 
 
+DS_EXCLUDED_COUNTRIES_PATH	= 'dataset/excluded_countries.csv'
 # World Bank Open Data
 DS_GDP_WBOD_PATH			= 'dataset/worldBankOpenData_GDP_USD.csv'
 DS_GDPPC_PERC_WBOD_PATH		= 'dataset/worldBankOpenData_GDPpc_perc.csv'
@@ -136,8 +137,8 @@ IOC_TO_NOC = {
 
 	'KHM': 'CAM', 'CMR': 'CMR', 'CAN': 'CAN', 'CPV': 'CPV', 'CYM': 'CAY', 'CAF': 'CAF',
 	'TCD': 'CHA', 'CHL': 'CHI', 'CHN': 'CHN', 'COL': 'COL', 'COM': 'COM', 'COG': 'CGO',
-	'COD': 'COD', 'COK': 'COK', 'CRI': 'CRC', 'CIV': 'CIV', 'HRV': 'CRO', 'CUB': 'CUB',
-	'CYP': 'CYP', 'CZE': 'CZE',
+	'COD': 'COD', 'COK': 'COK', 'CRI': 'CRC', 'CIV': 'CIV', 'HRV': 'CRO', 'CSK': 'TCH',
+	'CUB': 'CUB', 'CYP': 'CYP', 'CZE': 'CZE',
 
 	'DNK': 'DEN', 'DJI': 'DJI', 'DMA': 'DMA', 'DOM': 'DOM',
 
@@ -535,6 +536,53 @@ def _get_all_countries_list(
 	return countries
 
 
+def get_top_countries_by_medals(
+	n				: int	= 40,
+	year_start		: int	= MEDALS_FULL_YEAR_FIRST,
+	year_end		: int	= MEDALS_FULL_YEAR_LAST,
+	medals_season	: str	= 'S',
+	dataset_path	: str	= DS_MEDALS_FULL_PATH,
+	is_verbose		: bool	= True
+):
+	"""Calculate the countries' AVERAGE medal share across the years in which they actually competed.
+	Don't consider the excluded Countries dataset, since they will be excluded anyway.
+	@param n: Number of top countries to return
+	@param year_start: Starting year for the data
+	@param year_end: Ending year for the data
+	@param medals_season: Season of medals to include (S for Summer, W for Winter, B for Both).
+	@param dataset_path: Path to the medals dataset CSV file
+	@param is_verbose: Whether to print the number of unique countries found in the dataset
+	@return: List of top n country codes (NOCs) with the highest average medal share
+	"""
+	excluded_countries = pd.read_csv(DS_EXCLUDED_COUNTRIES_PATH, usecols=['NOC'])
+	excluded_countries = excluded_countries['NOC'].dropna().unique().tolist()
+	
+	df			= pd.read_csv(dataset_path, usecols=['Year', 'Season', 'NOC', 'Total_Medals', 'Is_Host'])
+	df['NOC']	= df['NOC'].replace(NOC_TO_RUS)
+	df			= df[~df['NOC'].isin(excluded_countries)]
+
+	if medals_season == 'S':
+		df = df[df['Season'] == 'Summer']
+	elif medals_season == 'W':
+		df = df[df['Season'] == 'Winter']
+	elif medals_season == 'B':
+		df = df[df['Season'].isin(['Summer', 'Winter'])]
+
+	# Filter immediately by year range
+	df = df[(df['Year'] >= year_start) & (df['Year'] <= year_end)]
+
+	df					= df.set_index('Year').sort_index()
+	medals_perc_series	= get_medal_series_percentage(df['Total_Medals'], df)
+	df['Total_Medals']	= medals_perc_series.reindex(df.index)
+
+	elite_nocs	= df.groupby('NOC')['Total_Medals'].mean()
+	top_list	= elite_nocs.nlargest(n).index.tolist()
+	if is_verbose:
+		print(f"Found {len(elite_nocs)} unique countries in the medals dataset for season '{medals_season}':\
+			\n{elite_nocs.sort_values(ascending=False).to_string()}")
+	return top_list
+
+
 def load_medals(
 	country			: str|None			= None,
 	year_start		: int				= MEDALS_FULL_YEAR_FIRST,
@@ -577,6 +625,7 @@ def load_medals(
 	# Set index to Year early to ensure transformations align correctly
 	medals_df = medals_df.set_index('Year').sort_index()
 
+	medals_series_perc = get_medal_series_percentage(medals_df['Total_Medals'], df).reindex(medals_df.index).fillna(0)
 
 	if data_type == DsMedalsDataType.LN_DIFF:
 		# get_series_log_diff returns a series indexed by Year
@@ -591,7 +640,7 @@ def load_medals(
 	if country:
 		# Calculate the Expanding Mean of their Medal Share
 		# We use .shift(1) so the current year's medals aren't included in the past average
-		medals_df[DF_COL_AM_HISTORY] = medals_df['Total_Medals'].shift(1).expanding().mean()
+		medals_df[DF_COL_AM_HISTORY] = medals_series_perc.shift(1).expanding().mean()
 
 		# Fill any NaNs (for a country's very first Olympics) with 0
 		medals_df[DF_COL_AM_HISTORY] = medals_df[DF_COL_AM_HISTORY].fillna(0)

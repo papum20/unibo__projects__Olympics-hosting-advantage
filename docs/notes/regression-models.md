@@ -229,6 +229,14 @@ You can just add these three lines of code right before you run your OLS:
 Media delle medaglie, prese dallo storico complessivo (tutte le edizioni in cui il Paese appare) fino all'anno prima di quello in questione.  
 In data science, if you calculate a country's average using the years 1964 to 2024, and then plug that average into the row for the year 1964... you have committed Look-Ahead Bias (Data Leakage). You are using future events (medals won in 2024) to predict past events (medals won in 1964).  
 
+#### Perfect Separation
+
+Si ha quando il modello riesce a prevedere perfettamente (o quasi) il risultato. Se AM è 0 per tutti il primo anno (perché non c'è una history), si ha questo problema, si ottengono infiniti e quindi divisioni impossibili e singular matrix.  
+https://en.wikipedia.org/wiki/Separation_(statistics)   
+Usa intera history e prendi un anno successivo (comunque non basta a risolvere problemi).  
+
+Possible justification in paper for AM exclusion:  
+>The original paper utilized a historical average variable (AM). However, implementing AN in a global ZINB count model caused Perfect Separation (Hauck-Donner effect) on the structural zeros, resulting in singular Hessian matrices. To test if removing AM caused omitted variable bias, a robustness check was performed on the Top 40 OLS subset. Including AM only marginally improved the Pseudo R-squared (by ~0.02), and crucially, the direction and significance of the core macroeconomic covariates (GDP, Host, Communist) remained perfectly stable. Therefore, to preserve global model convergence in ZINB without sacrificing analytical integrity, AM was excluded from the final specifications.
 
 ### Host Close
 

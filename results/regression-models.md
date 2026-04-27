@@ -52,12 +52,14 @@ Ours:
   * H+Y sep-host: G+P+C vs None (M+Y doesn't work)
   * M+H sep-host: G+P+C vs None (M+Y doesn't work) (ERR 1964, 1996 noG)
   * H+Pr+Po+Y sep-host: G+P+C vs None (M doesn't work) (1964 doesn't work)
-* repeat M significance (ravlue low but visible change, some vars change esp. post a lot, host little) (esp. from 1996, also earlier years for added results)
+* repeat M significance (rvalue low but visible change, some vars change esp. post a lot, host little) (esp. from 1996, also earlier years for added results)
   * H+Y: (G+P+C/None) + (M/None)
   * H+Pr+Po: (G+P+C/None) + (M/None) (Y doesn't work; Y instead of M has similar results)
 * show Y significance (low, rvalue +0.003, but sep pre and post worsen with it)
   * H+Pr+Po: (G+P+C/None) + (Y/None)
   * H+Pr+Po sep-host: (G+P+C/None) + (Y/None) (1964 doesn't work)
+* show M perc diff, it's better, it hides effect of Y:
+  * TODO
 * close
   * H+Pr+Po+G+P+C+CLOSE sep-close: Y/M/None (show impact of Y - none - and M - high)
   * H+Pr+Po+G+P+C+CLOSE sep-close: sep-host/None (show impact of sep-host on CLOSE - None)
@@ -140,7 +142,7 @@ same for W too:
   * show impact of CLOSE on prev years (probably higher, given the times):
     * H+Pr+Po+Y+G+P+C+CLOSE: 
     * M+H+Pr+Po+G+P+C+CLOSE sep-close:
- 	* H+G+P+C+CLOSE sep-host-close: (ERR 1896/1932)
+  * H+G+P+C+CLOSE sep-host-close: (ERR 1896/1932)
 * cov types conflicts (1964, 1996):
   * H+Pr+Po+Y+G+P+C: nonrobust/HC0/HC3
   * H+Pr+Po+G+P+C+CLOSE sep-close: nonrobust/HC0/HC3 (ERR 1964 nonrobust, 1964 HC0 lag>=2)
@@ -149,6 +151,59 @@ same for W too:
 * todo: W from H-Pr-Po-Y-CLOSE
   
 * errors: list in report...
+
+
+new:
+* repeat for comparison and consistency/robustness check (esp. from 1996, also earlier years for added results)
+  * M+H+Y: G+P+C vs None
+  * H+Y sep-host: G+P+C vs None (M+Y doesn't work)
+  * M+H sep-host: G+P+C vs None (M+Y doesn't work) (ERR 1964, 1996 noG)
+  * H+Pr+Po+Y sep-host: G+P+C vs None (M doesn't work) (1964 doesn't work)
+* repeat M significance (rvalue low but visible change, some vars change esp. post a lot, host little) (esp. from 1996, also earlier years for added results)
+  * H+Y: (G+P+C/None) + (M/None)
+  * H+Pr+Po: (G+P+C/None) + (M/None) (Y doesn't work; Y instead of M has similar results)
+* show Y significance (low, rvalue +0.003, but sep pre and post worsen with it)
+  * H+Pr+Po: (G+P+C/None) + (Y/None)
+  * H+Pr+Po sep-host: (G+P+C/None) + (Y/None) (1964 doesn't work)
+* show M perc diff, it's better, it hides effect of Y:
+  * TODO
+* close
+  * H+Pr+Po+G+P+C+CLOSE sep-close: Y/M/None (show impact of Y - none - and M - high)
+  * H+Pr+Po+G+P+C+CLOSE sep-close: sep-host/None (show impact of sep-host on CLOSE - None)
+  * H+Pr+Po+Y sep-host: (G+P+C/None) + (CLOSE/None) (1964 doesn't work) (show impact of CLOSE on others - no change) (ERR G+CLOSE)
+  * H+Pr+Po+Y+G+P+C: CLOSE/None (also for 1964) (show impact of CLOSE on others - no change)
+  * M+H+Pr+Po+CLOSE sep-close: G+P+C/None (show impact of G+P+C on CLOSE - None; also mention it's the same for other configs)
+  * H+Pr+Po+Y+G+P+C sep-host: CLOSE vs Cwd (1964 doesn't work) (show impact of all CLOSE on only one of them - None; also mention it's the same for others of CLOSE) (ERR CLOSE)
+  * H+G+P+C sep-host-close: (at least this works for 1964 too, for compare w/o CLOSE or w/ prev years)
+* show P more significant with all countries
+  * TODO
+* show B significance (for B years, so 1964)
+  * H+Pr+Po+G+P+C sep-host: B/None
+  * M+H+Pr+Po+G+P+C sep-host: B/None (ERR B/no)
+  * Y+H+Pr+Po+G+P+C sep-host: B/None
+* show significance of C
+  * H+Pr+Po+G+P+B sep-host: C/None
+  * M+H+Pr+Po+G+P+B sep-host: C/None (ERR C/no)
+  * Y+H+Pr+Po+G+P+B sep-host: C/None
+* more lags
+  * all 0-11
+  * H+Pr+Po+G+P+C+B sep-host: 12-30
+  * M+H+Pr+Po+G+P+C+B: 12-30 (ERR)
+  * M+H+Pr+Po+G+P+C+B sep-host: 12-30
+  * Y+H+Pr+Po+G+P+C+B sep-host: 12-30
+* more years (1932 after WWI; 1896 all) (lag 11)
+  * H+Pr+Po+G+P+C+B sep-host:
+  * M+H+Pr+Po+G+P+C+B:
+  * M+H+Pr+Po+G+P+C+B sep-host: (ERR 1932)
+  * Y+H+Pr+Po+G+P+C+B sep-host: (ERR 1896 - too many vars?)
+  * show impact of CLOSE on prev years (probably higher, given the times):
+    * H+Pr+Po+Y+G+P+C+CLOSE: 
+    * M+H+Pr+Po+G+P+C+CLOSE sep-close:
+ 	* H+G+P+C+CLOSE sep-host-close: 
+* cov types conflicts (1964, 1996):
+  * H+Pr+Po+Y+G+P+C: nonrobust/HC0/HC3
+  * H+Pr+Po+G+P+C+CLOSE sep-close: nonrobust/HC0/HC3
+  * H+G+P+C+CLOSE sep-host-close: nonrobust/HC0/HC3
 
 
 ## Results

@@ -32,15 +32,18 @@ Missing Countries (but present in WBOD) (Format: Name IOC (NOC: NOC)):
 * Andorra AND
 * Antigua and Barbuda ATG (NOC: ANT)
 * Aruba ABW (NOC: ARU)
-* Bahamas BHA
+* Bahamas BHA (NOC: BAH)
+* Barbados BRB (NOC: BAR)
 * Belize BLZ (NOC: BIZ)
 * Bermuda BMU (NOC: BER)
 * Bhutan BTN (NOC: BHU)
 * British Virgin Islands VGB (NOC: IVB)
-* Brunei Darussalam BRN
+* Brunei Darussalam BRN (NOC: BRU)
 * Cayman Islands CYM (NOC: CAY)
+* Cook Islands COK
 * Eritrea ERI
 * Fiji FJI
+* Gambia GMB (NOC: GAM)
 * Grenada GRD (NOC: GRN)
 * Guam GUM
 * Guyana GUY
@@ -67,6 +70,29 @@ Missing Countries (but present in WBOD) (Format: Name IOC (NOC: NOC)):
 * Tuvalu TUV
 * U.S. Virgin Islands VIR (NOC: ISV)
 * Vanuatu VUT (NOC: VAN)
+
+Historical / Special Teams (Not in WBOD):
+* Australasia ANZ
+* Bohemia BOH
+* Crete CRT
+* East Germany GDR
+* Individual Neutral Athletes AIN
+* Individual Olympic Athletes IOA
+* Newfoundland NFL
+* North Borneo NBO
+* North Yemen YAR
+* Refugee Olympic Team EOR
+* Refugee Olympic Team ROT
+* Rhodesia RHO
+* Saar SAA
+* Serbia and Montenegro SCG
+* South Yemen YMD
+* Soviet Union URS
+* Unified Team EUN
+* United Arab Republic UAR
+* Unknown UNK
+* West Germany FRG
+* West Indies Federation WIF
 
 Missing (also in WBOD):
 * Laos LAO

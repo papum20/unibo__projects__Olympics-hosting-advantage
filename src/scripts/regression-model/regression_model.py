@@ -14,6 +14,7 @@ from statsmodels.discrete.count_model import ZeroInflatedNegativeBinomialP
 from statsmodels.tsa.stattools import adfuller, grangercausalitytests
 
 from util.load_ds import (
+	get_top_countries_by_medals,
 	load_gdp_series,
 	load_medals_series,
 	load_stacked_countries,
@@ -353,7 +354,14 @@ if __name__ == "__main__":
 			type=str,
 			nargs='+',
 			default=[],
-			help='Country code(s) (NOC) - space-separated list - default: all countries (no filter)'
+			help='Country code(s) (NOC) - space-separated list (noc-top has priority) - default: all countries (no filter)'
+		)
+		
+		parser.add_argument(
+			'--noc-top',
+			type=int,
+			default=0,
+			help='Use the top n countries (noc-top has priority) - default: 0 (all)'
 		)
 		
 		parser.add_argument(
@@ -419,6 +427,18 @@ if __name__ == "__main__":
 			'--gdp-logdiff',
 			action='store_true',
 			help='Use GDP logarithms difference (gdp-logdiff has priority) (flag, no value needed)'
+		)
+
+		parser.add_argument(
+			'--med-logdiff',
+			action='store_true',
+			help='Use Medals logarithms difference (med-logdiff has priority) (flag, no value needed)'
+		)
+
+		parser.add_argument(
+			'--med-perc',
+			action='store_true',
+			help='Use Medals as percentages (med-logdiff has priority) (flag, no value needed)'
 		)
 
 		parser.add_argument(
@@ -490,6 +510,7 @@ if __name__ == "__main__":
 		args = parser.parse_args()
 
 		noc_list: list[str]	= args.noc
+		noc_top				= args.noc_top
 		medals_season		= args.season
 		save_plot_flag		= args.save
 		year_start			= args.start_year
@@ -510,6 +531,7 @@ if __name__ == "__main__":
 
 		gdp_type = DsGdpDataType.LN_DIFF if args.gdp_logdiff else DsGdpDataType.LN if args.gdp_log else DsGdpDataType.DEFAULT
 		pop_type = DsPopDataType.LN_DIFF if args.pop_logdiff else DsPopDataType.LN if args.pop_log else DsPopDataType.DEFAULT
+		medals_data_type = DsMedalsDataType.LN_DIFF if args.med_logdiff else DsMedalsDataType.PERCENTAGE if args.med_perc else DsMedalsDataType.DEFAULT
 
 		if 'BOYCOTT' in ctrl_vars:
 			ctrl_vars.remove('BOYCOTT')
@@ -526,10 +548,15 @@ if __name__ == "__main__":
 
 		cov_type='HC0' if use_reg_hc0 else 'HC3' if use_reg_hc3 else 'nonrobust'
 
+		if noc_top != 0:
+			noc_list = get_top_countries_by_medals(year_start=year_start, year_end=year_end, n=noc_top,
+										medals_season=medals_season, is_verbose=verbose)
+			print(f"No specific NOCs provided. Using top {noc_top} NOCs by total medals: {noc_list}")
+
 
 		if log_output:
 			sys.stdout = Logger(
-				noc=noc_list,
+				noc=noc_top if noc_top != 0 else noc_list,
 				year_start=year_start,
 				year_end=year_end,
 				reg_type='ZINB' if use_reg_zinb else 'OLS',
@@ -558,7 +585,7 @@ if __name__ == "__main__":
 											data_type=gdp_type, dataset_path=DS_GDP_PATH)
 
 			medals_series = load_medals_series(country=noc, medals_season=medals_season,
-								year_start=year_start, year_end=year_end, data_type=DsMedalsDataType.PERCENTAGE)
+								year_start=year_start, year_end=year_end, data_type=medals_data_type)
 
 			merged_df = merge_series(medals_series, gdp_series, series1_name=DF_COL_MEDALS, series2_name=DF_COL_GDP)
 
@@ -609,8 +636,6 @@ if __name__ == "__main__":
 			#		gdp_dataset_path		= DS_GDP_PATH
 			#	)
 			#else:
-
-			medals_data_type = DsMedalsDataType.DEFAULT if use_reg_zinb else DsMedalsDataType.PERCENTAGE
 
 			merged_df, country_name = load_stacked_countries(
 				countries_list			= noc_list,

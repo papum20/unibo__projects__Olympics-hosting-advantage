@@ -38,7 +38,7 @@ class Logger():
 
 	def __init__(
 		self,
-		noc				: list[str]|None,
+		noc				: list[str]|int|None,
 		year_start		: int,
 		year_end		: int,
 		reg_type		: str,
@@ -53,7 +53,7 @@ class Logger():
 		tag=""
 	):
 		timestamp	= datetime.now().strftime("%Y%m%d-%H%M%S")
-		noc_str		= '+'.join(noc) if noc else 'all'
+		noc_str		= '+'.join(noc) if isinstance(noc, list) else f"top{noc}" if noc else 'all'
 		ctrl_str	= '+'.join([self.ctrl_vars_str.get(var, var) for var in ctrl_vars]) if ctrl_vars else 'none'
 		
 		filename = (

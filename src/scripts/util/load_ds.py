@@ -552,11 +552,11 @@ def get_top_countries_by_medals(
 	@param medals_season: Season of medals to include (S for Summer, W for Winter, B for Both).
 	@param dataset_path: Path to the medals dataset CSV file
 	@param is_verbose: Whether to print the number of unique countries found in the dataset
-	@return: List of top n country codes (NOCs) with the highest average medal share
+	@return: List of top n country codes (NOCs) with the highest average medal share (hosts are ranked before)
 	"""
-	excluded_countries = pd.read_csv(DS_EXCLUDED_COUNTRIES_PATH, usecols=['NOC'])
-	excluded_countries = excluded_countries['NOC'].dropna().unique().tolist()
-	
+	excluded_countries	= pd.read_csv(DS_EXCLUDED_COUNTRIES_PATH, usecols=['NOC'])
+	excluded_countries	= excluded_countries['NOC'].dropna().unique().tolist()
+
 	df			= pd.read_csv(dataset_path, usecols=['Year', 'Season', 'NOC', 'Total_Medals', 'Is_Host'])
 	df['NOC']	= df['NOC'].replace(NOC_TO_RUS)
 	df			= df[~df['NOC'].isin(excluded_countries)]
@@ -575,11 +575,26 @@ def get_top_countries_by_medals(
 	medals_perc_series	= get_medal_series_percentage(df['Total_Medals'], df)
 	df['Total_Medals']	= medals_perc_series.reindex(df.index)
 
-	elite_nocs	= df.groupby('NOC')['Total_Medals'].mean()
-	top_list	= elite_nocs.nlargest(n).index.tolist()
+	host_list = df[df['Is_Host'] == True]['NOC'].unique().tolist()
+    
+	# first try to take n from the hosts
+	host_df		= df.copy()
+	host_df		= host_df[host_df['NOC'].isin(host_list)]
+	host_means	= df.groupby('NOC')['Total_Medals'].mean()
+	top_list	= host_means.nlargest(n).index.tolist()
+
+	ranking_df	= host_means.copy()
+
+	n_remaining = n - len(top_list)
+	if n_remaining > 0:
+		non_host_df		= df[~df['NOC'].isin(host_list)]
+		non_host_means	= non_host_df.groupby('NOC')['Total_Medals'].mean()
+		top_list		+= non_host_means.nlargest(n_remaining).index.tolist()
+		ranking_df		= ranking_df.append(non_host_means)
+	
 	if is_verbose:
-		print(f"Found {len(elite_nocs)} unique countries in the medals dataset for season '{medals_season}':\
-			\n{elite_nocs.sort_values(ascending=False).to_string()}")
+		print(f"Found {len(ranking_df)} unique countries in the medals dataset for season '{medals_season}':\
+			\n{ranking_df.sort_values(ascending=False).to_string()}")
 	return top_list
 
 

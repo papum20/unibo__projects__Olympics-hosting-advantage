@@ -1,2 +1,22 @@
 \section{Background}
 \label{sec:background}
+
+Questo lavoro prende ispirazione da quello di Csurilla\cite{csurillaLessObviousEffect2023}, il quale mostra come 
+l'effetto \textit{host} diventi meno significativo quando si tenga conto di variabili aggiuntive, in particolare:
+PIL e popolazione (entrambi in logaritmo e aggregati con media geometrica nei 4 anni precedenti), appartenenza 
+passata al blocco comunista (poiché tali Stati hanno storicamente propeso verso alti investimenti nello sport
+\todo{citazione fonte del paper}), media di medaglie negli eventi passati (stando ad indicare una predilezione per
+lo sport per motivi culturali), \textit{dummy variable} separate per ogni anno (per assorbire avvenimenti globali
+specifici). Le variabili relative all'\textit{hosting}, invece, \textit{HOST<Year>}, \textit{PRE<Year>} e \textit{POST<Year},
+sono separate per ogni anno di Olimpiadi e valgono \textit{1}, rispettivamente, quando un Paese ospita, quando ospiterà
+nella successiva edizione e quando ha ospitato nella precedente; dunque, \textit{PRE} cerca di individuare un miglioramento 
+prestazionale generale cominciato alcuni anni prima di ospitare, mentre \textit{POST} cerca di catturare un \textit{boost} 
+duraturo fornito dal giocare in casa.\\
+A differenza di ricerche pregresse, il paper impiega una regressione di tipo \textit{zero-inflated negative binomial}
+(ZINB), per ovviare ad alcune limitazioni di altri modelli su questi dataset. Il numero di medaglie, infatti, è una variabile
+discreta, con alta varianza e tante istanze pari a 0 (le Nazioni partecipanti sono per la maggior parte molto piccole): 
+altri modelli, come \textit{regressione lineare}, \textit{Poisson regression} e \textit{Tobit}\todo{refs}, soffrono per 
+almeno uno di questi motivi. Le peculiarità del dataset diventano ancora più acuite per il fatto che Csurilla abbia applicato 
+la regressione dividendo il dataset a livello di sport (oltre che per anno e Paese).\\
+\\
+Nel corso del lavoro, denoteremo le variabili come indicato di seguito: \todo{vars, anche const}

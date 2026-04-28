@@ -85,6 +85,10 @@ Look at the F-tests (ssr based F test & parameter F test).
 Why? Chi-square (chi2) and Likelihood Ratio tests rely on "asymptotic theory," which means they only work correctly when you have a massive dataset (hundreds of rows). Because your df_denom (degrees of freedom) is only 2 (a tiny dataset), the Chi2 test breaks and gives you a False Positive (p=0.000)
 The F-test is designed specifically for small samples.  
 
+OLS potrebbe convenire di più, avendo meno errori. Alcune giustificazioni:  
+>"The original authors correctly noted that Ordinary Least Squares (OLS) is biased when applied to raw medal counts, as OLS is unbounded and cannot nativey handle the lower limit of zero inherent in highly zero-inflated count distributions. They appropriately utilized a Zero-Inflated Negative Binomial (ZINB) estimator to manage the overdispersion (Variance > Mean) of the raw global counts.
+>However, this study deploys OLS within a specific, controlled subset. By restricting the panel to the Top 40 historical medal-winning NOCs, the structural zero-inflation is eliminated. Furthermore, the dependent variable was transformed from raw counts to Medal Share (%), creating a continuous distribution. While Beta regression is an alternative for fractional data, applying OLS to non-zero-inflated percentage shares with HC0 robust standard errors is a standard and unbiased econometric approach that bypasses the limitations cited by the original authors."
+
 
 ### ZINB
 ZINB does not use OLS; it uses Maximum Likelihood. Therefore, it does not have a true $R^2$. Instead, you look at two numbers at the top right of your output:

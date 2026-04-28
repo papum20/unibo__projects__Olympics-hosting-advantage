@@ -1,2 +1,10 @@
 \section{Regressione}
 \label{sec:methods}
+
+Il nostro lavoro non solo espande quello di quello di Csurilla\cite{csurillaLessObviousEffect2023} analizzando altri fattori, 
+ma impiega anche un modello regressione diverso.\\
+Non avendo effettuato un'analisi a livello di sport, infatti, cercare di riprodurre fedelmente i suoi risultati porta ad 
+erorri di esecuzione della regressione, con molta probabilità dovuti a casi di collinearità (perfetta o quasi) tra variabili, 
+a cui ZINB è molto sensibile. Sempre per evitare collinearità perfetta, quando si usa \textit{YEAR}, bisogna escludere un anno:
+il suo effetto è già assorbito da \textit{CONST}.\\
+\todo{espandere, anche con mie note}

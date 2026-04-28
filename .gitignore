@@ -12,13 +12,13 @@ __pycache__/
 .DS_Store
 
 # Latex
-main.synctex.gz
-main.pdf
-main.out
-main.log
-main.fls
-main.fdb_latexmk
-main.dvi
-main.blg
-main.bbl
-main.aux
+src/paper/*.synctex.gz
+src/paper/*.pdf
+src/paper/*.out
+src/paper/*.fls
+src/paper/*.log
+src/paper/*.fdb_latexmk
+src/paper/*.dvi
+src/paper/*.blg
+src/paper/*.bbl
+src/paper/*.aux

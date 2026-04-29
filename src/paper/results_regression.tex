@@ -1,0 +1,90 @@
+\subsection{Regressione}\label{sec:results_regression}
+
+\cref{tab:comparison_models_csurilla} confronta il modello finale di
+Csurilla\cite{csurillaLessObviousEffect2023} con i nostri ZINB (su tutti i Paesi
+o top 40) e OLS (top 40, con o senza \textit{AM}). Per ogni variabile, mostra il
+coefficiente di regressione per il modello con le variabile di controllo
+macroeconomiche aggiunte (\textit{GDP}, \textit{POP}, \textit{COMM}) e senza di
+esse tra parentesi; il numero di asterischi indica la significatività del
+p-value. Tutte le regressioni usano \textit{HOST}, \textit{PRE}, \textit{POST},
+\textit{YEAR} (che è omesso dalla tabella per maggiore leggibilità, data anche
+la minore significatività, ma verrà discusso in seguito), oltre alle costanti
+specifiche del modello. Si ricorda che Csurilla\cite{csurillaLessObviousEffect2023} si ferma al 2020.
+
+
+
+\begin{table}[H]
+\centering
+\caption{Analisi di Regressione: Confronto degli Effetti Host, Pre e Post con e (senza) Controlli Macroeconomici}
+\label{tab:comparison_models_csurilla}
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{l *{5}{>{\centering\arraybackslash}p{0.15\textwidth}}}
+\toprule
+%& \textbf{Original Paper} & \textbf{Ours: ZINB} & \textbf{Ours: ZINB} & \textbf{Ours: OLS} & \textbf{Ours: OLS} \\
+& \multicolumn{1}{c}{\textbf{Csurilla\cite{csurillaLessObviousEffect2023}: ZINB}} & \multicolumn{2}{c}{\textbf{ZINB}} & \multicolumn{2}{c}{\textbf{OLS}} \\
+\cmidrule(lr){2-2} \cmidrule(lr){3-4} \cmidrule(lr){5-6}
+\textbf{Variables} & \textbf{All} & \textbf{All} & \textbf{Top 40} & \textbf{Top 40} & \textbf{Top 40 + AM} \\
+\midrule
+OG1996          & 0.021     & 0.526***  & 0.538***  & 6.403***  & 0.656*    \\
+                & (0.544)***& (3.171)***& (1.802)***& (10.031)***& (-0.255)  \\
+OG2000          & 0.361**   & 1.706***  & 1.129***  & 3.850***  & 4.377***  \\
+                & (0.476)***& (2.496)***& (1.154)***& (4.294)*** & (4.211)*** \\
+OG2004          & 0.384     & 1.295***  & 0.321***  & 0.262     & 0.183**   \\
+                & (0.273)   & (1.160)***& (-0.186)  & (-0.354)   & (-0.419)***\\
+OG2008          & 0.101     & -0.114    & 0.206     & 4.100***  & 5.128***  \\
+                & (0.459)** & (3.002)***& (1.673)***& (8.492)*** & (7.828)*** \\
+OG2012          & 0.577***  & 1.408***  & 0.915***  & 3.327***  & 2.182***  \\
+                & (0.759)***& (2.587)***& (1.264)***& (4.849)*** & (2.180)*** \\
+OG2016          & 0.362     & 0.255     & -0.489*** & -2.027*** & -0.500**  \\
+                & (0.310)   & (1.289)***& (-0.039)  & (-0.078)   & (0.889)*** \\
+OG2020          & 0.114     & 0.345***  & 0.406***  & 1.217***  & 2.025***  \\
+                & (0.496)** & (1.629)***& (0.951)***& (3.297)*** & (2.987)*** \\
+OG2024          & ---       & 0.834***  & 0.819***  & 2.686***  & 1.867***  \\
+                & ---       & (1.755)***& (1.079)***& (4.048)*** & (2.056)*** \\
+\midrule
+PRE1996         & 0.181     & 1.507***  & 0.895***  & 2.463***  & 3.096***  \\
+                & (0.244)   & (2.269)***& (0.901)***& (2.897)*** & (2.893)*** \\
+PRE2000         & 0.446     & 1.063***  & 0.112     & 0.087     & -0.109    \\
+                & (0.347)   & (1.000)***& (-0.340)**& (-0.571)*  & (-0.765)***\\
+PRE2004         & -0.454*   & -0.280    & -0.172    & 0.499     & 1.739***  \\
+                & (-0.295)  & (2.532)***& (1.183)***& (4.717)*** & (4.421)*** \\
+PRE2008         & 0.068     & 0.942***  & 0.552***  & 1.505***  & 0.428***  \\
+                & (0.205)   & (2.267)***& (0.940)***& (3.059)*** & (0.407)*** \\
+PRE2012         & 0.387     & 0.164     & -0.542*** & -2.172*** & -0.632*** \\
+                & (0.331)   & (1.245)***& (-0.076)  & (-0.141)   & (0.738)*** \\
+PRE2016         & -0.100    & 0.501***  & 0.102     & -0.006    & 0.902***  \\
+                & (0.306)   & (2.059)***& (0.730)***& (2.183)*** & (1.872)*** \\
+PRE2020         & -0.169    & 0.164     & 0.109     & -0.407    & -1.233*** \\
+                & (0.002)   & (1.064)***& (0.388)** & (0.983)**  & (-1.071)***\\
+\midrule
+POST2000        & -0.189    & 0.298*    & 0.330***  & 4.244***  & -1.427*** \\
+                & (0.375)*  & (2.947)***& (1.604)***& (7.862)*** & (-2.242)***\\
+POST2004        & 0.233     & 1.624***  & 0.998***  & 2.853***  & 3.367***  \\
+                & (0.301)   & (2.300)***& (0.952)***& (3.314)*** & (3.228)*** \\
+POST2008        & -0.886*   & -0.246*   & -1.085*** & -0.964*** & -1.153*** \\
+                & (-0.953)* & (-0.219)  & (-1.544)***& (-1.539)***& (-1.712)***\\
+POST2012        & -0.139    & -0.357*   & 0.009     & 2.621***  & 3.449***  \\
+                & (0.323)   & (2.890)***& (1.566)***& (7.240)*** & (6.122)*** \\
+POST2016        & 0.778***  & 1.404***  & 0.880***  & 3.404***  & 2.276***  \\
+                & (0.975)***& (2.550)***& (1.220)***& (4.855)*** & (2.301)*** \\
+POST2020        & 0.464**   & -0.100    & -0.416*** & -1.945*** & -0.546*** \\
+                & (0.375)*  & (0.612)***& (-0.064)  & (-0.129)   & (0.845)*** \\
+POST2024        & ---       & 0.129     & 0.218*    & 0.217     & 0.916***  \\
+                & ---       & (1.403)***& (0.727)***& (2.228)*** & (1.858)*** \\
+\midrule
+ln\_GDP         & 0.416***  & 0.898***  & 0.420***  & 0.848***  & 0.202***  \\
+ln\_Population   & 0.178***  & 0.612***  & 0.426***  & 1.102***  & 0.620***  \\
+Is\_Communist    & 0.696***  & 1.335***  & 0.438***  & 0.805***  & 0.671***  \\
+AM (History)    & 0.596***  & ---       & ---       & ---       & 0.466***  \\
+\midrule
+Constant        & -9.016*** & -12.979***& -5.849*** & -17.792***& -7.351*** \\
+                & (-1.911)***& (2.406)***& (3.079)***& (2.083)*** & (0.694)*** \\
+Inflate Const   & 18.51**   & -14.745***& -21.808***& ---       & ---       \\
+                & (27.85)***& (-12.564)***& (-19.298)***& ---     & ---       \\
+Alpha           & ---       & 1.179***  & 0.218***  & ---       & ---       \\
+                & ---       & (3.781)***& (0.652)***& ---       & ---       \\
+\bottomrule
+\multicolumn{6}{l}{\footnotesize Coefficienti con (senza) GDP/POP/COMM.\@ YEAR usati ma omessi.\@ Significatività: * $p<0.1$, ** $p<0.05$, *** $p<0.01$.} \\
+\end{tabular}%
+}
+\end{table}

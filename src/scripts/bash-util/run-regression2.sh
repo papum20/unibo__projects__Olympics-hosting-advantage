@@ -98,30 +98,36 @@ for YEAR in 1964 1996; do
 #
 #		wait
 
-		MAX_LAG=7
+		MAX_LAG=0
 		FLAGS="--reg-hc0 --gdp-avg --gdp-log --pop-avg --pop-log --med-perc --noc-top 40"
 #		run_test "$YEAR" "$WITH_GPC" "true" "true" "HOST PRE POST"			$MIN_LAG $MAX_LAG "$FLAGS"
-		run_test "$YEAR" "$WITH_GPC" "true" "true" "HOST PRE POST"			$MIN_LAG $MAX_LAG "$FLAGS --sep-host"
-#		run_test "$YEAR" "$WITH_GPC" "true" "true" "AM HOST PRE POST"		$MIN_LAG $MAX_LAG "$FLAGS"
-#		run_test "$YEAR" "$WITH_GPC" "true" "true" "AM HOST PRE POST"		$MIN_LAG $MAX_LAG "$FLAGS --sep-host"
-#		run_test "$YEAR" "$WITH_GPC" "true" "true" "HOST PRE POST YEAR"		$MIN_LAG $MAX_LAG "$FLAGS"
-#		run_test "$YEAR" "$WITH_GPC" "true" "true" "HOST PRE POST YEAR"		$MIN_LAG $MAX_LAG "$FLAGS --sep-host"
-#		run_test "$YEAR" "$WITH_GPC" "true" "true" "AM HOST PRE POST YEAR"	$MIN_LAG $MAX_LAG "$FLAGS"
-#		run_test "$YEAR" "$WITH_GPC" "true" "true" "AM HOST PRE POST YEAR"	$MIN_LAG $MAX_LAG "$FLAGS --sep-host"
-#
-#		FLAGS="--reg-hc0 --gdp-avg --gdp-log --pop-avg --pop-log --noc-top 40 --reg-zinb"
+#		run_test "$YEAR" "$WITH_GPC" "true" "true" "HOST PRE POST"			$MIN_LAG $MAX_LAG "$FLAGS --sep-host"
+		run_test "$YEAR" "$WITH_GPC" "true" "true" "AM HOST PRE POST"		$MIN_LAG $MAX_LAG "$FLAGS"
+		run_test "$YEAR" "$WITH_GPC" "true" "true" "AM HOST PRE POST"		$MIN_LAG $MAX_LAG "$FLAGS --sep-host"
+		run_test "$YEAR" "$WITH_GPC" "true" "true" "HOST PRE POST YEAR"		$MIN_LAG $MAX_LAG "$FLAGS"
+		run_test "$YEAR" "$WITH_GPC" "true" "true" "HOST PRE POST YEAR"		$MIN_LAG $MAX_LAG "$FLAGS --sep-host"
+		run_test "$YEAR" "$WITH_GPC" "true" "true" "AM HOST PRE POST YEAR"	$MIN_LAG $MAX_LAG "$FLAGS"
+		run_test "$YEAR" "$WITH_GPC" "true" "true" "AM HOST PRE POST YEAR"	$MIN_LAG $MAX_LAG "$FLAGS --sep-host"
+
+		FLAGS="--reg-hc0 --gdp-avg --gdp-log --pop-avg --pop-log --noc-top 40 --reg-zinb"
 #		run_test "$YEAR" "$WITH_GPC" "true" "true" "HOST PRE POST"	$MIN_LAG $MAX_LAG "$FLAGS"
 #		run_test "$YEAR" "$WITH_GPC" "true" "true" "HOST PRE POST"	$MIN_LAG $MAX_LAG "$FLAGS --sep-host"
-#
-#		FLAGS="--reg-hc0 --gdp-avg --gdp-log --pop-avg --pop-log --reg-zinb"
+		run_test "$YEAR" "$WITH_GPC" "true" "true" "AM HOST PRE POST"	$MIN_LAG $MAX_LAG "$FLAGS"
+		run_test "$YEAR" "$WITH_GPC" "true" "true" "AM HOST PRE POST"	$MIN_LAG $MAX_LAG "$FLAGS --sep-host"
+		run_test "$YEAR" "$WITH_GPC" "true" "true" "HOST PRE POST YEAR"	$MIN_LAG $MAX_LAG "$FLAGS"
+		run_test "$YEAR" "$WITH_GPC" "true" "true" "HOST PRE POST YEAR"	$MIN_LAG $MAX_LAG "$FLAGS --sep-host"
+		run_test "$YEAR" "$WITH_GPC" "true" "true" "AM HOST PRE POST YEAR"	$MIN_LAG $MAX_LAG "$FLAGS"
+		run_test "$YEAR" "$WITH_GPC" "true" "true" "AM HOST PRE POST YEAR"	$MIN_LAG $MAX_LAG "$FLAGS --sep-host"
+
+		FLAGS="--reg-hc0 --gdp-avg --gdp-log --pop-avg --pop-log --reg-zinb"
 #		run_test "$YEAR" "$WITH_GPC" "true" "true" "HOST PRE POST"	$MIN_LAG $MAX_LAG "$FLAGS"
 #		run_test "$YEAR" "$WITH_GPC" "true" "true" "HOST PRE POST"	$MIN_LAG $MAX_LAG "$FLAGS --sep-host"
-#		run_test "$YEAR" "$WITH_GPC" "true" "true" "AM HOST PRE POST"	$MIN_LAG $MAX_LAG "$FLAGS"
-#		run_test "$YEAR" "$WITH_GPC" "true" "true" "AM HOST PRE POST"	$MIN_LAG $MAX_LAG "$FLAGS --sep-host"
-#		run_test "$YEAR" "$WITH_GPC" "true" "true" "HOST PRE POST YEAR"	$MIN_LAG $MAX_LAG "$FLAGS"
-#		run_test "$YEAR" "$WITH_GPC" "true" "true" "HOST PRE POST YEAR"	$MIN_LAG $MAX_LAG "$FLAGS --sep-host"
-#		run_test "$YEAR" "$WITH_GPC" "true" "true" "AM HOST PRE POST YEAR"	$MIN_LAG $MAX_LAG "$FLAGS"
-#		run_test "$YEAR" "$WITH_GPC" "true" "true" "AM HOST PRE POST YEAR"	$MIN_LAG $MAX_LAG "$FLAGS --sep-host"
+		run_test "$YEAR" "$WITH_GPC" "true" "true" "AM HOST PRE POST"	$MIN_LAG $MAX_LAG "$FLAGS"
+		run_test "$YEAR" "$WITH_GPC" "true" "true" "AM HOST PRE POST"	$MIN_LAG $MAX_LAG "$FLAGS --sep-host"
+		run_test "$YEAR" "$WITH_GPC" "true" "true" "HOST PRE POST YEAR"	$MIN_LAG $MAX_LAG "$FLAGS"
+		run_test "$YEAR" "$WITH_GPC" "true" "true" "HOST PRE POST YEAR"	$MIN_LAG $MAX_LAG "$FLAGS --sep-host"
+		run_test "$YEAR" "$WITH_GPC" "true" "true" "AM HOST PRE POST YEAR"	$MIN_LAG $MAX_LAG "$FLAGS"
+		run_test "$YEAR" "$WITH_GPC" "true" "true" "AM HOST PRE POST YEAR"	$MIN_LAG $MAX_LAG "$FLAGS --sep-host"
 
 
 	done

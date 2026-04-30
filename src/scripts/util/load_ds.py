@@ -1327,7 +1327,8 @@ def save_stacked_countries_to_csv(
 #if __name__ == "__main__":
 #	
 #	save_stacked_countries_to_csv(
-#		output_path				= 'dataset/generated_olympic-panel-dataset.csv',
-#		is_verbose				= True
+#		output_path				= 'dataset/generated_olympic-panel-dataset_med-perc.csv',
+#		is_verbose				= True,
+#		medals_data_type		= DsMedalsDataType.PERCENTAGE,
 #	)
 

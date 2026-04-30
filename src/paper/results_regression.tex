@@ -9,7 +9,55 @@ esse tra parentesi; il numero di asterischi indica la significatività del
 p-value. Tutte le regressioni usano \textit{HOST}, \textit{PRE}, \textit{POST},
 \textit{YEAR} (che è omesso dalla tabella per maggiore leggibilità, data anche
 la minore significatività, ma verrà discusso in seguito), oltre alle costanti
-specifiche del modello. Si ricorda che Csurilla\cite{csurillaLessObviousEffect2023} si ferma al 2020.
+specifiche del modello. Si ricorda che
+Csurilla\cite{csurillaLessObviousEffect2023} si ferma al 2020.\\
+Mentre Csurilla presentava pochi valori significativi, che diminuivano
+ulteriormente con l'aggiunta delle variabili macroeconomiche, i nostri modelli
+non ne presentano solo in pochissimi casi: una possibile spiegazione potrebbe
+essere il fatto che loro abbiano condotto un'analisi a livello di sport, quindi
+con molte più variabili tra cui distribuire il ``merito'' delle medaglie.
+Dunque, mentre per loro la diminuzione dell'effetto \textit{Host} si manifestava
+in una minore significatività, nel nostro caso è possibile osservare una
+riduzione dei valori dei coefficienti (per quelli con p-value significativo) di
+\textit{HOST}, \textit{PRE} e \textit{POST}, in particolar modo con OLS, che usa
+una scala lineare, più intuitiva di quella logaritmica di ZINB.\@ Un
+coefficiente negativo, per esempio, indica una correlazione negativa delle
+medaglie con tale variabile, cioè che quel Paese ha performato peggio di quanto
+il modello si aspettasse in base a quanto imparato dal resto del contesto; un
+valore alto o basso, invece, indica quanto la variabile influenzi la predizione
+(di medaglie).\\
+\\
+Si osservi OLS con \textit{AM}. Nel 2008, la Cina (ospitante) ha vinto il
+10.45\% delle medaglie, contro il 6.80\% del 2004 --- quasi un raddoppio:
+l'effetto \textit{Host} ha quindi individuato qui il coefficiente più alto di
+tutti ($\sim$7.8). Ma, con \textit{MACRO}, esso scende a $\sim$5.1: l'incremento
+di medaglie potrebbe considerato meno sorprendente tenendo conto che la sua
+economia (e il PIL) ha avuto una veloce impennata agli inizi del XXI secolo.
+Discorso simile per \textit{PRE2004}e \textit{POST2004}, rispettivamente anni
+prima e dopo che ospitasse: nel primo caso, un minore incremento (da 6.27\% a
+6.80\%) risulta in un coefficiente più basso, considerando \textit{MACRO}; nel
+secondo, nonostante il leggero decremento dal 2008 (da 10.45\% a 9.15\%), le
+medaglie sono pur sempre molte di più che negli anni precedenti, anche se un
+ulteriore incremento di \textit{GDP} sottrae rilevanza alla variabile.\\
+Il Brasile, caso raro di Nazione che non ha visibilmente beneficiato
+dall'ospitare (1.95\% nel 2016 contro l'1.77\% nel 2012), aspettatamente non ha
+un \textit{HOST2016} alto (0.889), ma aggiungere \textit{MACRO} lo riduce
+ulteriormente (-0.500): gli anni 2013--2016 hanno visto dapprima un picco del
+PIL (recuperato solo nel 2024) e poi una decaduta ma, evidentemente, un valore
+tutto sommato in crescita rispetto agli anni precedenti (costante crescita dal
+1992) avrebbe fatto presagire migliori risultati. Altrettanto interessante è che
+usare \textit{AM} incrementa \textit{OG2016} (-2.027 senza), indicando quindi
+delle prestazioni comunque al di sopra della media storica: nonostante il
+Brasile avesse partecipato ai Giochi fin dal 1900, le sue medaglie sono
+diventate più rilevanti su scala globale solo nel 1996, passando da 0.31\% (e
+sempre sotto l'1\% nelle passate 17 edizioni) a 1.78\% (con risultati simili
+nelle successive 5).\\
+Un effetto opposto lo si ha con gli USA, i quali nel 1996 sono passati
+dal'11.01\% al 12.01\% (e da 108 a 101 in numero), un incremento forse
+``deludente'' per un team da sempre protagonista. Così, usando \textit{MACRO},
+\textit{HOST1996} passa da 6.4 a 0.6 aggiungendo \textit{AM} --- si faccia
+tuttavia attenzione alla diversa significatività dei p-value, <0.1 e <0.01
+rispettivamente.
 
 
 
@@ -76,6 +124,7 @@ ln\_GDP         & 0.416***  & 0.898***  & 0.420***  & 0.848***  & 0.202***  \\
 ln\_Population   & 0.178***  & 0.612***  & 0.426***  & 1.102***  & 0.620***  \\
 Is\_Communist    & 0.696***  & 1.335***  & 0.438***  & 0.805***  & 0.671***  \\
 AM (History)    & 0.596***  & ---       & ---       & ---       & 0.466***  \\
+                & 0.716***  & ---       & ---       & ---       & 0.6132***  \\
 \midrule
 Constant        & -9.016*** & -12.979***& -5.849*** & -17.792***& -7.351*** \\
                 & (-1.911)***& (2.406)***& (3.079)***& (2.083)*** & (0.694)*** \\

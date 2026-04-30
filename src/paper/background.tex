@@ -30,20 +30,20 @@ abbia applicato la regressione dividendo il dataset a livello di sport (oltre
 che per anno e Paese).\\
 \\
 Nel corso del lavoro, denoteremo le variabili come indicato di seguito. Alcune
-sono appena state descritte, tra cui \textit{HOST<Year>}, \textit{PRE<Year>} e
-\textit{POST<Year>} (quando non è specificato l'anno, si intende che è stata
-usata un'unica variabile per tutti insieme). Si noti che mancherà \textit{PRE}
-per l'ultima edizione. \textit{MACRO} è l'insieme delle variabili
-macroeconomiche aggiuntive: \textit{GDP} per il PIL (pro capite, in dollari del
-2011, aggiustato per l'inflazione), \textit{POP} per la popolazione (in
-migliaia), \textit{COMM} per l'appartenenza al blocco comunista, \textit{AM} per
-la media storica di medaaglie. \textit{YEAR<Year>} è una \textit{dummy variable}
-per ogni anno; \textit{BOYCOTT<Year>}, in assenza di \textit{YEAR}, si ha solo
-per assorbire sbilanciamenti nei due anni di boicottaggio reciproco tra USA e
-URSS (1980 e 1984): essendo questi i due Paesi più vincenti, la mancanza di uno
-ha fatto sì che l'altro ottenesse la maggior parte delle medaglie, influenzando
-notevolmente i dati. \textit{const} e \textit{alpha} sono variabili specifiche
-dei modelli.\\
+sono appena state descritte, tra cui \textit{HOST<Year>} (detto anche
+\textit{OG<Year>}), \textit{PRE<Year>} e \textit{POST<Year>} (quando non è
+specificato l'anno, si intende che è stata usata un'unica variabile per tutti
+insieme). Si noti che mancherà \textit{PRE} per l'ultima edizione.
+\textit{MACRO} è l'insieme delle variabili macroeconomiche aggiuntive:
+\textit{GDP} per il PIL (pro capite, in dollari del 2011, aggiustato per
+l'inflazione), \textit{POP} per la popolazione (in migliaia), \textit{COMM} per
+l'appartenenza al blocco comunista, \textit{AM} per la media storica di
+medaaglie. \textit{YEAR<Year>} è una \textit{dummy variable} per ogni anno;
+\textit{BOYCOTT<Year>}, in assenza di \textit{YEAR}, si ha solo per assorbire
+sbilanciamenti nei due anni di boicottaggio reciproco tra USA e URSS (1980 e
+1984): essendo questi i due Paesi più vincenti, la mancanza di uno ha fatto sì
+che l'altro ottenesse la maggior parte delle medaglie, influenzando notevolmente
+i dati. \textit{const} e \textit{alpha} sono variabili specifiche dei modelli.\\
 \textit{CLOSE\_<group><year>} vale 1 per le Nazione appartenenti al dato gruppo
 quando una di esse abbia ospitato i Giochi, ma 0 per chi ospita (senza
 \textit{<year>} è aggregata per anno). I gruppi sono stati scelti per cercare di
@@ -56,8 +56,8 @@ edizioni ospitate), e per di più piccoli (viaggiare in Europa può essere più
 facile che da una parte all'altra della Cina). Dunque, abbiamo: Dunque, abbiamo:
 \begin{itemize}
     \item \textit{CLOSE\_WEST} (Belgio, Francia, Paesi Bassi)
-    \item \textit{CLOSE\_CENTER} (Austria, Repubblica Ceca, Germania, Ungheria,
-    Polonia, Slovenia, Slovacchia, Svizzera)
+    \item \textit{CLOSE\_CENTER} (Austria, Repubblica Ceca, Germania, Germania
+    Ovest, Ungheria, Polonia, Slovenia, Slovacchia, Svizzera)
     \item \textit{CLOSE\_GMT1} (\textit{CLOSE\_CENTER} + \textit{CLOSE\_WEST} +
     Italia + Spagna): fuso orario GMT+1
     \item \textit{CLOSE\_MAIN} (Francia, Germania, Italia, Spagna): le squadre

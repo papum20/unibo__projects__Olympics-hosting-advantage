@@ -2,14 +2,14 @@
 
 \cref{tab:comparison_models_csurilla} confronta il modello finale di
 Csurilla\cite{csurillaLessObviousEffect2023} con i nostri ZINB (su tutti i Paesi
-o top 40) e OLS (top 40, con \textit{AM}, con \textit{AM} e senza \textit{YEAR}). Per ogni variabile, mostra il
-coefficiente di regressione per il modello con le variabile di controllo
-macroeconomiche aggiunte (\textit{GDP}, \textit{POP}, \textit{COMM}) e senza di
-esse tra parentesi; il numero di asterischi indica la significatività del
-p-value. Tutte le regressioni usano \textit{HOST}, \textit{PRE}, \textit{POST},
-\textit{YEAR} (che è omesso dalla tabella per maggiore leggibilità, data anche
-la minore significatività, ma verrà discusso in seguito), oltre alle costanti
-specifiche del modello. Si ricorda che
+o top 40) e OLS (top 40, con \textit{AM}, con \textit{AM} e senza
+\textit{YEAR}). Per ogni variabile, mostra il coefficiente di regressione per il
+modello con le variabile di controllo macroeconomiche aggiunte (\textit{GDP},
+\textit{POP}, \textit{COMM}) e senza di esse tra parentesi; il numero di
+asterischi indica la significatività del p-value. Tutte le regressioni usano
+\textit{HOST}, \textit{PRE}, \textit{POST}, \textit{YEAR} (che è omesso dalla
+tabella per maggiore leggibilità, data anche la minore significatività, ma verrà
+discusso in seguito), oltre alle costanti specifiche del modello. Si ricorda che
 Csurilla\cite{csurillaLessObviousEffect2023} si ferma al 2020.\\
 Mentre Csurilla presentava pochi valori significativi, che diminuivano
 ulteriormente con l'aggiunta delle variabili macroeconomiche, i nostri modelli
@@ -57,6 +57,10 @@ dal'11.01\% al 12.01\% (e da 108 a 101 in numero), un incremento forse
 ``deludente'' per un team da sempre protagonista. Così, usando \textit{MACRO},
 \textit{HOST1996} passa da 6.4 a un p-value non più significativo aggiungendo
 \textit{AM} (valore 0.354).\\
+In generale, i nostri unici \textit{HOST} con p-value $\ge$ 0.1 sono tre casi noti
+riconosciuti e anche da loro: i ``deludenti'' Stati Uniti (1996), il Brasile
+(2016) che aveva avuto il suo picco prima, la Grecia (2004) che non ha avuto un
+grande boost, soprattutto tenendo conto di \textit{MACRO}.  
 \\
 Gli effetti in OLS sono riscontrabili in modo analogo nei modelli ZINB.\@ In
 Csurilla con \textit{MACRO}, le uniche due variabili \textit{HOST} significative
@@ -138,6 +142,97 @@ Alpha           & ---       & 1.179***  & 0.218***  & ---           & ---       
                 & ---       & (3.781***)& (0.652***)& ---           & ---       & ---        \\
 \bottomrule
 \multicolumn{6}{l}{\footnotesize Coefficienti con (senza) GDP/POP/COMM.\@ YEAR usati ma omessi.\@ Significatività: * $p<0.1$, ** $p<0.05$, *** $p<0.01$.} \\
+\end{tabular}%
+}
+\end{table}
+
+
+
+\begin{table}[H]
+\centering
+\caption{Confronto Modelli OLS Top 40: Effetto Host e Variabili Macroeconomiche per diversi Periodi e Lag}
+\label{tab:ols_timeframes}
+\renewcommand{\arraystretch}{0.85} % Comprime leggermente l'altezza delle righe
+\footnotesize % Riduce il font per far entrare le 60+ righe
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{l c c c c c c}
+\toprule
+\textbf{Variables} & \textbf{1900 w/o Macro} & \textbf{1900} & \textbf{1932} & \textbf{1964} & \textbf{1964 (Lag 7)} & \textbf{1996} \\
+\midrule
+\multicolumn{7}{l}{\textbf{Baseline \& Macroeconomic Controls}} \\
+Constant           & 1.542*** & -4.624*  & - & -5.737*** & -6.006*** & -8.151*** \\
+Avg\_Medals\_Hist  & 0.554*** & 0.506*** & - & 0.498***  & 0.495***  & 0.463***  \\
+GDP                & -        & 0.138    & - & 0.106     & 0.124     & 0.268***  \\
+Population         & -        & 0.503*** & - & 0.531***  & 0.537***  & 0.631***  \\
+Is\_Communist      & -        & 0.831*** & - & 1.009***  & 1.031***  & 0.696***  \\
+\midrule
+\multicolumn{7}{l}{\textbf{Host Event Variables}} \\
+OG1900 & 29.395*** & 28.719*** & - & - & - & - \\
+OG1904 & 73.601*** & 72.933*** & - & - & - & - \\
+OG1908 & 39.000*** & 37.945*** & - & - & - & - \\
+OG1912 & 17.399*** & 17.685*** & - & - & - & - \\
+OG1920 & 5.675***  & 5.756***  & - & - & - & - \\
+OG1924 & 1.100     & 0.825     & - & - & - & - \\
+OG1928 & 3.943***  & 3.961***  & - & - & - & - \\
+OG1932 & 12.783*** & 12.676*** & - & - & - & - \\
+OG1936 & 17.060*** & 16.484*** & - & - & - & - \\
+OG1948 & -2.189*** & -2.552*** & - & - & - & - \\
+OG1952 & 0.795**   & 1.723***  & - & - & - & - \\
+OG1956 & 5.629***  & 5.820***  & - & - & - & - \\
+OG1960 & 4.465***  & 3.922***  & - & - & - & - \\
+OG1964 & 3.420***  & 2.546***  & - & 2.447***  & 2.475***  & - \\
+OG1968 & 1.012***  & 0.499     & - & 0.394     & 0.390     & - \\
+OG1976 & 0.530*    & 0.410     & - & 0.400     & 0.383     & - \\
+OG1984 & 9.734***  & 9.395***  & - & 9.421***  & 9.446***  & - \\
+OG1988 & 3.359***  & 3.121***  & - & 3.061***  & 3.113***  & - \\
+OG1992 & 1.611***  & 1.351***  & - & 1.317***  & 1.303***  & - \\
+OG1996 & 0.513     & 0.179     & - & 0.321     & 0.317     & 0.310 \\
+OG2000 & 4.183***  & 4.438***  & - & 4.494***  & 4.503***  & 4.183*** \\
+OG2004 & -0.384    & 0.202     & - & 0.303     & 0.313     & 0.053 \\
+OG2008 & 8.053***  & 5.591***  & - & 5.271***  & 5.274***  & 5.171*** \\
+OG2012 & 2.544***  & 2.398***  & - & 2.436***  & 2.409***  & 2.141*** \\
+OG2016 & 0.986***  & 0.120     & - & 0.027     & 0.029     & -0.414* \\
+OG2020 & 3.142***  & 2.505***  & - & 2.503***  & 2.488***  & 2.087*** \\
+OG2024 & 1.520**   & 0.888*    & - & 2.072***  & 2.116***  & 1.857*** \\
+\midrule
+\multicolumn{7}{l}{\textbf{Regional Contagion Variables (CLOSE)}} \\
+CLOSE\_CENTER1936 & 1.320 & -0.854 & - & - & - & - \\
+CLOSE\_CENTER1972 & 2.124** & 2.234*** & - & 2.847*** & 2.840*** & - \\
+CLOSE\_GMT1\_1900 & -10.928*** & -10.453*** & - & - & - & - \\
+CLOSE\_GMT1\_1920 & 4.170 & 3.389 & - & - & - & - \\
+CLOSE\_GMT1\_1924 & 2.261 & 1.876 & - & - & - & - \\
+CLOSE\_GMT1\_1928 & 5.055*** & 4.463*** & - & - & - & - \\
+CLOSE\_GMT1\_1936 & 3.620*** & 3.288** & - & - & - & - \\
+CLOSE\_GMT1\_1960 & 2.440*** & 2.349*** & - & - & - & - \\
+CLOSE\_GMT1\_1972 & 1.174** & 0.943 & - & 0.869 & 0.857 & - \\
+CLOSE\_GMT1\_1992 & 1.813*** & 1.828*** & - & 2.073*** & 2.051*** & - \\
+CLOSE\_GMT1\_2024 & -1.195 & -1.197 & - & -1.372 & -1.365* & -1.292 \\
+CLOSE\_MAIN\_1900 & 0.098 & -0.318 & - & - & - & - \\
+CLOSE\_MAIN\_1924 & 0.834 & 0.507 & - & - & - & - \\
+CLOSE\_MAIN\_1936 & 0.456 & -0.114 & - & - & - & - \\
+CLOSE\_MAIN\_1960 & -0.734 & -1.121 & - & - & - & - \\
+CLOSE\_MAIN\_1992 & 0.910 & 0.417 & - & 0.161 & 0.176 & - \\
+CLOSE\_MAIN\_2024 & 0.871 & 0.397 & - & 0.552 & 0.534 & 0.336 \\
+CLOSE\_WEST\_1900 & 4.944*** & 5.132*** & - & - & - & - \\
+CLOSE\_WEST\_1920 & -0.618 & 0.023 & - & - & - & - \\
+CLOSE\_WEST\_1924 & 0.570*** & 0.800*** & - & - & - & - \\
+CLOSE\_WEST\_1928 & -3.787*** & -3.154*** & - & - & - & - \\
+CLOSE\_WEST\_2024 & 1.275* & 1.407** & - & 2.497*** & 2.479*** & 2.299*** \\
+CLOSE\_WIDE\_1900 & 9.700*** & 8.871*** & - & - & - & - \\
+CLOSE\_WIDE\_1908 & -2.478** & -2.976*** & - & - & - & - \\
+CLOSE\_WIDE\_1920 & -3.665 & -3.500* & - & - & - & - \\
+CLOSE\_WIDE\_1924 & -3.442** & -3.278** & - & - & - & - \\
+CLOSE\_WIDE\_1928 & -3.821*** & -3.727*** & - & - & - & - \\
+CLOSE\_WIDE\_1936 & -3.597*** & -3.012*** & - & - & - & - \\
+CLOSE\_WIDE\_1948 & -0.565 & -0.663 & - & - & - & - \\
+CLOSE\_WIDE\_1960 & -1.759*** & -1.715*** & - & - & - & - \\
+CLOSE\_WIDE\_1972 & -2.294*** & -2.241*** & - & -2.183*** & -2.176*** & - \\
+CLOSE\_WIDE\_1992 & -2.056*** & -1.859*** & - & -1.841*** & -1.859*** & - \\
+CLOSE\_WIDE\_2004 & -0.303 & -0.220 & - & -0.114 & -0.118 & -0.413 \\
+CLOSE\_WIDE\_2012 & -0.446 & -0.319 & - & -0.229 & -0.246 & -0.500* \\
+CLOSE\_WIDE\_2024 & -0.392 & -0.581 & - & 0.612 & 0.662 & 0.482 \\
+\bottomrule
+\multicolumn{7}{l}{\footnotesize Note: PRE, POST e YEAR dummy rimosse per chiarezza. Significatività: * $p<0.1$, ** $p<0.05$, *** $p<0.01$.} \\
 \end{tabular}%
 }
 \end{table}

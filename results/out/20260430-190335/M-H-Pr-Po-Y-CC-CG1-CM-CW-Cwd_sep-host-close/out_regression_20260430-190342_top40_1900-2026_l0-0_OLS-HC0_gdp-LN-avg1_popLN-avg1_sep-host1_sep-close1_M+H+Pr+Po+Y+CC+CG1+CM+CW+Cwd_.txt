@@ -1,0 +1,344 @@
+Running with args: Namespace(season='S', noc=[], noc_top=40, start_year=1900, end_year=2026, min_lag=0, max_lag=0, ctrl_vars=['AM', 'HOST', 'PRE', 'POST', 'YEAR', 'CLOSE_CENTER', 'CLOSE_GMT1', 'CLOSE_MAIN', 'CLOSE_WEST', 'CLOSE_WIDE'], exclude_boycott=False, gdp_avg=True, gdp_tot=False, gdp_log=True, gdp_logdiff=False, med_logdiff=False, med_perc=True, pop_avg=True, pop_log=True, pop_logdiff=False, sep_host=True, sep_close=True, reg_zinb=False, reg_hc0=True, reg_hc3=False, save=True, log=True, verbose=False)
+
+Granger causality test (manual) with lag 0:
+
+Finished loading data for 40 teams. Skipped 0 teams with missing data: 
+Using data from 1900 to 864 (requested: 1900-2026)
+Loaded data for USA+GER+GBR+FRA+CHN+ITA+SWE+JPN+AUS+FIN+KOR+CAN+NED+BEL+ESP+GRE+BRA+MEX+RUS+HUN+POL+ROU+TCH+BUL+UKR+SUI+DEN+CUB+BLR+YUG+NOR+KAZ+KEN+AUT+CZE+NZL+RSA+PRK+TUR+AZE stacked data (tail 20):
+     Year     Medals  Avg_Medals_History        GDP  Population  Is_Boycott1980  Is_Boycott1984  OG1900  PRE1900  POST1900  OG1904  PRE1904  POST1904  OG1908  PRE1908  POST1908  OG1912  PRE1912  POST1912  OG1920  PRE1920  POST1920  OG1924  PRE1924  POST1924  OG1928  PRE1928  POST1928  OG1932  PRE1932  POST1932  OG1936  PRE1936  POST1936  OG1948  PRE1948  OG1952  PRE1952  POST1952  OG1956  PRE1956  POST1956  OG1960  PRE1960  POST1960  OG1964  PRE1964  POST1964  OG1968  POST1968  PRE1972  POST1972  OG1976  OG1984  PRE1984  OG1988  PRE1988  POST1988  OG1992  PRE1992  POST1992  OG1996  PRE1996  POST1996  OG2000  PRE2000  POST2000  OG2004  PRE2004  POST2004  OG2008  PRE2008  POST2008  OG2012  PRE2012  POST2012  OG2016  PRE2016  POST2016  OG2020  PRE2020  POST2020  OG2024  POST2024  CLOSE_GMT11900  CLOSE_MAIN1900  CLOSE_WEST1900  CLOSE_WIDE1900  CLOSE_WIDE1908  CLOSE_GMT11920  CLOSE_WEST1920  CLOSE_WIDE1920  CLOSE_GMT11924  CLOSE_MAIN1924  CLOSE_WEST1924  CLOSE_WIDE1924  CLOSE_GMT11928  CLOSE_WEST1928  CLOSE_WIDE1928  CLOSE_CENTER1936  CLOSE_GMT11936  CLOSE_MAIN1936  CLOSE_WIDE1936  CLOSE_WIDE1948  CLOSE_GMT11960  CLOSE_MAIN1960  CLOSE_WIDE1960  CLOSE_CENTER1972  CLOSE_GMT11972  CLOSE_WIDE1972  CLOSE_GMT11992  CLOSE_MAIN1992  CLOSE_WIDE1992  CLOSE_WIDE2004  CLOSE_WIDE2012  CLOSE_GMT12024  CLOSE_MAIN2024  CLOSE_WEST2024  CLOSE_WIDE2024  YEAR1896  YEAR1900  YEAR1904  YEAR1908  YEAR1912  YEAR1920  YEAR1924  YEAR1928  YEAR1932  YEAR1936  YEAR1948  YEAR1952  YEAR1956  YEAR1960  YEAR1964  YEAR1968  YEAR1972  YEAR1976  YEAR1980  YEAR1984  YEAR1988  YEAR1992  YEAR1996  YEAR2000  YEAR2004  YEAR2008  YEAR2012  YEAR2016  YEAR2020  Is_Communist  NOC
+25   2012  10.706861           17.752861  10.808771   12.645549           False           False   False    False     False   False    False     False   False    False     False   False    False     False   False    False     False   False    False     False   False    False     False   False    False     False   False    False     False   False    False   False    False     False   False    False     False   False    False     False   False    False     False   False     False    False     False   False   False    False   False    False     False   False    False     False   False    False     False   False    False     False   False    False     False   False    False     False   False    False     False   False    False     False   False    False     False   False     False           False           False           False           False           False           False           False           False           False           False           False           False           False           False           False             False           False           False           False           False           False           False           False             False           False           False           False           False           False           False           False           False           False           False           False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False      True     False     False         False  USA
+26   2016  12.435766           17.491898  10.863251   12.674680           False           False   False    False     False   False    False     False   False    False     False   False    False     False   False    False     False   False    False     False   False    False     False   False    False     False   False    False     False   False    False   False    False     False   False    False     False   False    False     False   False    False     False   False     False    False     False   False   False    False   False    False     False   False    False     False   False    False     False   False    False     False   False    False     False   False    False     False   False    False     False   False    False     False   False    False     False   False     False           False           False           False           False           False           False           False           False           False           False           False           False           False           False           False             False           False           False           False           False           False           False           False             False           False           False           False           False           False           False           False           False           False           False           False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False      True     False         False  USA
+27   2020  10.462963           17.311322  10.917017   12.700592           False           False   False    False     False   False    False     False   False    False     False   False    False     False   False    False     False   False    False     False   False    False     False   False    False     False   False    False     False   False    False   False    False     False   False    False     False   False    False     False   False    False     False   False     False    False     False   False   False    False   False    False     False   False    False     False   False    False     False   False    False     False   False    False     False   False    False     False   False    False     False   False    False     False   False    False     False   False     False           False           False           False           False           False           False           False           False           False           False           False           False           False           False           False             False           False           False           False           False           False           False           False             False           False           False           False           False           False           False           False           False           False           False           False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False      True         False  USA
+28   2024  12.068966           17.075171  10.986931   12.723510           False           False   False    False     False   False    False     False   False    False     False   False    False     False   False    False     False   False    False     False   False    False     False   False    False     False   False    False     False   False    False   False    False     False   False    False     False   False    False     False   False    False     False   False     False    False     False   False   False    False   False    False     False   False    False     False   False    False     False   False    False     False   False    False     False   False    False     False   False    False     False   False    False     False   False    False     False   False     False           False           False           False           False           False           False           False           False           False           False           False           False           False           False           False             False           False           False           False           False           False           False           False             False           False           False           False           False           False           False           False           False           False           False           False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False         False  USA
+683  1920   0.000000            0.000000   7.300704    9.435589           False           False   False    False     False   False    False     False   False    False     False   False    False     False   False    False     False   False    False     False   False    False     False   False    False     False   False    False     False   False    False   False    False     False   False    False     False   False    False     False   False    False     False   False     False    False     False   False   False    False   False    False     False   False    False     False   False    False     False   False    False     False   False    False     False   False    False     False   False    False     False   False    False     False   False    False     False   False     False           False           False           False           False           False           False           False           False           False           False           False           False           False           False           False             False           False           False           False           False           False           False           False             False           False           False           False           False           False           False           False           False           False           False           False     False     False     False     False     False      True     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False          True  YUG
+684  1924   0.450450            0.000000   7.374891    9.464264           False           False   False    False     False   False    False     False   False    False     False   False    False     False   False    False     False   False    False     False   False    False     False   False    False     False   False    False     False   False    False   False    False     False   False    False     False   False    False     False   False    False     False   False     False    False     False   False   False    False   False    False     False   False    False     False   False    False     False   False    False     False   False    False     False   False    False     False   False    False     False   False    False     False   False    False     False   False     False           False           False           False           False           False           False           False           False           False           False           False           False           False           False           False             False           False           False           False           False           False           False           False             False           False           False           False           False           False           False           False           False           False           False           False     False     False     False     False     False     False      True     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False          True  YUG
+685  1928   1.259446            0.225225   7.514055    9.523590           False           False   False    False     False   False    False     False   False    False     False   False    False     False   False    False     False   False    False     False   False    False     False   False    False     False   False    False     False   False    False   False    False     False   False    False     False   False    False     False   False    False     False   False     False    False     False   False   False    False   False    False     False   False    False     False   False    False     False   False    False     False   False    False     False   False    False     False   False    False     False   False    False     False   False    False     False   False     False           False           False           False           False           False           False           False           False           False           False           False           False           False           False           False             False           False           False           False           False           False           False           False             False           False           False           False           False           False           False           False           False           False           False           False     False     False     False     False     False     False     False      True     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False          True  YUG
+686  1932   0.000000            0.569965   7.526201    9.582430           False           False   False    False     False   False    False     False   False    False     False   False    False     False   False    False     False   False    False     False   False    False     False   False    False     False   False    False     False   False    False   False    False     False   False    False     False   False    False     False   False    False     False   False     False    False     False   False   False    False   False    False     False   False    False     False   False    False     False   False    False     False   False    False     False   False    False     False   False    False     False   False    False     False   False    False     False   False     False           False           False           False           False           False           False           False           False           False           False           False           False           False           False           False             False           False           False           False           False           False           False           False             False           False           False           False           False           False           False           False           False           False           False           False     False     False     False     False     False     False     False     False      True     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False          True  YUG
+687  1936   0.211416            0.427474   7.457824    9.637776           False           False   False    False     False   False    False     False   False    False     False   False    False     False   False    False     False   False    False     False   False    False     False   False    False     False   False    False     False   False    False   False    False     False   False    False     False   False    False     False   False    False     False   False     False    False     False   False   False    False   False    False     False   False    False     False   False    False     False   False    False     False   False    False     False   False    False     False   False    False     False   False    False     False   False    False     False   False     False           False           False           False           False           False           False           False           False           False           False           False           False           False           False           False             False           False           False           False           False           False           False           False             False           False           False           False           False           False           False           False           False           False           False           False     False     False     False     False     False     False     False     False     False      True     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False          True  YUG
+688  1948   0.396040            0.384263   7.631698    9.680439           False           False   False    False     False   False    False     False   False    False     False   False    False     False   False    False     False   False    False     False   False    False     False   False    False     False   False    False     False   False    False   False    False     False   False    False     False   False    False     False   False    False     False   False     False    False     False   False   False    False   False    False     False   False    False     False   False    False     False   False    False     False   False    False     False   False    False     False   False    False     False   False    False     False   False    False     False   False     False           False           False           False           False           False           False           False           False           False           False           False           False           False           False           False             False           False           False           False           False           False           False           False             False           False           False           False           False           False           False           False           False           False           False           False     False     False     False     False     False     False     False     False     False     False      True     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False          True  YUG
+689  1952   0.572519            0.386225   7.739151    9.704387           False           False   False    False     False   False    False     False   False    False     False   False    False     False   False    False     False   False    False     False   False    False     False   False    False     False   False    False     False   False    False   False    False     False   False    False     False   False    False     False   False    False     False   False     False    False     False   False   False    False   False    False     False   False    False     False   False    False     False   False    False     False   False    False     False   False    False     False   False    False     False   False    False     False   False    False     False   False     False           False           False           False           False           False           False           False           False           False           False           False           False           False           False           False             False           False           False           False           False           False           False           False             False           False           False           False           False           False           False           False           False           False           False           False     False     False     False     False     False     False     False     False     False     False     False      True     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False          True  YUG
+690  1956   0.557621            0.412839   7.812039    9.754909           False           False   False    False     False   False    False     False   False    False     False   False    False     False   False    False     False   False    False     False   False    False     False   False    False     False   False    False     False   False    False   False    False     False   False    False     False   False    False     False   False    False     False   False     False    False     False   False   False    False   False    False     False   False    False     False   False    False     False   False    False     False   False    False     False   False    False     False   False    False     False   False    False     False   False    False     False   False     False           False           False           False           False           False           False           False           False           False           False           False           False           False           False           False             False           False           False           False           False           False           False           False             False           False           False           False           False           False           False           False           False           False           False           False     False     False     False     False     False     False     False     False     False     False     False     False      True     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False          True  YUG
+691  1960   0.369004            0.430937   8.116512    9.791892           False           False   False    False     False   False    False     False   False    False     False   False    False     False   False    False     False   False    False     False   False    False     False   False    False     False   False    False     False   False    False   False    False     False   False    False     False   False    False     False   False    False     False   False     False    False     False   False   False    False   False    False     False   False    False     False   False    False     False   False    False     False   False    False     False   False    False     False   False    False     False   False    False     False   False    False     False   False     False           False           False           False           False           False           False           False           False           False           False           False           False           False           False           False             False           False           False           False           False           False           False           False             False           False           False           False           False           False           False           False           False           False           False           False     False     False     False     False     False     False     False     False     False     False     False     False     False      True     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False          True  YUG
+692  1964   0.827815            0.424055   8.374661    9.830254           False           False   False    False     False   False    False     False   False    False     False   False    False     False   False    False     False   False    False     False   False    False     False   False    False     False   False    False     False   False    False   False    False     False   False    False     False   False    False     False   False    False     False   False     False    False     False   False   False    False   False    False     False   False    False     False   False    False     False   False    False     False   False    False     False   False    False     False   False    False     False   False    False     False   False    False     False   False     False           False           False           False           False           False           False           False           False           False           False           False           False           False           False           False             False           False           False           False           False           False           False           False             False           False           False           False           False           False           False           False           False           False           False           False     False     False     False     False     False     False     False     False     False     False     False     False     False     False      True     False     False     False     False     False     False     False     False     False     False     False     False     False     False          True  YUG
+693  1968   1.267829            0.464431   8.574417    9.867824           False           False   False    False     False   False    False     False   False    False     False   False    False     False   False    False     False   False    False     False   False    False     False   False    False     False   False    False     False   False    False   False    False     False   False    False     False   False    False     False   False    False     False   False     False    False     False   False   False    False   False    False     False   False    False     False   False    False     False   False    False     False   False    False     False   False    False     False   False    False     False   False    False     False   False    False     False   False     False           False           False           False           False           False           False           False           False           False           False           False           False           False           False           False             False           False           False           False           False           False           False           False             False           False           False           False           False           False           False           False           False           False           False           False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False      True     False     False     False     False     False     False     False     False     False     False     False     False     False          True  YUG
+694  1972   0.709220            0.537467   8.776655    9.900402           False           False   False    False     False   False    False     False   False    False     False   False    False     False   False    False     False   False    False     False   False    False     False   False    False     False   False    False     False   False    False   False    False     False   False    False     False   False    False     False   False    False     False   False     False    False     False   False   False    False   False    False     False   False    False     False   False    False     False   False    False     False   False    False     False   False    False     False   False    False     False   False    False     False   False    False     False   False     False           False           False           False           False           False           False           False           False           False           False           False           False           False           False           False             False           False           False           False           False           False           False           False             False           False           False           False           False           False           False           False           False           False           False           False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False      True     False     False     False     False     False     False     False     False     False     False     False     False          True  YUG
+695  1976   1.104972            0.551780   8.960004    9.935165           False           False   False    False     False   False    False     False   False    False     False   False    False     False   False    False     False   False    False     False   False    False     False   False    False     False   False    False     False   False    False   False    False     False   False    False     False   False    False     False   False    False     False   False     False    False     False   False   False    False   False    False     False   False    False     False   False    False     False   False    False     False   False    False     False   False    False     False   False    False     False   False    False     False   False    False     False   False     False           False           False           False           False           False           False           False           False           False           False           False           False           False           False           False             False           False           False           False           False           False           False           False             False           False           False           False           False           False           False           False           False           False           False           False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False      True     False     False     False     False     False     False     False     False     False     False     False          True  YUG
+696  1980   1.206434            0.594333   9.156941    9.970408            True           False   False    False     False   False    False     False   False    False     False   False    False     False   False    False     False   False    False     False   False    False     False   False    False     False   False    False     False   False    False   False    False     False   False    False     False   False    False     False   False    False     False   False     False    False     False   False   False    False   False    False     False   False    False     False   False    False     False   False    False     False   False    False     False   False    False     False   False    False     False   False    False     False   False    False     False   False     False           False           False           False           False           False           False           False           False           False           False           False           False           False           False           False             False           False           False           False           False           False           False           False             False           False           False           False           False           False           False           False           False           False           False           False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False      True     False     False     False     False     False     False     False     False     False     False          True  YUG
+697  1984   2.244389            0.638055   9.213357    9.995327           False            True   False    False     False   False    False     False   False    False     False   False    False     False   False    False     False   False    False     False   False    False     False   False    False     False   False    False     False   False    False   False    False     False   False    False     False   False    False     False   False    False     False   False     False    False     False   False   False    False   False    False     False   False    False     False   False    False     False   False    False     False   False    False     False   False    False     False   False    False     False   False    False     False   False    False     False   False     False           False           False           False           False           False           False           False           False           False           False           False           False           False           False           False             False           False           False           False           False           False           False           False             False           False           False           False           False           False           False           False           False           False           False           False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False      True     False     False     False     False     False     False     False     False     False          True  YUG
+698  1988   1.369863            0.745144   9.217971   10.015976           False           False   False    False     False   False    False     False   False    False     False   False    False     False   False    False     False   False    False     False   False    False     False   False    False     False   False    False     False   False    False   False    False     False   False    False     False   False    False     False   False    False     False   False     False    False     False   False   False    False   False    False     False   False    False     False   False    False     False   False    False     False   False    False     False   False    False     False   False    False     False   False    False     False   False    False     False   False     False           False           False           False           False           False           False           False           False           False           False           False           False           False           False           False             False           False           False           False           False           False           False           False             False           False           False           False           False           False           False           False           False           False           False           False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False      True     False     False     False     False     False     False     False     False          True  YUG
+
+--- Running Global Panel OLS Regression ---
+predictors = ['Avg_Medals_History', 'YEAR1896', 'YEAR1900', 'YEAR1904', 'YEAR1908', 'YEAR1912', 'YEAR1920', 'YEAR1924', 'YEAR1928', 'YEAR1932', 'YEAR1936', 'YEAR1948', 'YEAR1952', 'YEAR1956', 'YEAR1960', 'YEAR1964', 'YEAR1968', 'YEAR1972', 'YEAR1976', 'YEAR1980', 'YEAR1984', 'YEAR1988', 'YEAR1992', 'YEAR1996', 'YEAR2000', 'YEAR2004', 'YEAR2008', 'YEAR2012', 'YEAR2016', 'YEAR2020', 'OG1900', 'OG1904', 'OG1908', 'OG1912', 'OG1920', 'OG1924', 'OG1928', 'OG1932', 'OG1936', 'OG1948', 'OG1952', 'OG1956', 'OG1960', 'OG1964', 'OG1968', 'OG1976', 'OG1984', 'OG1988', 'OG1992', 'OG1996', 'OG2000', 'OG2004', 'OG2008', 'OG2012', 'OG2016', 'OG2020', 'OG2024', 'PRE1900', 'PRE1904', 'PRE1908', 'PRE1912', 'PRE1920', 'PRE1924', 'PRE1928', 'PRE1932', 'PRE1936', 'PRE1948', 'PRE1952', 'PRE1956', 'PRE1960', 'PRE1964', 'PRE1972', 'PRE1984', 'PRE1988', 'PRE1992', 'PRE1996', 'PRE2000', 'PRE2004', 'PRE2008', 'PRE2012', 'PRE2016', 'PRE2020', 'POST1900', 'POST1904', 'POST1908', 'POST1912', 'POST1920', 'POST1924', 'POST1928', 'POST1932', 'POST1936', 'POST1952', 'POST1956', 'POST1960', 'POST1964', 'POST1968', 'POST1972', 'POST1988', 'POST1992', 'POST1996', 'POST2000', 'POST2004', 'POST2008', 'POST2012', 'POST2016', 'POST2020', 'POST2024', 'CLOSE_CENTER1936', 'CLOSE_CENTER1972', 'CLOSE_GMT11900', 'CLOSE_GMT11920', 'CLOSE_GMT11924', 'CLOSE_GMT11928', 'CLOSE_GMT11936', 'CLOSE_GMT11960', 'CLOSE_GMT11972', 'CLOSE_GMT11992', 'CLOSE_GMT12024', 'CLOSE_MAIN1900', 'CLOSE_MAIN1924', 'CLOSE_MAIN1936', 'CLOSE_MAIN1960', 'CLOSE_MAIN1992', 'CLOSE_MAIN2024', 'CLOSE_WEST1900', 'CLOSE_WEST1920', 'CLOSE_WEST1924', 'CLOSE_WEST1928', 'CLOSE_WEST2024', 'CLOSE_WIDE1900', 'CLOSE_WIDE1908', 'CLOSE_WIDE1920', 'CLOSE_WIDE1924', 'CLOSE_WIDE1928', 'CLOSE_WIDE1936', 'CLOSE_WIDE1948', 'CLOSE_WIDE1960', 'CLOSE_WIDE1972', 'CLOSE_WIDE1992', 'CLOSE_WIDE2004', 'CLOSE_WIDE2012', 'CLOSE_WIDE2024']
+len(predictors) = 142
+Removed 1 empty/zero predictor columns.
+Kept predictors (141): ['Avg_Medals_History', 'YEAR1900', 'YEAR1904', 'YEAR1908', 'YEAR1912', 'YEAR1920', 'YEAR1924', 'YEAR1928', 'YEAR1932', 'YEAR1936', 'YEAR1948', 'YEAR1952', 'YEAR1956', 'YEAR1960', 'YEAR1964', 'YEAR1968', 'YEAR1972', 'YEAR1976', 'YEAR1980', 'YEAR1984', 'YEAR1988', 'YEAR1992', 'YEAR1996', 'YEAR2000', 'YEAR2004', 'YEAR2008', 'YEAR2012', 'YEAR2016', 'YEAR2020', 'OG1900', 'OG1904', 'OG1908', 'OG1912', 'OG1920', 'OG1924', 'OG1928', 'OG1932', 'OG1936', 'OG1948', 'OG1952', 'OG1956', 'OG1960', 'OG1964', 'OG1968', 'OG1976', 'OG1984', 'OG1988', 'OG1992', 'OG1996', 'OG2000', 'OG2004', 'OG2008', 'OG2012', 'OG2016', 'OG2020', 'OG2024', 'PRE1900', 'PRE1904', 'PRE1908', 'PRE1912', 'PRE1920', 'PRE1924', 'PRE1928', 'PRE1932', 'PRE1936', 'PRE1948', 'PRE1952', 'PRE1956', 'PRE1960', 'PRE1964', 'PRE1972', 'PRE1984', 'PRE1988', 'PRE1992', 'PRE1996', 'PRE2000', 'PRE2004', 'PRE2008', 'PRE2012', 'PRE2016', 'PRE2020', 'POST1900', 'POST1904', 'POST1908', 'POST1912', 'POST1920', 'POST1924', 'POST1928', 'POST1932', 'POST1936', 'POST1952', 'POST1956', 'POST1960', 'POST1964', 'POST1968', 'POST1972', 'POST1988', 'POST1992', 'POST1996', 'POST2000', 'POST2004', 'POST2008', 'POST2012', 'POST2016', 'POST2020', 'POST2024', 'CLOSE_CENTER1936', 'CLOSE_CENTER1972', 'CLOSE_GMT11900', 'CLOSE_GMT11920', 'CLOSE_GMT11924', 'CLOSE_GMT11928', 'CLOSE_GMT11936', 'CLOSE_GMT11960', 'CLOSE_GMT11972', 'CLOSE_GMT11992', 'CLOSE_GMT12024', 'CLOSE_MAIN1900', 'CLOSE_MAIN1924', 'CLOSE_MAIN1936', 'CLOSE_MAIN1960', 'CLOSE_MAIN1992', 'CLOSE_MAIN2024', 'CLOSE_WEST1900', 'CLOSE_WEST1920', 'CLOSE_WEST1924', 'CLOSE_WEST1928', 'CLOSE_WEST2024', 'CLOSE_WIDE1900', 'CLOSE_WIDE1908', 'CLOSE_WIDE1920', 'CLOSE_WIDE1924', 'CLOSE_WIDE1928', 'CLOSE_WIDE1936', 'CLOSE_WIDE1948', 'CLOSE_WIDE1960', 'CLOSE_WIDE1972', 'CLOSE_WIDE1992', 'CLOSE_WIDE2004', 'CLOSE_WIDE2012', 'CLOSE_WIDE2024']
+Check multiocollinearity using VIF:
+                feature        VIF
+0    Avg_Medals_History   2.342268
+1              YEAR1900   2.101771
+2              YEAR1904   1.351073
+3              YEAR1908   3.005120
+4              YEAR1912   1.275941
+5              YEAR1920   1.687164
+6              YEAR1924   1.519882
+7              YEAR1928   1.694482
+8              YEAR1932   1.128732
+9              YEAR1936   1.653617
+10             YEAR1948   1.752793
+11             YEAR1952   1.126721
+12             YEAR1956   1.128937
+13             YEAR1960   1.701752
+14             YEAR1964   1.132786
+15             YEAR1968   1.093308
+16             YEAR1972   1.684091
+17             YEAR1976   1.055723
+18             YEAR1980   1.010638
+19             YEAR1984   1.092999
+20             YEAR1988   1.123642
+21             YEAR1992   1.656524
+22             YEAR1996   1.097160
+23             YEAR2000   1.099620
+24             YEAR2004   1.599371
+25             YEAR2008   1.104701
+26             YEAR2012   1.601114
+27             YEAR2016   1.105945
+28             YEAR2020   1.108961
+29               OG1900   1.105624
+30               OG1904   1.125378
+31               OG1908   1.203498
+32               OG1912   1.077295
+33               OG1920   1.083334
+34               OG1924   1.062310
+35               OG1928   1.062500
+36               OG1932   1.076765
+37               OG1936   1.061039
+38               OG1948   1.072168
+39               OG1952   1.034989
+40               OG1956   1.034692
+41               OG1960   1.052811
+42               OG1964   1.035811
+43               OG1968   1.036286
+44               OG1976   1.035832
+45               OG1984   1.067743
+46               OG1988   1.037263
+47               OG1992   1.050136
+48               OG1996   1.053169
+49               OG2000   1.028573
+50               OG2004   1.041668
+51               OG2008   1.028616
+52               OG2012   1.043023
+53               OG2016   1.028878
+54               OG2020   1.029415
+55               OG2024   1.002590
+56              PRE1900   1.118552
+57              PRE1904   1.114986
+58              PRE1908   1.200008
+59              PRE1912   1.077212
+60              PRE1920   2.010185
+61              PRE1924        inf
+62              PRE1928   1.110560
+63              PRE1932   1.038590
+64              PRE1936   2.003381
+65              PRE1948   1.067209
+66              PRE1952   1.034673
+67              PRE1956   1.034549
+68              PRE1960   1.052667
+69              PRE1964   1.036364
+70              PRE1972   1.055621
+71              PRE1984   1.041920
+72              PRE1988   1.037367
+73              PRE1992   1.076769
+74              PRE1996   1.028576
+75              PRE2000   1.028581
+76              PRE2004   1.041689
+77              PRE2008   1.029909
+78              PRE2012   1.041942
+79              PRE2016   1.028574
+80              PRE2020   1.030197
+81             POST1900   2.071729
+82             POST1904   1.138194
+83             POST1908   1.274687
+84             POST1912   1.085209
+85             POST1920   1.084412
+86             POST1924        inf
+87             POST1928   2.004373
+88             POST1932   1.037047
+89             POST1936   1.103096
+90             POST1952   1.039410
+91             POST1956   1.034889
+92             POST1960   1.052666
+93             POST1964   1.035808
+94             POST1968   1.035745
+95             POST1972   1.055960
+96             POST1988   1.063020
+97             POST1992   1.050033
+98             POST1996   1.028765
+99             POST2000   1.051761
+100            POST2004   1.041669
+101            POST2008   1.028572
+102            POST2012   1.041848
+103            POST2016   1.029832
+104            POST2020   1.029720
+105            POST2024   1.000701
+106    CLOSE_CENTER1936   2.500186
+107    CLOSE_CENTER1972   1.600160
+108      CLOSE_GMT11900  10.505021
+109      CLOSE_GMT11920   4.040600
+110      CLOSE_GMT11924   6.037050
+111      CLOSE_GMT11928   4.932323
+112      CLOSE_GMT11936  10.504362
+113      CLOSE_GMT11960   5.613702
+114      CLOSE_GMT11972   5.604858
+115      CLOSE_GMT11992   5.605135
+116      CLOSE_GMT12024   6.754624
+117      CLOSE_MAIN1900   2.500122
+118      CLOSE_MAIN1924   2.000204
+119      CLOSE_MAIN1936   2.002891
+120      CLOSE_MAIN1960   1.602685
+121      CLOSE_MAIN1992   1.603640
+122      CLOSE_MAIN2024   1.750999
+123      CLOSE_WEST1900   2.003543
+124      CLOSE_WEST1920   3.000002
+125      CLOSE_WEST1924        inf
+126      CLOSE_WEST1928   2.400365
+127      CLOSE_WEST2024   1.500006
+128      CLOSE_WIDE1900   9.932062
+129      CLOSE_WIDE1908   2.413310
+130      CLOSE_WIDE1920   3.538386
+131      CLOSE_WIDE1924   4.489846
+132      CLOSE_WIDE1928   5.117584
+133      CLOSE_WIDE1936   9.540762
+134      CLOSE_WIDE1948   1.600131
+135      CLOSE_WIDE1960   5.541206
+136      CLOSE_WIDE1972   5.564205
+137      CLOSE_WIDE1992   5.509325
+138      CLOSE_WIDE2004   1.459236
+139      CLOSE_WIDE2012   1.458480
+140      CLOSE_WIDE2024   5.516657
+                            OLS Regression Results                            
+==============================================================================
+Dep. Variable:                 Medals   R-squared:                       0.874
+Model:                            OLS   Adj. R-squared:                  0.850
+Method:                 Least Squares   F-statistic:                     1658.
+Date:                Thu, 30 Apr 2026   Prob (F-statistic):               0.00
+Time:                        19:25:39   Log-Likelihood:                -1668.7
+No. Observations:                 865   AIC:                             3619.
+Df Residuals:                     724   BIC:                             4291.
+Df Model:                         140                                         
+Covariance Type:                  HC0                                         
+======================================================================================
+                         coef    std err          z      P>|z|      [0.025      0.975]
+--------------------------------------------------------------------------------------
+const                  1.5416      0.477      3.234      0.001       0.607       2.476
+Avg_Medals_History     0.5537      0.049     11.350      0.000       0.458       0.649
+YEAR1900              -0.9613      0.535     -1.798      0.072      -2.009       0.086
+YEAR1904              -2.2274      1.211     -1.839      0.066      -4.601       0.146
+YEAR1908              -0.5307      1.021     -0.520      0.603      -2.531       1.470
+YEAR1912              -0.4128      1.071     -0.385      0.700      -2.513       1.687
+YEAR1920               0.3022      0.874      0.346      0.730      -1.411       2.015
+YEAR1924              -0.2250      0.767     -0.294      0.769      -1.727       1.277
+YEAR1928              -0.6379      0.588     -1.084      0.278      -1.791       0.515
+YEAR1932              -1.1063      0.665     -1.665      0.096      -2.409       0.196
+YEAR1936              -1.0094      0.563     -1.793      0.073      -2.113       0.094
+YEAR1948              -0.1286      0.678     -0.190      0.850      -1.458       1.201
+YEAR1952              -1.1213      0.605     -1.853      0.064      -2.307       0.064
+YEAR1956              -1.4938      0.583     -2.562      0.010      -2.636      -0.351
+YEAR1960              -1.5843      0.578     -2.741      0.006      -2.717      -0.451
+YEAR1964              -1.3011      0.621     -2.095      0.036      -2.518      -0.084
+YEAR1968              -1.3137      0.628     -2.092      0.036      -2.544      -0.083
+YEAR1972              -1.0564      0.597     -1.768      0.077      -2.227       0.115
+YEAR1976              -1.4829      0.604     -2.455      0.014      -2.667      -0.299
+YEAR1980              -1.1833      0.626     -1.891      0.059      -2.410       0.043
+YEAR1984              -0.6054      0.622     -0.973      0.330      -1.825       0.614
+YEAR1988              -1.4592      0.566     -2.578      0.010      -2.569      -0.350
+YEAR1992              -1.0541      0.588     -1.793      0.073      -2.207       0.098
+YEAR1996              -0.5498      0.589     -0.933      0.351      -1.705       0.605
+YEAR2000              -0.6936      0.593     -1.169      0.242      -1.856       0.469
+YEAR2004              -0.7488      0.633     -1.184      0.236      -1.989       0.491
+YEAR2008              -0.8952      0.566     -1.582      0.114      -2.005       0.214
+YEAR2012              -0.8536      0.598     -1.426      0.154      -2.027       0.319
+YEAR2016              -0.9098      0.563     -1.617      0.106      -2.012       0.193
+YEAR2020              -0.8474      0.579     -1.464      0.143      -1.982       0.287
+OG1900                29.3953      0.449     65.406      0.000      28.514      30.276
+OG1904                73.6014      1.350     54.535      0.000      70.956      76.247
+OG1908                38.9960      0.936     41.655      0.000      37.161      40.831
+OG1912                17.3989      0.879     19.789      0.000      15.676      19.122
+OG1920                 5.6754      0.676      8.394      0.000       4.350       7.001
+OG1924                 1.0998      0.752      1.462      0.144      -0.374       2.574
+OG1928                 3.9426      0.297     13.288      0.000       3.361       4.524
+OG1932                12.7825      1.145     11.167      0.000      10.539      15.026
+OG1936                17.0596      0.351     48.535      0.000      16.371      17.749
+OG1948                -2.1890      0.581     -3.765      0.000      -3.329      -1.049
+OG1952                 0.7952      0.308      2.586      0.010       0.192       1.398
+OG1956                 5.6289      0.233     24.116      0.000       5.171       6.086
+OG1960                 4.4647      0.251     17.814      0.000       3.974       4.956
+OG1964                 3.4202      0.305     11.226      0.000       2.823       4.017
+OG1968                 1.0120      0.331      3.057      0.002       0.363       1.661
+OG1976                 0.5299      0.287      1.848      0.065      -0.032       1.092
+OG1984                 9.7341      0.925     10.529      0.000       7.922      11.546
+OG1988                 3.3585      0.241     13.924      0.000       2.886       3.831
+OG1992                 1.6111      0.310      5.192      0.000       1.003       2.219
+OG1996                 0.5132      0.886      0.580      0.562      -1.222       2.249
+OG2000                 4.1832      0.294     14.209      0.000       3.606       4.760
+OG2004                -0.3842      0.361     -1.063      0.288      -1.093       0.324
+OG2008                 8.0531      0.219     36.775      0.000       7.624       8.482
+OG2012                 2.5437      0.355      7.165      0.000       1.848       3.240
+OG2016                 0.9856      0.219      4.506      0.000       0.557       1.414
+OG2020                 3.1420      0.240     13.112      0.000       2.672       3.612
+OG2024                 1.5196      0.611      2.486      0.013       0.322       2.718
+PRE1900                9.2088      0.753     12.226      0.000       7.733      10.685
+PRE1904               -4.6700      1.182     -3.951      0.000      -6.986      -2.354
+PRE1908                5.5211      0.882      6.257      0.000       3.792       7.251
+PRE1912               -1.4101      0.879     -1.605      0.109      -3.132       0.312
+PRE1920                0.8646      0.536      1.613      0.107      -0.186       1.916
+PRE1924                0.9093      0.127      7.152      0.000       0.660       1.158
+PRE1928               -0.9879      1.204     -0.820      0.412      -3.348       1.373
+PRE1932                1.5521      0.459      3.384      0.001       0.653       2.451
+PRE1936               -0.5467      0.309     -1.770      0.077      -1.152       0.059
+PRE1948               -0.1108      0.436     -0.254      0.799      -0.965       0.743
+PRE1952                0.8834      0.288      3.067      0.002       0.319       1.448
+PRE1956                2.4061      0.227     10.618      0.000       1.962       2.850
+PRE1960                2.3105      0.240      9.621      0.000       1.840       2.781
+PRE1964               -0.2719      0.325     -0.838      0.402      -0.908       0.364
+PRE1972               -0.7404      0.282     -2.623      0.009      -1.294      -0.187
+PRE1984                1.2298      0.360      3.419      0.001       0.525       1.935
+PRE1988                0.2374      0.247      0.960      0.337      -0.247       0.722
+PRE1992               -0.1927      0.922     -0.209      0.834      -1.999       1.614
+PRE1996                2.7137      0.294      9.236      0.000       2.138       3.290
+PRE2000               -0.7825      0.295     -2.654      0.008      -1.360      -0.205
+PRE2004                4.4772      0.363     12.350      0.000       3.767       5.188
+PRE2008                0.8155      0.292      2.792      0.005       0.243       1.388
+PRE2012                0.7745      0.304      2.545      0.011       0.178       1.371
+PRE2016                2.0859      0.201     10.378      0.000       1.692       2.480
+PRE2020               -0.7553      0.284     -2.658      0.008      -1.312      -0.198
+POST1900             -30.5839      1.423    -21.493      0.000     -33.373     -27.795
+POST1904             -10.8401      1.512     -7.168      0.000     -13.804      -7.876
+POST1908              -4.2305      1.698     -2.492      0.013      -7.558      -0.903
+POST1912               3.1523      1.029      3.065      0.002       1.136       5.168
+POST1920               8.5944      0.714     12.032      0.000       7.194       9.994
+POST1924              -0.3393      0.136     -2.491      0.013      -0.606      -0.072
+POST1928               1.5539      0.351      4.423      0.000       0.865       2.242
+POST1932               0.2363      0.401      0.589      0.556      -0.550       1.023
+POST1936              -2.0930      1.145     -1.828      0.068      -4.337       0.151
+POST1952              -4.1802      0.472     -8.854      0.000      -5.106      -3.255
+POST1956              -0.1769      0.248     -0.714      0.475      -0.663       0.309
+POST1960               3.0418      0.240     12.670      0.000       2.571       3.512
+POST1964               1.9124      0.311      6.155      0.000       1.303       2.521
+POST1968               2.4417      0.319      7.652      0.000       1.816       3.067
+POST1972              -0.5846      0.298     -1.962      0.050      -1.169      -0.001
+POST1988              -0.3048      0.887     -0.344      0.731      -2.043       1.434
+POST1992               1.8645      0.306      6.100      0.000       1.265       2.464
+POST1996               0.8210      0.302      2.717      0.007       0.229       1.413
+POST2000              -1.3470      0.862     -1.563      0.118      -3.036       0.342
+POST2004               3.2648      0.362      9.030      0.000       2.556       3.973
+POST2008              -1.5319      0.216     -7.104      0.000      -1.955      -1.109
+POST2012               6.3429      0.303     20.958      0.000       5.750       6.936
+POST2016               2.7213      0.279      9.751      0.000       2.174       3.268
+POST2020               0.8825      0.255      3.458      0.001       0.382       1.383
+POST2024               1.1720      0.534      2.195      0.028       0.125       2.219
+CLOSE_CENTER1936       1.3201      1.306      1.011      0.312      -1.239       3.880
+CLOSE_CENTER1972       2.1239      0.888      2.391      0.017       0.383       3.865
+CLOSE_GMT11900       -10.9279      0.318    -34.340      0.000     -11.552     -10.304
+CLOSE_GMT11920         4.1697      2.652      1.572      0.116      -1.028       9.367
+CLOSE_GMT11924         2.2613      1.516      1.492      0.136      -0.710       5.233
+CLOSE_GMT11928         5.0550      1.320      3.831      0.000       2.469       7.641
+CLOSE_GMT11936         3.6195      1.275      2.839      0.005       1.121       6.118
+CLOSE_GMT11960         2.4404      0.767      3.183      0.001       0.938       3.943
+CLOSE_GMT11972         1.1740      0.466      2.519      0.012       0.260       2.087
+CLOSE_GMT11992         1.8132      0.402      4.516      0.000       1.026       2.600
+CLOSE_GMT12024        -1.1954      1.098     -1.089      0.276      -3.347       0.956
+CLOSE_MAIN1900         0.0982      1.362      0.072      0.943      -2.571       2.768
+CLOSE_MAIN1924         0.8344      0.903      0.924      0.356      -0.936       2.605
+CLOSE_MAIN1936         0.4555      2.315      0.197      0.844      -4.083       4.994
+CLOSE_MAIN1960        -0.7341      1.866     -0.393      0.694      -4.391       2.923
+CLOSE_MAIN1992         0.9098      1.233      0.738      0.461      -1.508       3.327
+CLOSE_MAIN2024         0.8713      0.631      1.382      0.167      -0.365       2.107
+CLOSE_WEST1900         4.9435      1.385      3.570      0.000       2.230       7.657
+CLOSE_WEST1920        -0.6184      1.478     -0.418      0.676      -3.515       2.279
+CLOSE_WEST1924         0.5700      0.217      2.629      0.009       0.145       0.995
+CLOSE_WEST1928        -3.7871      1.090     -3.473      0.001      -5.924      -1.650
+CLOSE_WEST2024         1.2752      0.715      1.783      0.075      -0.127       2.677
+CLOSE_WIDE1900         9.6996      0.379     25.587      0.000       8.957      10.443
+CLOSE_WIDE1908        -2.4778      1.212     -2.045      0.041      -4.853      -0.103
+CLOSE_WIDE1920        -3.6650      2.292     -1.599      0.110      -8.158       0.827
+CLOSE_WIDE1924        -3.4419      1.596     -2.157      0.031      -6.570      -0.314
+CLOSE_WIDE1928        -3.8205      0.825     -4.632      0.000      -5.437      -2.204
+CLOSE_WIDE1936        -3.5966      0.311    -11.571      0.000      -4.206      -2.987
+CLOSE_WIDE1948        -0.5645      0.785     -0.719      0.472      -2.103       0.974
+CLOSE_WIDE1960        -1.7589      0.351     -5.010      0.000      -2.447      -1.071
+CLOSE_WIDE1972        -2.2937      0.375     -6.115      0.000      -3.029      -1.559
+CLOSE_WIDE1992        -2.0556      0.420     -4.890      0.000      -2.879      -1.232
+CLOSE_WIDE2004        -0.3027      0.434     -0.697      0.486      -1.153       0.548
+CLOSE_WIDE2012        -0.4456      0.366     -1.217      0.223      -1.163       0.272
+CLOSE_WIDE2024        -0.3921      1.231     -0.318      0.750      -2.805       2.021
+==============================================================================
+Omnibus:                      167.634   Durbin-Watson:                   1.078
+Prob(Omnibus):                  0.000   Jarque-Bera (JB):             2279.830
+Skew:                           0.441   Prob(JB):                         0.00
+Kurtosis:                      10.904   Cond. No.                     2.25e+15
+==============================================================================
+
+Notes:
+[1] Standard Errors are heteroscedasticity robust (HC0)
+[2] The smallest eigenvalue is 5.54e-27. This might indicate that there are
+strong multicollinearity problems or that the design matrix is singular.

@@ -559,6 +559,8 @@ if __name__ == "__main__":
 				noc=noc_top if noc_top != 0 else noc_list,
 				year_start=year_start,
 				year_end=year_end,
+				lag_min=min_lag,
+				lag_max=max_lag,
 				reg_type='ZINB' if use_reg_zinb else 'OLS',
 				cov_type=cov_type,
 				gdp_type=gdp_type.name,

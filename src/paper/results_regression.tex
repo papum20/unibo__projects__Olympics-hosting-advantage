@@ -2,7 +2,7 @@
 
 \cref{tab:comparison_models_csurilla} confronta il modello finale di
 Csurilla\cite{csurillaLessObviousEffect2023} con i nostri ZINB (su tutti i Paesi
-o top 40) e OLS (top 40, con o senza \textit{AM}). Per ogni variabile, mostra il
+o top 40) e OLS (top 40, con \textit{AM}, con \textit{AM} e senza \textit{YEAR}). Per ogni variabile, mostra il
 coefficiente di regressione per il modello con le variabile di controllo
 macroeconomiche aggiunte (\textit{GDP}, \textit{POP}, \textit{COMM}) e senza di
 esse tra parentesi; il numero di asterischi indica la significatività del
@@ -30,10 +30,10 @@ valore alto o basso, invece, indica quanto la variabile influenzi la predizione
 Si osservi OLS con \textit{AM}. Nel 2008, la Cina (ospitante) ha vinto il
 10.45\% delle medaglie, contro il 6.80\% del 2004 --- quasi un raddoppio:
 l'effetto \textit{Host} ha quindi individuato qui il coefficiente più alto di
-tutti ($\sim$7.8). Ma, con \textit{MACRO}, esso scende a $\sim$5.1: l'incremento
+tutti ($\sim$7.9). Ma, con \textit{MACRO}, esso scende a $\sim$5.2: l'incremento
 di medaglie potrebbe considerato meno sorprendente tenendo conto che la sua
 economia (e il PIL) ha avuto una veloce impennata agli inizi del XXI secolo.
-Discorso simile per \textit{PRE2004}e \textit{POST2004}, rispettivamente anni
+Discorso simile per \textit{PRE2004} e \textit{POST2004}, rispettivamente anni
 prima e dopo che ospitasse: nel primo caso, un minore incremento (da 6.27\% a
 6.80\%) risulta in un coefficiente più basso, considerando \textit{MACRO}; nel
 secondo, nonostante il leggero decremento dal 2008 (da 10.45\% a 9.15\%), le
@@ -41,97 +41,101 @@ medaglie sono pur sempre molte di più che negli anni precedenti, anche se un
 ulteriore incremento di \textit{GDP} sottrae rilevanza alla variabile.\\
 Il Brasile, caso raro di Nazione che non ha visibilmente beneficiato
 dall'ospitare (1.95\% nel 2016 contro l'1.77\% nel 2012), aspettatamente non ha
-un \textit{HOST2016} alto (0.889), ma aggiungere \textit{MACRO} lo riduce
-ulteriormente (-0.500): gli anni 2013--2016 hanno visto dapprima un picco del
-PIL (recuperato solo nel 2024) e poi una decaduta ma, evidentemente, un valore
-tutto sommato in crescita rispetto agli anni precedenti (costante crescita dal
-1992) avrebbe fatto presagire migliori risultati. Altrettanto interessante è che
-usare \textit{AM} incrementa \textit{OG2016} (-2.027 senza), indicando quindi
-delle prestazioni comunque al di sopra della media storica: nonostante il
-Brasile avesse partecipato ai Giochi fin dal 1900, le sue medaglie sono
-diventate più rilevanti su scala globale solo nel 1996, passando da 0.31\% (e
-sempre sotto l'1\% nelle passate 17 edizioni) a 1.78\% (con risultati simili
-nelle successive 5).\\
+un \textit{HOST2016} alto (0.956), ma aggiungere \textit{MACRO} lo riduce
+ulteriormente (-0.403, si faccia attenzione al p-value più alto): gli anni
+2013--2016 hanno visto dapprima un picco del PIL (recuperato solo nel 2024) e
+poi una decaduta ma, evidentemente, un valore tutto sommato in crescita rispetto
+agli anni precedenti (costante crescita dal 1992) avrebbe fatto presagire
+migliori risultati. Altrettanto interessante è che usare \textit{AM} incrementa
+\textit{OG2016} (-2.027 senza), indicando quindi delle prestazioni comunque al
+di sopra della media storica: nonostante il Brasile avesse partecipato ai Giochi
+fin dal 1900, le sue medaglie sono diventate più rilevanti su scala globale solo
+nel 1996, passando da 0.31\% (e sempre sotto l'1\% nelle passate 17 edizioni) a
+1.78\% (con risultati simili nelle successive 5).\\
 Un effetto opposto lo si ha con gli USA, i quali nel 1996 sono passati
 dal'11.01\% al 12.01\% (e da 108 a 101 in numero), un incremento forse
 ``deludente'' per un team da sempre protagonista. Così, usando \textit{MACRO},
-\textit{HOST1996} passa da 6.4 a 0.6 aggiungendo \textit{AM} --- si faccia
-tuttavia attenzione alla diversa significatività dei p-value, <0.1 e <0.01
-rispettivamente.
-
-
+\textit{HOST1996} passa da 6.4 a un p-value non più significativo aggiungendo
+\textit{AM} (valore 0.354).\\
+\\
+Gli effetti in OLS sono riscontrabili in modo analogo nei modelli ZINB.\@ In
+Csurilla con \textit{MACRO}, le uniche due variabili \textit{HOST} significative
+sono, in OLS, quelle con il secondo e la terzo coefficiente più alto (2000,
+Australia; 2012, Regno Unito); Tuttavia, l'enorme boost della Cina in casa non è
+stato catturato.\\
+\\
 
 \begin{table}[H]
 \centering
 \caption{Analisi di Regressione: Confronto degli Effetti Host, Pre e Post con e (senza) Controlli Macroeconomici}
 \label{tab:comparison_models_csurilla}
 \resizebox{\textwidth}{!}{%
-\begin{tabular}{l *{5}{>{\centering\arraybackslash}p{0.15\textwidth}}}
+\begin{tabular}{l *{6}{>{\centering\arraybackslash}p{0.15\textwidth}}}
 \toprule
 %& \textbf{Original Paper} & \textbf{Ours: ZINB} & \textbf{Ours: ZINB} & \textbf{Ours: OLS} & \textbf{Ours: OLS} \\
-& \multicolumn{1}{c}{\textbf{Csurilla\cite{csurillaLessObviousEffect2023}: ZINB}} & \multicolumn{2}{c}{\textbf{ZINB}} & \multicolumn{2}{c}{\textbf{OLS}} \\
-\cmidrule(lr){2-2} \cmidrule(lr){3-4} \cmidrule(lr){5-6}
-\textbf{Variables} & \textbf{All} & \textbf{All} & \textbf{Top 40} & \textbf{Top 40} & \textbf{Top 40 + AM} \\
+& \multicolumn{1}{c}{\textbf{Csurilla\cite{csurillaLessObviousEffect2023}: ZINB}} & \multicolumn{2}{c}{\textbf{ZINB}} & \multicolumn{3}{c}{\textbf{OLS Top 40}} \\
+\cmidrule(lr){2-2} \cmidrule(lr){3-4} \cmidrule(lr){5-7}
+\textbf{Variables} & \textbf{All} & \textbf{All} & \textbf{Top 40} & \textbf{Base} & \textbf{w/ AM} & \textbf{w/ AM, w/o YEAR} \\
 \midrule
-OG1996          & 0.021     & 0.526***  & 0.538***  & 6.403***  & 0.656*    \\
-                & (0.544)***& (3.171)***& (1.802)***& (10.031)***& (-0.255)  \\
-OG2000          & 0.361**   & 1.706***  & 1.129***  & 3.850***  & 4.377***  \\
-                & (0.476)***& (2.496)***& (1.154)***& (4.294)*** & (4.211)*** \\
-OG2004          & 0.384     & 1.295***  & 0.321***  & 0.262     & 0.183**   \\
-                & (0.273)   & (1.160)***& (-0.186)  & (-0.354)   & (-0.419)***\\
-OG2008          & 0.101     & -0.114    & 0.206     & 4.100***  & 5.128***  \\
-                & (0.459)** & (3.002)***& (1.673)***& (8.492)*** & (7.828)*** \\
-OG2012          & 0.577***  & 1.408***  & 0.915***  & 3.327***  & 2.182***  \\
-                & (0.759)***& (2.587)***& (1.264)***& (4.849)*** & (2.180)*** \\
-OG2016          & 0.362     & 0.255     & -0.489*** & -2.027*** & -0.500**  \\
-                & (0.310)   & (1.289)***& (-0.039)  & (-0.078)   & (0.889)*** \\
-OG2020          & 0.114     & 0.345***  & 0.406***  & 1.217***  & 2.025***  \\
-                & (0.496)** & (1.629)***& (0.951)***& (3.297)*** & (2.987)*** \\
-OG2024          & ---       & 0.834***  & 0.819***  & 2.686***  & 1.867***  \\
-                & ---       & (1.755)***& (1.079)***& (4.048)*** & (2.056)*** \\
+OG1996          & 0.021     & 0.526***  & 0.538***  & 6.403***  & 0.354 & 0.656*    \\
+                & (0.544***)& (3.171***)& (1.802***)& (10.031***)& (-0.575) & (-0.255)  \\
+OG2000          & 0.361**   & 1.706***  & 1.129***  & 3.850***  & 4.201*** & 4.377***  \\
+                & (0.476***)& (2.496***)& (1.154***)& (4.294***) & (4.076***) & (4.211***) \\
+OG2004          & 0.384     & 1.295***  & 0.321***  & 0.262     & 0.160 & 0.183**   \\
+                & (0.273)   & (1.160***)& (-0.186)  & (-0.354)   & (-0.372) & (-0.419***)\\
+OG2008          & 0.101     & -0.114    & 0.206     & 4.100***  & 5.186*** & 5.128***  \\
+                & (0.459**) & (3.002***)& (1.673***)& (8.492***) & (7.897***) & (7.828***) \\
+OG2012          & 0.577***  & 1.408***  & 0.915***  & 3.327***  & 2.282*** & 2.182***  \\
+                & (0.759***)& (2.587***)& (1.264***)& (4.849***) & (2.325***) & (2.180***) \\
+OG2016          & 0.362     & 0.255     & -0.489*** & -2.027*** & -0.403* & -0.500**  \\
+                & (0.310)   & (1.289***)& (-0.039)  & (-0.078)   & (0.956***) & (0.889***) \\
+OG2020          & 0.114     & 0.345***  & 0.406***  & 1.217***  & 2.109*** & 2.025***  \\
+                & (0.496**) & (1.629***)& (0.951***)& (3.297***) & (3.048***) & (2.987***) \\
+OG2024          & ---       & 0.834***  & 0.819***  & 2.686***  & 1.913*** & 1.867***  \\
+                & ---       & (1.755***)& (1.079***)& (4.048***) & (2.031***) & (2.056***) \\
 \midrule
-PRE1996         & 0.181     & 1.507***  & 0.895***  & 2.463***  & 3.096***  \\
-                & (0.244)   & (2.269)***& (0.901)***& (2.897)*** & (2.893)*** \\
-PRE2000         & 0.446     & 1.063***  & 0.112     & 0.087     & -0.109    \\
-                & (0.347)   & (1.000)***& (-0.340)**& (-0.571)*  & (-0.765)***\\
-PRE2004         & -0.454*   & -0.280    & -0.172    & 0.499     & 1.739***  \\
-                & (-0.295)  & (2.532)***& (1.183)***& (4.717)*** & (4.421)*** \\
-PRE2008         & 0.068     & 0.942***  & 0.552***  & 1.505***  & 0.428***  \\
-                & (0.205)   & (2.267)***& (0.940)***& (3.059)*** & (0.407)*** \\
-PRE2012         & 0.387     & 0.164     & -0.542*** & -2.172*** & -0.632*** \\
-                & (0.331)   & (1.245)***& (-0.076)  & (-0.141)   & (0.738)*** \\
-PRE2016         & -0.100    & 0.501***  & 0.102     & -0.006    & 0.902***  \\
-                & (0.306)   & (2.059)***& (0.730)***& (2.183)*** & (1.872)*** \\
-PRE2020         & -0.169    & 0.164     & 0.109     & -0.407    & -1.233*** \\
-                & (0.002)   & (1.064)***& (0.388)** & (0.983)**  & (-1.071)***\\
+PRE1996         & 0.181     & 1.507***  & 0.895***  & 2.463***  & 2.765*** & 3.096***  \\
+                & (0.244)   & (2.269***)& (0.901***)& (2.897***) & (2.628***) & (2.893***) \\
+PRE2000         & 0.446     & 1.063***  & 0.112     & 0.087     & -0.255 & -0.109    \\
+                & (0.347)   & (1.000***)& (-0.340**)& (-0.571*)  & (-0.900***) & (-0.765***)\\
+PRE2004         & -0.454*   & -0.280    & -0.172    & 0.499     & 1.744*** & 1.739***  \\
+                & (-0.295)  & (2.532***)& (1.183***)& (4.717***) & (4.467***) & (4.421***) \\
+PRE2008         & 0.068     & 0.942***  & 0.552***  & 1.505***  & 0.456** & 0.428***  \\
+                & (0.205)   & (2.267***)& (0.940***)& (3.059***) & (0.466**) & (0.407***) \\
+PRE2012         & 0.387     & 0.164     & -0.542*** & -2.172*** & -0.511** & -0.632*** \\
+                & (0.331)   & (1.245***)& (-0.076)  & (-0.141)   & (0.901***) & (0.738***) \\
+PRE2016         & -0.100    & 0.501***  & 0.102     & -0.006    & 0.963*** & 0.902***  \\
+                & (0.306)   & (2.059***)& (0.730***)& (2.183***) & (1.932***) & (1.872***) \\
+PRE2020         & -0.169    & 0.164     & 0.109     & -0.407    & -1.137*** & -1.233*** \\
+                & (0.002)   & (1.064***)& (0.388**) & (0.983**)  & (-1.019***) & (-1.071***)\\
 \midrule
-POST2000        & -0.189    & 0.298*    & 0.330***  & 4.244***  & -1.427*** \\
-                & (0.375)*  & (2.947)***& (1.604)***& (7.862)*** & (-2.242)***\\
-POST2004        & 0.233     & 1.624***  & 0.998***  & 2.853***  & 3.367***  \\
-                & (0.301)   & (2.300)***& (0.952)***& (3.314)*** & (3.228)*** \\
-POST2008        & -0.886*   & -0.246*   & -1.085*** & -0.964*** & -1.153*** \\
-                & (-0.953)* & (-0.219)  & (-1.544)***& (-1.539)***& (-1.712)***\\
-POST2012        & -0.139    & -0.357*   & 0.009     & 2.621***  & 3.449***  \\
-                & (0.323)   & (2.890)***& (1.566)***& (7.240)*** & (6.122)*** \\
-POST2016        & 0.778***  & 1.404***  & 0.880***  & 3.404***  & 2.276***  \\
-                & (0.975)***& (2.550)***& (1.220)***& (4.855)*** & (2.301)*** \\
-POST2020        & 0.464**   & -0.100    & -0.416*** & -1.945*** & -0.546*** \\
-                & (0.375)*  & (0.612)***& (-0.064)  & (-0.129)   & (0.845)*** \\
-POST2024        & ---       & 0.129     & 0.218*    & 0.217     & 0.916***  \\
-                & ---       & (1.403)***& (0.727)***& (2.228)*** & (1.858)*** \\
+POST2000        & -0.189    & 0.298*    & 0.330***  & 4.244***  & -1.573*** & -1.427*** \\
+                & (0.375*)  & (2.947***)& (1.604***)& (7.862***) & (-2.432***) & (-2.242***)\\
+POST2004        & 0.233     & 1.624***  & 0.998***  & 2.853***  & 3.318*** & 3.367***  \\
+                & (0.301)   & (2.300***)& (0.952***)& (3.314***) & (3.275***) & (3.228***) \\
+POST2008        & -0.886*   & -0.246*   & -1.085*** & -0.964*** & -1.117*** & -1.153*** \\
+                & (-0.953*) & (-0.219)  & (-1.544***)& (-1.539***)& (-1.640***) & (-1.712***)\\
+POST2012        & -0.139    & -0.357*   & 0.009     & 2.621***  & 3.565*** & 3.449***  \\
+                & (0.323)   & (2.890***)& (1.566***)& (7.240***) & (6.275***) & (6.122***) \\
+POST2016        & 0.778***  & 1.404***  & 0.880***  & 3.404***  & 2.351*** & 2.276***  \\
+                & (0.975***)& (2.550***)& (1.220***)& (4.855***) & (2.348***) & (2.301***) \\
+POST2020        & 0.464**   & -0.100    & -0.416*** & -1.945*** & -0.422* & -0.546*** \\
+                & (0.375*)  & (0.612***)& (-0.064)  & (-0.129)   & (0.914***) & (0.845***) \\
+POST2024        & ---       & 0.129     & 0.218*    & 0.217     & 0.952*** & 0.916***  \\
+                & ---       & (1.403***)& (0.727***)& (2.228***) & (1.842***) & (1.858***) \\
 \midrule
-ln\_GDP         & 0.416***  & 0.898***  & 0.420***  & 0.848***  & 0.202***  \\
-ln\_Population   & 0.178***  & 0.612***  & 0.426***  & 1.102***  & 0.620***  \\
-Is\_Communist    & 0.696***  & 1.335***  & 0.438***  & 0.805***  & 0.671***  \\
-AM (History)    & 0.596***  & ---       & ---       & ---       & 0.466***  \\
-                & 0.716***  & ---       & ---       & ---       & 0.6132***  \\
+ln\_GDP         & 0.416***  & 0.898***  & 0.420***  & 0.848***   & ---  & 0.202***     \\
+ln\_Population   & 0.178***  & 0.612***  & 0.426***  & 1.102***  & ---  & 0.620***     \\
+Is\_Communist    & 0.696***  & 1.335***  & 0.438***  & 0.805***  & ---  & 0.671***     \\
+AM (History)    & 0.596***  & ---       & ---       & ---       & 0.463*** & 0.466***      \\
+                & (0.716***)  & ---       & ---       & ---       & (0.613***) & (0.6132***) \\
 \midrule
-Constant        & -9.016*** & -12.979***& -5.849*** & -17.792***& -7.351*** \\
-                & (-1.911)***& (2.406)***& (3.079)***& (2.083)*** & (0.694)*** \\
-Inflate Const   & 18.51**   & -14.745***& -21.808***& ---       & ---       \\
-                & (27.85)***& (-12.564)***& (-19.298)***& ---     & ---       \\
-Alpha           & ---       & 1.179***  & 0.218***  & ---       & ---       \\
-                & ---       & (3.781)***& (0.652)***& ---       & ---       \\
+Constant        & -9.016*** & -12.979***& -5.849*** & -17.792***    & -7.934*** & (0.466***)       \\
+                & (-1.911***)& (2.406***)& (3.079***)& (2.083***)   & (0.700***) & (0.6132***)      \\
+Inflate Const   & 18.51**   & -14.745***& -21.808***& ---           & ---       & ---        \\
+                & (27.85***)& (-12.564***)& (-19.298***)& ---       & ---       & ---        \\
+Alpha           & ---       & 1.179***  & 0.218***  & ---           & ---       & ---        \\
+                & ---       & (3.781***)& (0.652***)& ---           & ---       & ---        \\
 \bottomrule
 \multicolumn{6}{l}{\footnotesize Coefficienti con (senza) GDP/POP/COMM.\@ YEAR usati ma omessi.\@ Significatività: * $p<0.1$, ** $p<0.05$, *** $p<0.01$.} \\
 \end{tabular}%

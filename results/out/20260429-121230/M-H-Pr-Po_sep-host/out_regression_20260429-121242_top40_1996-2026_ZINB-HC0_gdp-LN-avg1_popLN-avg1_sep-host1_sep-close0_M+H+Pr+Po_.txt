@@ -1,0 +1,103 @@
+Running with args: Namespace(season='S', noc=[], noc_top=40, start_year=1996, end_year=2026, min_lag=0, max_lag=0, ctrl_vars=['AM', 'HOST', 'PRE', 'POST'], exclude_boycott=False, gdp_avg=True, gdp_tot=False, gdp_log=True, gdp_logdiff=False, med_logdiff=False, med_perc=False, pop_avg=True, pop_log=True, pop_logdiff=False, sep_host=True, sep_close=False, reg_zinb=True, reg_hc0=True, reg_hc3=False, save=True, log=True, verbose=False)
+
+Granger causality test (manual) with lag 0:
+
+Finished loading data for 40 teams. Skipped 0 teams with missing data: 
+Using data from 1996 to 312 (requested: 1996-2026)
+Loaded data for USA+RUS+CHN+GBR+GER+AUS+FRA+JPN+ITA+KOR+NED+UKR+CUB+CAN+HUN+ESP+BRA+BLR+ROU+POL+NZL+KAZ+KEN+SWE+CZE+DEN+JAM+BUL+TUR+GRE+SUI+AZE+NOR+IRI+UZB+ETH+GEO+PRK+CRO+SRB stacked data (tail 20):
+     Year  Medals  Avg_Medals_History        GDP  Population  Is_Boycott1980  Is_Boycott1984  OG1996  PRE1996  POST1996  OG2000  PRE2000  POST2000  OG2004  PRE2004  POST2004  OG2008  PRE2008  POST2008  OG2012  PRE2012  POST2012  OG2016  PRE2016  POST2016  OG2020  PRE2020  POST2020  OG2024  POST2024  Is_Host_Close_Center  Is_Host_Close_GMT1  Is_Host_Close_Main  Is_Host_Close_West  Is_Host_Close_Wide  YEAR1896  YEAR1900  YEAR1904  YEAR1908  YEAR1912  YEAR1920  YEAR1924  YEAR1928  YEAR1932  YEAR1936  YEAR1948  YEAR1952  YEAR1956  YEAR1960  YEAR1964  YEAR1968  YEAR1972  YEAR1976  YEAR1980  YEAR1984  YEAR1988  YEAR1992  YEAR1996  YEAR2000  YEAR2004  YEAR2008  YEAR2012  YEAR2016  YEAR2020  Is_Communist  NOC
+91   2012      20            2.603972   9.201750   10.729923           False           False   False    False     False   False    False     False   False    False     False   False    False     False   False    False     False   False    False     False   False    False     False   False     False                 False               False               False               False               False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False      True     False     False          True  UKR
+92   2016      11            2.498978   9.167934   10.708620           False           False   False    False     False   False    False     False   False    False     False   False    False     False   False    False     False   False    False     False   False    False     False   False     False                 False               False               False               False               False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False      True     False          True  UKR
+93   2020      19            2.270903   9.190214   10.690966           False           False   False    False     False   False    False     False   False    False     False   False    False     False   False    False     False   False    False     False   False    False     False   False     False                 False               False               False               False               False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False      True          True  UKR
+94   2024      12            2.197811   9.100483   10.590037           False           False   False    False     False   False    False     False   False    False     False   False    False     False   False    False     False   False    False     False   False    False     False   False     False                 False               False               False               False               False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False          True  UKR
+0    1996     101           18.969882  10.573398   12.486185           False           False    True    False     False   False    False     False   False    False     False   False    False     False   False    False     False   False    False     False   False    False     False   False     False                 False               False               False               False               False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False      True     False     False     False     False     False     False         False  USA
+1    2000      91           18.667258  10.687080   12.533227           False           False   False    False     False   False    False      True   False    False     False   False    False     False   False    False     False   False    False     False   False    False     False   False     False                 False               False               False               False               False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False      True     False     False     False     False     False         False  USA
+2    2004     101           18.299365  10.756584   12.573705           False           False   False    False     False   False    False     False   False    False     False   False    False     False   False    False     False   False    False     False   False    False     False   False     False                 False               False               False               False               False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False      True     False     False     False     False         False  USA
+3    2008     110           18.003205  10.826327   12.610832           False           False   False    False     False   False    False     False   False    False     False   False    False     False   False    False     False   False    False     False   False    False     False   False     False                 False               False               False               False               False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False      True     False     False     False         False  USA
+4    2012     103           17.752861  10.808771   12.645549           False           False   False    False     False   False    False     False   False    False     False   False    False     False   False    False     False   False    False     False   False    False     False   False     False                 False               False               False               False               False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False      True     False     False         False  USA
+5    2016     121           17.491898  10.863251   12.674680           False           False   False    False     False   False    False     False   False    False     False   False    False     False   False    False     False   False    False     False   False    False     False   False     False                 False               False               False               False               False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False      True     False         False  USA
+6    2020     113           17.311322  10.917017   12.700592           False           False   False    False     False   False    False     False   False    False     False   False    False     False   False    False     False   False    False     False   False    False     False   False     False                 False               False               False               False               False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False      True         False  USA
+7    2024     126           17.075171  10.986931   12.723510           False           False   False    False     False   False    False     False   False    False     False   False    False     False   False    False     False   False    False     False   False    False     False   False     False                 False               False               False               False               False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False         False  USA
+270  1996       2            0.000000   8.460208   10.035592           False           False   False    False     False   False    False     False   False    False     False   False    False     False   False    False     False   False    False     False   False    False     False   False     False                 False               False               False               False               False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False      True     False     False     False     False     False     False          True  UZB
+271  2000       4            0.237812   8.433922   10.106671           False           False   False    False     False   False    False     False   False    False     False   False    False     False   False    False     False   False    False     False   False    False     False   False     False                 False               False               False               False               False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False      True     False     False     False     False     False          True  UZB
+272  2004       5            0.335122   8.487174   10.159289           False           False   False    False     False   False    False     False   False    False     False   False    False     False   False    False     False   False    False     False   False    False     False   False     False                 False               False               False               False               False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False      True     False     False     False     False          True  UZB
+273  2008       6            0.403206   8.655055   10.201489           False           False   False    False     False   False    False     False   False    False     False   False    False     False   False    False     False   False    False     False   False    False     False   False     False                 False               False               False               False               False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False      True     False     False     False          True  UZB
+274  2012       3            0.459145   8.882057   10.239966           False           False   False    False     False   False    False     False   False    False     False   False    False     False   False    False     False   False    False     False   False    False     False   False     False                 False               False               False               False               False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False      True     False     False          True  UZB
+275  2016      13            0.429686   9.114065   10.277449           False           False   False    False     False   False    False     False   False    False     False   False    False     False   False    False     False   False    False     False   False    False     False   False     False                 False               False               False               False               False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False      True     False          True  UZB
+276  2020       5            0.580750   9.291611   10.314449           False           False   False    False     False   False    False     False   False    False     False   False    False     False   False    False     False   False    False     False   False    False     False   False     False                 False               False               False               False               False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False      True          True  UZB
+277  2024      13            0.563924   9.459633   10.418012           False           False   False    False     False   False    False     False   False    False     False   False    False     False   False    False     False   False    False     False   False    False     False   False     False                 False               False               False               False               False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False     False          True  UZB
+
+--- Running Global Panel OLS Regression ---
+predictors = ['Avg_Medals_History', 'OG1996', 'OG2000', 'OG2004', 'OG2008', 'OG2012', 'OG2016', 'OG2020', 'OG2024', 'PRE1996', 'PRE2000', 'PRE2004', 'PRE2008', 'PRE2012', 'PRE2016', 'PRE2020', 'POST1996', 'POST2000', 'POST2004', 'POST2008', 'POST2012', 'POST2016', 'POST2020', 'POST2024']
+len(predictors) = 24
+Check multiocollinearity using VIF:
+               feature       VIF
+0   Avg_Medals_History  1.267275
+1               OG1996  1.097921
+2               OG2000  1.001363
+3               OG2004  1.001540
+4               OG2008  1.002717
+5               OG2012  1.011027
+6               OG2016  1.000100
+7               OG2020  1.002089
+8               OG2024  1.008359
+9              PRE1996  1.001214
+10             PRE2000  1.001593
+11             PRE2004  1.002067
+12             PRE2008  1.011208
+13             PRE2012  1.000082
+14             PRE2016  1.001986
+15             PRE2020  1.008620
+16            POST1996  1.000039
+17            POST2000  1.094822
+18            POST2004  1.001584
+19            POST2008  1.001508
+20            POST2012  1.003976
+21            POST2016  1.011076
+22            POST2020  1.000120
+23            POST2024  1.002263
+Optimization terminated successfully.
+         Current function value: 3.687771
+         Iterations: 35
+         Function evaluations: 38
+         Gradient evaluations: 38
+                     ZeroInflatedNegativeBinomialP Regression Results                    
+=========================================================================================
+Dep. Variable:                            Medals   No. Observations:                  313
+Model:             ZeroInflatedNegativeBinomialP   Df Residuals:                      288
+Method:                                      MLE   Df Model:                           24
+Date:                           Wed, 29 Apr 2026   Pseudo R-squ.:                 0.09449
+Time:                                   12:12:54   Log-Likelihood:                -1154.3
+converged:                                  True   LL-Null:                       -1274.7
+Covariance Type:                             HC0   LLR p-value:                 1.039e-37
+======================================================================================
+                         coef    std err          z      P>|z|      [0.025      0.975]
+--------------------------------------------------------------------------------------
+inflate_const        -21.0858      1.027    -20.534      0.000     -23.098     -19.073
+const                  2.3495      0.068     34.737      0.000       2.217       2.482
+Avg_Medals_History     0.2028      0.026      7.905      0.000       0.153       0.253
+OG1996                -1.5820      0.438     -3.609      0.000      -2.441      -0.723
+OG2000                 1.2572      0.045     27.753      0.000       1.168       1.346
+OG2004                -0.0595      0.046     -1.293      0.196      -0.150       0.031
+OG2008                 1.6147      0.054     29.824      0.000       1.509       1.721
+OG2012                 0.5334      0.121      4.399      0.000       0.296       0.771
+OG2016                 0.4720      0.057      8.289      0.000       0.360       0.584
+OG2020                 1.1490      0.049     23.342      0.000       1.053       1.246
+OG2024                 0.6850      0.102      6.721      0.000       0.485       0.885
+PRE1996                0.9357      0.045     20.824      0.000       0.848       1.024
+PRE2000               -0.2752      0.046     -5.955      0.000      -0.366      -0.185
+PRE2004                1.2347      0.049     25.160      0.000       1.139       1.331
+PRE2008                0.2198      0.123      1.794      0.073      -0.020       0.460
+PRE2012                0.3720      0.058      6.433      0.000       0.259       0.485
+PRE2016                0.8161      0.049     16.819      0.000       0.721       0.911
+PRE2020                0.0054      0.104      0.052      0.958      -0.198       0.209
+POST1996               0.4072      0.061      6.704      0.000       0.288       0.526
+POST2000              -1.6250      0.431     -3.773      0.000      -2.469      -0.781
+POST2004               1.0731      0.046     23.237      0.000       0.983       1.164
+POST2008              -1.4395      0.046    -31.415      0.000      -1.529      -1.350
+POST2012               1.3524      0.065     20.732      0.000       1.225       1.480
+POST2016               0.5608      0.122      4.612      0.000       0.323       0.799
+POST2020               0.5602      0.056      9.999      0.000       0.450       0.670
+POST2024               0.8723      0.050     17.274      0.000       0.773       0.971
+alpha                  0.3515      0.037      9.583      0.000       0.280       0.423
+======================================================================================

@@ -41,6 +41,8 @@ class Logger():
 		noc				: list[str]|int|None,
 		year_start		: int,
 		year_end		: int,
+		lag_min			: int,
+		lag_max			: int,
 		reg_type		: str,
 		cov_type		: str,
 		use_gpd_avg		: bool,
@@ -58,7 +60,7 @@ class Logger():
 		
 		filename = (
 			f"out_regression_{timestamp}_{noc_str}_"
-			f"{year_start}-{year_end}_{reg_type}-{cov_type}_"
+			f"{year_start}-{year_end}_l{lag_min}-{lag_max}_{reg_type}-{cov_type}_"
 			f"gdp-{gdp_type}-avg{int(use_gpd_avg)}_pop{pop_type}-avg{int(use_pop_avg)}_"
 			f"sep-host{int(sep_host_vars)}_sep-close{int(sep_close_vars)}_{ctrl_str}_{tag}.txt"
 		)

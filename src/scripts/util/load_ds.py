@@ -113,7 +113,7 @@ CLOSE_GROUP_EU_MAIN = [
 	'ESP', 'FRA', 'GER', 'ITA'
 ]
 CLOSE_GROUP_EU_WIDE = [
-	'GBR', 'GRE', 'ITA'
+	'GBR', 'GRE'
 ] + CLOSE_GROUP_EU_GMT1
 
 # NOC codes that should be treated as RUS (e.g. Olympic Athletes from Russia, Russian Olympic Committee)
@@ -576,25 +576,38 @@ def get_top_countries_by_medals(
 	df['Total_Medals']	= medals_perc_series.reindex(df.index)
 
 	host_list = df[df['Is_Host'] == True]['NOC'].unique().tolist()
-    
+	
 	# first try to take n from the hosts
 	host_df		= df.copy()
 	host_df		= host_df[host_df['NOC'].isin(host_list)]
-	host_means	= df.groupby('NOC')['Total_Medals'].mean()
+	host_means	= host_df.groupby('NOC')['Total_Medals'].mean()
 	top_list	= host_means.nlargest(n).index.tolist()
 
 	ranking_df	= host_means.copy()
 
-	n_remaining = n - len(top_list)
+	n_remaining		= n - len(top_list)
+	non_host_means	= pd.Series(dtype=float)
 	if n_remaining > 0:
 		non_host_df		= df[~df['NOC'].isin(host_list)]
 		non_host_means	= non_host_df.groupby('NOC')['Total_Medals'].mean()
 		top_list		+= non_host_means.nlargest(n_remaining).index.tolist()
-		ranking_df		= ranking_df.append(non_host_means)
+		ranking_df		= pd.concat([ranking_df, non_host_means])
 	
 	if is_verbose:
-		print(f"Found {len(ranking_df)} unique countries in the medals dataset for season '{medals_season}':\
-			\n{ranking_df.sort_values(ascending=False).to_string()}")
+		print(f"Found {len(host_means)+len(non_host_means)} unique countries in the medals dataset for season '{medals_season}'.")
+		
+		def print_ranked(series, label):
+			# Sort and convert to DataFrame
+			df_ranked = series.sort_values(ascending=False).reset_index()
+			df_ranked.columns = ['NOC', 'Avg_Share']
+			# Add ordinal rank starting from 1
+			df_ranked.index = df_ranked.index + 1
+			df_ranked.index.name = 'Rank'
+			print(f"\n{label}:\n{df_ranked.to_string()}")
+
+		print_ranked(host_means, f"Hosting ({len(host_means)})")
+		print_ranked(non_host_means, f"Non-Hosting ({len(non_host_means)})")
+		print_ranked(ranking_df, f"All ({len(ranking_df)})")
 	return top_list
 
 
@@ -1324,11 +1337,15 @@ def save_stacked_countries_to_csv(
 
 
 
-#if __name__ == "__main__":
-#	
-#	save_stacked_countries_to_csv(
-#		output_path				= 'dataset/generated_olympic-panel-dataset_med-perc.csv',
-#		is_verbose				= True,
-#		medals_data_type		= DsMedalsDataType.PERCENTAGE,
-#	)
+if __name__ == "__main__":
+	
+	noc_list = get_top_countries_by_medals(year_start=1900, n=40,
+							medals_season='S', is_verbose=True)
+
+	
+	save_stacked_countries_to_csv(
+		output_path				= 'dataset/generated_olympic-panel-dataset_med-perc.csv',
+		is_verbose				= True,
+		medals_data_type		= DsMedalsDataType.PERCENTAGE,
+	)
 

@@ -90,7 +90,7 @@ for YEAR in 1964 1996; do
 #		run_test "$YEAR" "$WITH_GPC" "true" "true" "AM HOST"			$MIN_LAG $MAX_LAG "$FLAGS --sep-host"
 #		run_test "$YEAR" "$WITH_GPC" "true" "true" "AM HOST PRE POST"	$MIN_LAG $MAX_LAG "$FLAGS"
 #
-		run_test "$YEAR" "$WITH_GPC" "true" "true" "AM HOST PRE POST YEAR $CLOSE_VARS" $MIN_LAG $MAX_LAG "$BASE_FLAGS --sep-host --sep-close"
+#		run_test "$YEAR" "$WITH_GPC" "true" "true" "AM HOST PRE POST YEAR $CLOSE_VARS" $MIN_LAG $MAX_LAG "$BASE_FLAGS --sep-host --sep-close"
 #
 #		# AM YEAR
 #		run_test "$YEAR" "$WITH_GPC" "true" "true" "AM HOST YEAR" $MIN_LAG $MAX_LAG "$FLAGS"
@@ -146,7 +146,7 @@ for YEAR in 1964 1996; do
 
 		MAX_LAG=$MIN_LAG
 
-		run_test "$YEAR" "$WITH_GPC" "true" "true" "AM HOST PRE POST YEAR $CLOSE_VARS"	$MIN_LAG $MAX_LAG "$BASE_FLAGS --sep-host --sep-close"
+#		run_test "$YEAR" "$WITH_GPC" "true" "true" "AM HOST PRE POST YEAR $CLOSE_VARS"	$MIN_LAG $MAX_LAG "$BASE_FLAGS --sep-host --sep-close"
 #		run_test "$YEAR" "$WITH_GPC" "true" "true" "AM HOST PRE POST"		$MIN_LAG $MAX_LAG "$FLAGS"
 #		run_test "$YEAR" "$WITH_GPC" "true" "true" "AM HOST PRE POST"		$MIN_LAG $MAX_LAG "$FLAGS --sep-host"
 #		run_test "$YEAR" "$WITH_GPC" "true" "true" "HOST PRE POST YEAR"	$MIN_LAG $MAX_LAG "$FLAGS --sep-host"
@@ -174,6 +174,12 @@ WITH_GPC="true"
 MIN_LAG=0
 MAX_LAG=11
 		
+run_test "$YEAR" "$WITH_GPC" "true" "true" "AM HOST PRE POST YEAR $CLOSE_VARS" 0 0 \
+	"--gdp-avg --gdp-log --pop-avg --pop-log --med-perc --reg-hc0 --noc-top 40 --sep-host --sep-close"
+#run_test "$YEAR" "$WITH_GPC" "true" "true" "AM HOST PRE POST YEAR $CLOSE_VARS" 0 0 \
+#	"--gdp-avg --gdp-tot --gdp-log --pop-avg --pop-log --med-perc --reg-hc0 --noc-top 20 --sep-host --sep-close"
+#run_test "$YEAR" "$WITH_GPC" "true" "true" "AM HOST PRE POST YEAR $CLOSE_VARS" 0 0 \
+#	"--gdp-avg --gdp-tot --gdp-log --pop-avg --pop-log --med-perc --reg-hc0 --noc-top 12 --sep-host --sep-close"
 #run_test "$YEAR" "$WITH_GPC" "false" "true" "HOST PRE POST"			$MIN_LAG $MAX_LAG "$FLAGS --sep-host"
 #run_test "$YEAR" "$WITH_GPC" "true"  "true" "HOST PRE POST"			$MIN_LAG $MAX_LAG "$FLAGS --sep-host"
 #run_test "$YEAR" "$WITH_GPC" "false" "true" "AM HOST PRE POST"		$MIN_LAG $MAX_LAG "$FLAGS --sep-host"
@@ -187,6 +193,8 @@ MAX_LAG=11
 #
 #wait
 
+run_test "1900" "$WITH_GPC" "true" "true" "AM HOST PRE POST YEAR $CLOSE_VARS" 0 0 \
+	"--gdp-avg --gdp-log --pop-avg --pop-log --med-perc --reg-hc0 --noc-top 40 --sep-host --sep-close"
 
 
 #YEAR=1996
@@ -232,16 +240,17 @@ for YEAR in 1932 1900; do
 #		# CLOSE
 #		run_test "$YEAR" "$WITH_GPC" "true" "true" "HOST $CLOSE_VARS"				$MIN_LAG $MAX_LAG "$FLAGS --sep-host --sep-close"
 #		run_test "$YEAR" "$WITH_GPC" "true" "true" "HOST PRE POST $CLOSE_VARS"		$MIN_LAG $MAX_LAG "$FLAGS"
-		run_test "$YEAR" "$WITH_GPC" "true" "true" "AM HOST PRE POST YEAR $CLOSE_VARS"	$MIN_LAG $MAX_LAG "$BASE_FLAGS --sep-host --sep-close"
+#		run_test "$YEAR" "$WITH_GPC" "true" "true" "AM HOST PRE POST YEAR $CLOSE_VARS"	$MIN_LAG $MAX_LAG "$BASE_FLAGS --sep-host --sep-close"
 
 	done
 
 	WITH_GPC="true"
 	for MIN_LAG in 12 16 20 24 28; do
+		echo
 
 		MAX_LAG=$MIN_LAG
 
-		run_test "$YEAR" "$WITH_GPC" "true" "true" "AM HOST PRE POST YEAR $CLOSE_VARS"	$MIN_LAG $MAX_LAG "$BASE_FLAGS --sep-host --sep-close"
+#		run_test "$YEAR" "$WITH_GPC" "true" "true" "AM HOST PRE POST YEAR $CLOSE_VARS"	$MIN_LAG $MAX_LAG "$BASE_FLAGS --sep-host --sep-close"
 #		run_test "$YEAR" "$WITH_GPC" "true" "true" "AM HOST PRE POST"		$MIN_LAG $MAX_LAG "$FLAGS"
 #		run_test "$YEAR" "$WITH_GPC" "true" "true" "AM HOST PRE POST"		$MIN_LAG $MAX_LAG "$FLAGS --sep-host"
 #		run_test "$YEAR" "$WITH_GPC" "true" "true" "HOST PRE POST YEAR"	$MIN_LAG $MAX_LAG "$FLAGS --sep-host"

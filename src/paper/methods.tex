@@ -1,25 +1,20 @@
 \section{Metodologie e Dati}\label{sec:methods}
 
-Diversi metodi sono stati impiegati, per dimostrare risultati diversi
-(correlazione e causalità) e per averne maggiore riscontro.\\
-\todo{Riassunto dei metodi? non fa niente, mi sa che non ci entra}
-La fine del periodo analizzato da ciascuno è il 2026 (anno di Giochi Invernali),
-mentre l'inizio, a seconda del metodo, è uno tra 1996, 1964, 1932, 1900. Ognuni
-anno di inizio è stato scelto per minimizzare il rumore dovuto agli anni appena
-precedenti, tenendo anche in considerazione un po' di distanza (per esempio,
-guardare le Olimpiadi del 1948 significherebbe analizzare dati di PIL durante la
-seconda guerra mondiale). In particolare, il 1932 è abbastanza distanziato dalla
-prima guerra mondiale, il 1964 dalla seconda, il 1996 dalla guerra fredda (e,
-per confronto, è lo stesso usato da
-Csurilla\cite{csurillaLessObviousEffect2023}); il 1900, invece, rappresenta la
-seconda edizione (la prima va scartata per fini statistici, per via di alcune
-variabili che richiedono uno storico).\\
-Ove non diversamente specificato, si parla di Olimpiadi estive.\\
-
-\todo{dire anche il numero di partecipanti, tipo 25 1900 40 1932 60 1964}
+Diversi metodi sono stati impiegati, per dimostrare risultati diversi e per
+averne maggiore riscontro.\\
+Per la causalità si è usata la regressione; Granger non non poteva essere
+utilizzato, in mancanza di stazionarietà delle serie di GDP e medaglie (misurata
+con ADF test), pure applicando modifiche come logaritmo, differenza di
+logaritmi, percentuale (medaglie).\\
+I periodi analizzati terminano nel 2026 (anno di Giochi Invernali) e partono in
+uno tra 1996, 1964, 1932, 1900: la scelta di ognuno minimizza il rumore dovuto
+agli anni appena precedenti (per esempio, guardare il 1948 significherebbe usare
+PIL della seconda guerra mondiale). In particolare, il 1932 è distanziato dalla
+prima guerra mondiale, il 1964 dalla seconda, il 1996 dalla guerra fredda; il
+1900 rappresenta la seconda edizione (la prima va scartata per fini statistici).
+I quattro anni appartengono anche a periodi diversi per numero di partecipanti,
+rispettivamente 25, 41, 85, 164.\\
 
 \input{methods_data}
-
-
 
 \input{methods_regression}

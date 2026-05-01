@@ -2,90 +2,77 @@
 
 \cref{tab:comparison_models_csurilla} confronta il modello finale di
 Csurilla\cite{csurillaLessObviousEffect2023} con i nostri ZINB (su tutti i Paesi
-o top 40) e OLS (top 40, con \textit{AM}, con \textit{AM} e senza
-\textit{YEAR}). Per ogni variabile, mostra il coefficiente di regressione per il
-modello con le variabile di controllo macroeconomiche aggiunte (\textit{GDP},
-\textit{POP}, \textit{COMM}) e senza di esse tra parentesi; il numero di
-asterischi indica la significatività del p-value. Tutte le regressioni usano
-\textit{HOST}, \textit{PRE}, \textit{POST}, \textit{YEAR} (che è omesso dalla
-tabella per maggiore leggibilità, data anche la minore significatività, ma verrà
-discusso in seguito), oltre alle costanti specifiche del modello. Si ricorda che
-Csurilla\cite{csurillaLessObviousEffect2023} si ferma al 2020.\\
+o top 40) e OLS (top 40, con \textit{YEAR}, \textit{AM} o entrambi). Per ogni
+variabile, mostra il coefficiente di regressione per il modello con
+\textit{MACRO} (o senza) e il suo p-value. Tutte le regressioni usano
+\textit{HOST}, \textit{PRE}, \textit{POST}, \textit{YEAR} (omesso per maggiore
+leggibilità).\\
 Mentre Csurilla presentava pochi valori significativi, che diminuivano
-ulteriormente con l'aggiunta delle variabili macroeconomiche, i nostri modelli
-non ne presentano solo in pochissimi casi: una possibile spiegazione potrebbe
-essere il fatto che loro abbiano condotto un'analisi a livello di sport, quindi
-con molte più variabili tra cui distribuire il ``merito'' delle medaglie.
-Dunque, mentre per loro la diminuzione dell'effetto \textit{Host} si manifestava
-in una minore significatività, nel nostro caso è possibile osservare una
-riduzione dei valori dei coefficienti (per quelli con p-value significativo) di
-\textit{HOST}, \textit{PRE} e \textit{POST}, in particolar modo con OLS, che usa
-una scala lineare, più intuitiva di quella logaritmica di ZINB.\@ Un
-coefficiente negativo, per esempio, indica una correlazione negativa delle
-medaglie con tale variabile, cioè che quel Paese ha performato peggio di quanto
-il modello si aspettasse in base a quanto imparato dal resto del contesto; un
-valore alto o basso, invece, indica quanto la variabile influenzi la predizione
-(di medaglie).\\
+ulteriormente aggiungendo \textit{MACRO}, i nostri modelli non ne presentano in
+pochissimi casi: avendo loro analizzato per sport, il ``merito'' delle medaglie
+potrebbe essere stato distribuito tra più variabili. Nel nostro caso è invece
+possibile osservare i coefficienti (quelli con p-value significativo),
+soprattutto con OLS, che usa una scala lineare, più intuitiva di quella
+logaritmica di ZINB:\@ un valore indicherà l'impatto della variabile (anche
+negativo) sulle medaglie. Difatti, includere \textit{MACRO} rimpicciolisce i
+coefficienti di hosting.\\
+Si osservi OLS con \textit{AM}. Nel 2008, la Cina (ospitante) ha quasi
+raddoppiato le medaglie dal 2004 (10.45\% contro 6.80\%): l'effetto
+\textit{Host} ha quindi individuato qui il coefficiente più alto di tutti
+($\sim$7.9). Ma, con \textit{MACRO}, esso scende a $\sim$5.2: l'incremento di
+medaglie sembra meno sorprendente tenendo conto che la sua economia (e PIL) ha
+avuto una veloce impennata agli inizi del XXI secolo (\textit{omitted variable bias}).
+Discorso simile per i suoi \textit{PRE2004} e \textit{POST2012}: nel primo caso,
+un minore incremento (da 6.27\% a 6.80\%) risulta in un coefficiente più basso,
+considerando \textit{MACRO}; nel secondo, nonostante il leggero decremento dal
+2008 (da 10.45\% a 9.15\%), le medaglie sono pur sempre molte di più che negli
+anni precedenti, anche se un ulteriore incremento di \textit{GDP} sottrae
+rilevanza alla variabile.\\
+Il Brasile, che non ha visibilmente beneficiato dall'ospitare (1.95\% nel 2016,
+1.77\% nel 2012), non ha un \textit{HOST2016} alto (0.956), ma aggiungere
+\textit{MACRO} lo riduce ulteriormente (-0.403, si faccia attenzione al p-value
+più alto): gli anni 2013--2016 hanno visto dapprima un picco del PIL (recuperato
+solo nel 2024) e poi una decaduta ma, evidentemente, un valore tutto sommato in
+crescita rispetto agli anni precedenti (costante crescita dal 1992) avrebbe
+fatto presagire migliori risultati. Altrettanto interessante è che usare
+\textit{AM} incrementa \textit{OG2016} (-2.027 senza), indicando quindi delle
+prestazioni comunque al di sopra della media storica: pur partecipando fin dal
+1900, le sue medaglie sono diventate più rilevanti solo nel 1996(da <1\% a
+>1.6\%).\\
+Effetto opposto con gli USA nel 1996: passare dall'11.01\% al 12.01\% è forse
+``deludente'' per un protagonista storico (p-value non significativo).\\
+In generale, i nostri unici \textit{HOST} con p-value $\ge$ 0.1 sono tre casi
+noti riconosciuti e anche da loro: i ``deludenti'' Stati Uniti, il Brasile (che
+aveva avuto il suo picco prima), la Grecia (2004) che non ha avuto un grande
+boost, soprattutto tenendo conto di \textit{MACRO}.  
 \\
-Si osservi OLS con \textit{AM}. Nel 2008, la Cina (ospitante) ha vinto il
-10.45\% delle medaglie, contro il 6.80\% del 2004 --- quasi un raddoppio:
-l'effetto \textit{Host} ha quindi individuato qui il coefficiente più alto di
-tutti ($\sim$7.9). Ma, con \textit{MACRO}, esso scende a $\sim$5.2: l'incremento
-di medaglie potrebbe considerato meno sorprendente tenendo conto che la sua
-economia (e il PIL) ha avuto una veloce impennata agli inizi del XXI secolo.
-Discorso simile per \textit{PRE2004} e \textit{POST2004}, rispettivamente anni
-prima e dopo che ospitasse: nel primo caso, un minore incremento (da 6.27\% a
-6.80\%) risulta in un coefficiente più basso, considerando \textit{MACRO}; nel
-secondo, nonostante il leggero decremento dal 2008 (da 10.45\% a 9.15\%), le
-medaglie sono pur sempre molte di più che negli anni precedenti, anche se un
-ulteriore incremento di \textit{GDP} sottrae rilevanza alla variabile.\\
-Il Brasile, caso raro di Nazione che non ha visibilmente beneficiato
-dall'ospitare (1.95\% nel 2016 contro l'1.77\% nel 2012), aspettatamente non ha
-un \textit{HOST2016} alto (0.956), ma aggiungere \textit{MACRO} lo riduce
-ulteriormente (-0.403, si faccia attenzione al p-value più alto): gli anni
-2013--2016 hanno visto dapprima un picco del PIL (recuperato solo nel 2024) e
-poi una decaduta ma, evidentemente, un valore tutto sommato in crescita rispetto
-agli anni precedenti (costante crescita dal 1992) avrebbe fatto presagire
-migliori risultati. Altrettanto interessante è che usare \textit{AM} incrementa
-\textit{OG2016} (-2.027 senza), indicando quindi delle prestazioni comunque al
-di sopra della media storica: nonostante il Brasile avesse partecipato ai Giochi
-fin dal 1900, le sue medaglie sono diventate più rilevanti su scala globale solo
-nel 1996, passando da 0.31\% (e sempre sotto l'1\% nelle passate 17 edizioni) a
-1.78\% (con risultati simili nelle successive 5).\\
-Un effetto opposto lo si ha con gli USA, i quali nel 1996 sono passati
-dal'11.01\% al 12.01\% (e da 108 a 101 in numero), un incremento forse
-``deludente'' per un team da sempre protagonista. Così, usando \textit{MACRO},
-\textit{HOST1996} passa da 6.4 a un p-value non più significativo aggiungendo
-\textit{AM} (valore 0.354).\\
-In generale, i nostri unici \textit{HOST} con p-value $\ge$ 0.1 sono tre casi noti
-riconosciuti e anche da loro: i ``deludenti'' Stati Uniti (1996), il Brasile
-(2016) che aveva avuto il suo picco prima, la Grecia (2004) che non ha avuto un
-grande boost, soprattutto tenendo conto di \textit{MACRO}.  
-\\
-Gli effetti in OLS sono riscontrabili in modo analogo nei modelli ZINB.\@ In
-Csurilla con \textit{MACRO}, le uniche due variabili \textit{HOST} significative
-sono, in OLS, quelle con il secondo e la terzo coefficiente più alto (2000,
-Australia; 2012, Regno Unito); Tuttavia, l'enorme boost della Cina in casa non è
-stato catturato.\\
+I nostri ZINB hanno riscontri analoghi ad OLS.\@ In Csurilla con \textit{MACRO},
+le uniche due variabili \textit{HOST} significative sono, in OLS, quelle con il
+secondo e terzo coefficiente più alto (2000, Australia; 2012, Regno Unito);
+tuttavia, l'enorme boost della Cina in casa non è stato catturato.\\
 \\
 
 \begin{table}[H]
 \centering
-\caption{Analisi di Regressione: Confronto degli Effetti Host, Pre e Post con e (senza) Controlli Macroeconomici}
-\label{tab:comparison_models_csurilla}
-\renewcommand{\arraystretch}{0.91} % Comprime leggermente l'altezza delle righe
+\caption{Analisi di Regressione: Confronto degli Effetti Host, Pre e Post con e (senza) Controlli Macroeconomici}\label{tab:comparison_models_csurilla}
+\renewcommand{\arraystretch}{0.93} % Comprime leggermente l'altezza delle righe
 \normalsize % Riduce il font per far entrare le 60+ righe
 \resizebox{\textwidth}{!}{%
-\begin{tabular}{l *{6}{>{\centering\arraybackslash}p{0.15\textwidth}}}
+%\begin{tabular}{l *{6}{>{\centering\arraybackslash}p{0.15\textwidth}}}
+\begin{tabular}{l cccccc}
 \toprule
 & \multicolumn{1}{c}{\textbf{Csurilla\cite{csurillaLessObviousEffect2023}: ZINB}} & \multicolumn{2}{c}{\textbf{ZINB (YEAR)}} & \multicolumn{3}{c}{\textbf{OLS Top 40}} \\
 \cmidrule(lr){2-2} \cmidrule(lr){3-4} \cmidrule(lr){5-7}
 \textbf{Variables} & \textbf{All} & \textbf{All} & \textbf{Top 40} & \textbf{YEAR} & \textbf{AM+YEAR} & \textbf{AM} \\
 \midrule
-R-squared        & -         & -       & -        & 0.628    & 0.798   & 0.795    \\
-Adj. R-squared   & -         & -       & -        & 0.584    & 0.773   & 0.776    \\
-Pseudo R-squared & -         & 0.1580  & 0.1400   & -        & -       & -        \\
-Log-Likelihood   & -         & -2902.7 & -1096.3  & -566.04  & -470.41 & -472.70  \\
+R-squared        & -         & -       & -        & 0.628      & 0.798     & 0.795    \\
+                 & -         & -       & -        & (0.233)    & (0.706)   & (0.704)    \\
+Adj. R-squared   & -         & -       & -        & 0.584      & 0.773     & 0.776    \\
+                 & -         & -       & -        & (0.151)    & (0.674)   & (0.679)    \\
+Pseudo R-squared & -         & 0.1580  & 0.1400   & -          & -         & -        \\
+                 & -         & (0.01514) & (0.01953)  & -          & -         & -        \\
+Log-Likelihood   & -         & -2902.7   & -1096.3    & -566.04    & -470.41   & -472.70  \\
+                 & -         & (-2857.8) & (-1249.8)  & (-679.32)  & (-528.94) & (-530.29)  \\
 \midrule
 OG1996          & 0.021     & 0.526***  & 0.538***  & 6.403***  & 0.354 & 0.656*    \\
                 & (0.544***)& (3.171***)& (1.802***)& (10.031***)& (-0.575) & (-0.255)  \\
@@ -147,57 +134,52 @@ Inflate Const   & 18.51**   & -14.745***& -21.808***& ---           & ---       
 Alpha           & ---       & 1.179***  & 0.218***  & ---           & ---       & ---        \\
                 & ---       & (3.781***)& (0.652***)& ---           & ---       & ---        \\
 \bottomrule
-\multicolumn{6}{l}{\footnotesize Coefficienti con (senza) GDP/POP/COMM.\@ YEAR usati ma omessi.\@ Significatività: * $p<0.1$, ** $p<0.05$, *** $p<0.01$.} \\
+\multicolumn{6}{l}{\normalsize Coefficienti con (senza) GDP/POP/COMM.\@ YEAR usati ma omessi.\@ Significatività: * $p<0.1$, ** $p<0.05$, *** $p<0.01$.} \\
 \end{tabular}%
 }
 \end{table}
 
 
-\cref{tab:ols_timeframes} mostra OLS, con tutte le variabili descritte, compreso
-\textit{CLOSE}, su un periodo che parte dal 1900 (con o senza \textit{MACRO}),
-confrontandolo con i periodi da 1932, 1964 e 1996, e con 1964 con lag di
-\textit{GDP} e \textit{POP} di 7 anni, che potrebbe essere più descrittivo.
-Tenendo conto che una sede si decide 7 anni prima, un Paese non si candiderà
-prima di essere sicuro di avere investito abbastanza. Ciononostante, i risultati
-non mostrano differenze rilevanti (in coefficiente o significatività), neanche
-su altre configurazioni e con lag fino a 28 anni: probabilmente, la ricchezza
-relativa tra i Paesi non è cambiata molto nel tempo e rimane (solitamente) un
-buon predittore di medaglie.\\
-Pure cambiare l'anno di inizio non modifica particolarmente coefficienti e
-significatività, eccezion fatta per \textit{GDP}, non significativo con 1900 e
-1964: tutte le configurazioni sembrano sufficientemente espressive, viste anche
-le metriche di valutazione simili (visibilmente migliori solo per 1900, con
-R-squared di $\sim$0.9 invece che $\sim$0.8).\\
-Riguardo a \textit{HOST}, è interessante vedere valori coefficienti molto più
-alti (decine invece che unità) andando indietro con gli anni: evidentemente, i
-fattori geografici erano estremamente influenti, con peggiori condizioni di
-trasporto et cetera. Gli unici coefficienti non significativi, poi, sono
-associati ad edizioni non profittevoli abbastanza per gli ospitanti. Oltre ai
-già citati 1996, 2004 e 2016, nel 1968 l'1.43\% delle medaglie non è stato
-abbastanza per il Messico, nonostante fosse abituato a molte meno (0.17\% nel
-1964): forse un altrettanto impressionante incremento del GDPpc (6432 contro
-5555 nel periodo precedente) avrebbe fatto presagirne di più (non a caso, il
-modello senza \textit{MACRO} identifica \textit{OG1968} come significativo).
-Discorso analogo per il Canada (1976), mentre per Francia 1924 è una storia
-diversa: soprattutto in un'epoca in cui ospitare aiutava tanto, vincere
-addirittura meno medaglie dell'anno precedente non attiva la variabile.\\
-Altro discorso per il Giappone, caso particolare di coefficiente
-(\textit{OG2020}) che incrementa visibilmente con periodi più lunghi ($\sim$2.5)
-rispetto al 1996 ($\sim$2.1). Il Paese, infatti, ha cominciato un'enorme
-crescita economica negli anni '60 (secondo PIL al mondo nel 1970), che però non
-è stato altrettanto accompagnato da una crescita in medaglie, compreso che nei
-Giochi ospitati nel 1964, fino agli anni '2000; addestrare il modello su un
-periodo più lungo, quindi, gli insegnerà che il Giappone non è efficace nel
-convertire GDPpc in prestazioni.\\
+\cref{tab:ols_timeframes} mostra OLS, con tutte le variabili, compreso
+\textit{CLOSE}, dal 1900 (con o senza \textit{MACRO}), confrontandolo con i
+periodi da 1932, 1964 e 1996, e con 1964 con lag di \textit{GDP} e \textit{POP}
+di 7 anni, che potrebbe essere più descrittivo: tenendo conto che una sede si
+decide 7 anni prima, un Paese non si candiderà prima di essere sicuro di avere
+investito abbastanza. Ciononostante, i risultati non mostrano differenze
+rilevanti (in coefficiente o significatività), neanche su altre configurazioni e
+con lag fino a 28 anni: probabilmente, la ricchezza relativa tra i Paesi non è
+cambiata molto nel tempo e rimane (solitamente) un buon predittore di
+medaglie.\\
+Pure il periodo non cambia particolarmente, eccezion fatta per \textit{GDP}, non
+significativo con 1900 e 1964: tutte le configurazioni sembrano sufficientemente
+espressive, viste anche le metriche di valutazione simili (visibilmente migliori
+solo per 1900, con R-squared di $\sim$0.9 invece che $\sim$0.8).\\
+Riguardo a \textit{HOST}, è interessante vedere valori molto più alti (decine
+invece che unità) in passato: evidentemente, i fattori geografici erano
+estremamente influenti, con peggiori condizioni di trasporto etc. Gli unici
+coefficienti non significativi, poi, sono associati ad edizioni non profittevoli
+abbastanza per gli ospitanti. Oltre ai già citati 1996, 2004 e 2016, nel 1968
+l'1.43\% delle medaglie non è stato abbastanza per il Messico, nonostante fosse
+abituato a molte meno (0.17\% nel 1964): forse un altrettanto impressionante
+incremento del GDPpc (6432 contro 5555 nel periodo precedente) avrebbe fatto
+presagirne di più (non a caso, il modello senza \textit{MACRO} identifica
+\textit{OG1968} come significativo). Discorso analogo per il Canada (1976), ma
+non per Francia 1924: soprattutto in un'epoca in cui ospitare aiutava tanto,
+vincere addirittura meno medaglie dell'anno precedente non attiva la
+variabile.\\
+Diverso è il Giappone, per cui (\textit{OG2020}) incrementa visibilmente con
+periodi più lunghi ($\sim$2.5) rispetto al 1996 ($\sim$2.1): l'enorme crescita
+economica cominciata negli anni '60 (secondo PIL al mondo nel 1970) non è stata
+accompagnata da una in medaglie fino ai '2000, compreso che nei Giochi ospitati
+nel 1964; addestrare il modello su un periodo più lungo, quindi, gli insegnerà
+che il Giappone non è efficace nel convertire GDPpc in prestazioni.\\
 Passando a \textit{CLOSE}, non tutti i gruppi di riferimento sono stati
-determinanti; in particolare \textit{WIDE} ha sempre avuto addirittura un
-impatto negativo, e una scarsa significatività in alcuni eventi, soprattutto i
-più recenti. Al contrario, \textit{GMT1} è quasi sempre stato positivo,
-specialmente in passato, tranne che fino al 1924. In ultimo, \textit{WEST} è
-stato perlopiù positivo (3 casi su 5). Si noti che \textit{CLOSE\_WEST\_2024} è
-più alta negli altri periodi che per il 1900: infatti, ben 4 edizioni del gruppo
-si sono tenute prima del 1932 e le loro variabili devono aver avuto una certa
-influenza.\\
+determinanti; addirittura \textit{WIDE} ha sempre un impatto negativo (o scarsa
+significatività). Al contrario, \textit{GMT1} è quasi sempre stato positivo,
+specialmente in passato; \textit{WEST} perlopiù positivo (3 casi su 5). Si noti
+che \textit{CLOSE\_WEST\_2024} è più alta negli altri periodi che per il 1900:
+ben 4 edizioni del gruppo si sono tenute prima del 1932 e le loro variabili
+devono aver avuto una certa influenza.\\
 In conclusione, come per \textit{HOST}, la vicinanza può aver influito in alcuni
 casi, maggiormente in passato. Gli scarsi risultati di \textit{MAIN} (con Spagna
 e Italia non confinanti) e \textit{WIDE} (allargato da Grecia a Inghilterra)
@@ -313,3 +295,18 @@ CLOSE\_WIDE\_2024 & -0.392 & -0.581 & 0.654 & 0.612 & 0.662 & 0.482 \\
 \end{tabular}%
 }
 \end{table}
+
+Riguardo all'espressività del modello, le metriche di valutazione e i
+cambiamenti nei coefficienti danno degli indizi sull'efficacia di ciascuna
+variabile.\\
+Come in Csurilla\cite{csurillaLessObviousEffect2023}, \textit{MACRO} ha un
+enorme impatto su entrambi, mentre \textit{AM} produce effetti visibili ma non
+rivoluzionari (anche se le metriche migliorano molto). \textit{YEAR}, invece,
+influisce poco su entrambi.\\
+\textit{POP} è significativo, dato la distribuzione delle medaglie spostata
+tutta verso pochi Paesi grandi e ricchi: con una regressione su pochi (per
+esempio, top 12 dal 1900), il p-value aumenta. Inoltre, aggiunge informazione
+fondamentale a \textit{GPD}: la Svizzera, con alto \textit{GPDpc} e bassa
+popolazione, performa peggio di molti Stati comunisti (per cui vale l'opposto).
+Allo stesso modo, \textit{COMM} (sempre rilevante) spiega casi di successo con
+\textit{GPDpc} basso.

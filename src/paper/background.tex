@@ -2,72 +2,64 @@
 
 Questo lavoro prende ispirazione da quello di
 Csurilla\cite{csurillaLessObviousEffect2023}, il quale mostra come l'effetto
-\textit{host} diventi meno significativo quando si tenga conto di variabili
-aggiuntive, in particolare: PIL e popolazione (entrambi in logaritmo e aggregati
-con media geometrica nei 4 anni precedenti), appartenenza passata al blocco
-comunista (poiché tali Stati hanno storicamente propeso verso alti investimenti
-nello sport \todo{citazione fonte del paper}), media di medaglie negli eventi
-passati (stando ad indicare una predilezione per lo sport per motivi culturali),
-\textit{dummy variable} separate per ogni anno (per assorbire avvenimenti
-globali specifici e per tenere conto del numero variabile di medaglie
-disponibili di anno in anno). Le variabili relative all'\textit{hosting},
-invece, \textit{HOST<Year>}, \textit{PRE<Year>} e \textit{POST<Year}, sono
-separate per ogni anno di Olimpiadi e valgono \textit{1}, rispettivamente,
-quando un Paese ospita, quando ospiterà nella successiva edizione e quando ha
-ospitato nella precedente; dunque, \textit{PRE} cerca di individuare un
-miglioramento prestazionale generale cominciato alcuni anni prima di ospitare,
-mentre \textit{POST} cerca di catturare un \textit{boost} duraturo fornito dal
-giocare in casa.\\
+\textit{host} (tra 1996 e 2020) diventi meno significativo quando si tenga conto
+di variabili aggiuntive, in particolare: PIL e popolazione (entrambi in
+logaritmo e aggregati con media geometrica nei 4 anni precedenti), appartenenza
+passata al blocco comunista (poiché tali Stati hanno storicamente propeso verso
+alti investimenti nello sport\cite{tobit1comm1,tobit3comm2,comm3,comm4}), media di
+medaglie negli eventi passati (indicando una predilezione culturale per lo
+sport), \textit{dummy variable} separate per ogni anno (per assorbire
+avvenimenti globali specifici e il numero variabile di medaglie disponibili ogni
+anno). Le variabili relative all'\textit{hosting}, invece, \textit{HOST<Year>},
+\textit{PRE<Year>} e \textit{POST<Year}, sono separate per ogni edizione e
+valgono \textit{1}, rispettivamente, quando un Paese ospita, ospiterà la
+successiva e ha ospitato la precedente. Così, \textit{PRE} catturerebbe un
+miglioramento cominciato alcuni anni prima di ospitare, \textit{POST} un
+\textit{boost} duraturo.\\
 A differenza di ricerche pregresse, il paper impiega una regressione di tipo
 \textit{zero-inflated negative binomial} (ZINB), per ovviare ad alcune
 limitazioni di altri modelli su questi dataset. Il numero di medaglie, infatti,
 è una variabile discreta, con alta varianza e tante istanze pari a 0 (le Nazioni
 partecipanti sono per la maggior parte molto piccole): altri modelli, come
 \textit{regressione lineare}, \textit{Poisson regression} e
-\textit{Tobit}\todo{refs}, soffrono per almeno uno di questi motivi. Le
-peculiarità del dataset diventano ancora più acuite per il fatto che Csurilla
-abbia applicato la regressione dividendo il dataset a livello di sport (oltre
-che per anno e Paese).\\
+\textit{Tobit}\cite{tobit1comm1,tobit2,tobit3comm2,tobit4,tobit5,tobit6}, 
+soffrono per almeno uno di questi motivi. Queste
+peculiarità sono state acuite dividendo il dataset a livello di sport (oltre che
+per anno e Paese).\\
 \\
 Nel corso del lavoro, denoteremo le variabili come indicato di seguito. Alcune
 sono appena state descritte, tra cui \textit{HOST<Year>} (detto anche
-\textit{OG<Year>}), \textit{PRE<Year>} e \textit{POST<Year>} (quando non è
-specificato l'anno, si intende che è stata usata un'unica variabile per tutti
-insieme). Si noti che mancherà \textit{PRE} per l'ultima edizione.
-\textit{MACRO} è l'insieme delle variabili macroeconomiche aggiuntive:
-\textit{GDP} per il PIL (GDPpc, o pro capite, in dollari del 2011, aggiustato per
-l'inflazione), \textit{POP} per la popolazione (in migliaia), \textit{COMM} per
-l'appartenenza al blocco comunista, \textit{AM} per la media storica di
-medaaglie. \textit{YEAR<Year>} è una \textit{dummy variable} per ogni anno;
-\textit{BOYCOTT<Year>}, in assenza di \textit{YEAR}, si ha solo per assorbire
-sbilanciamenti nei due anni di boicottaggio reciproco tra USA e URSS (1980 e
-1984): essendo questi i due Paesi più vincenti, la mancanza di uno ha fatto sì
-che l'altro ottenesse la maggior parte delle medaglie, influenzando notevolmente
-i dati. \textit{const} e \textit{alpha} sono variabili specifiche dei modelli.\\
+\textit{OG<Year>}), \textit{PRE<Year>}, \textit{POST<Year>}. Si noti che
+mancherà \textit{PRE} per l'ultima edizione. \textit{MACRO} è l'insieme delle
+variabili macroeconomiche aggiuntive: \textit{GDP} per il PIL (GDPpc, o pro
+capite, in dollari del 2011, aggiustato per l'inflazione), \textit{POP} per la
+popolazione (in migliaia), \textit{COMM} per l'appartenenza al blocco comunista,
+\textit{AM} per la media storica di medaglie. \textit{YEAR<Year>} è una
+\textit{dummy variable} per ogni anno; \textit{BOYCOTT<Year>}, in assenza di
+\textit{YEAR}, si ha solo per i due anni di boicottaggio reciproco tra USA e
+URSS (1980 e 1984): essendo i due Paesi più vincenti, la mancanza di uno ha
+fatto sì che l'altro ottenesse la maggior parte delle medaglie, sbilanciando i
+dati. \textit{const} e \textit{alpha} sono variabili specifiche dei modelli.\\
 \textit{CLOSE\_<group><year>} vale 1 per le Nazione appartenenti al dato gruppo
-quando una di esse abbia ospitato i Giochi, ma 0 per chi ospita (senza
-\textit{<year>} è aggregata per anno). I gruppi sono stati scelti per cercare di
-catturare l'effetto di competere in un Paese vicino che non fosse il proprio,
-andando così ad escludere i fattori geografici. L'Europa è apparso il luogo
-ideale: massima differenza di 1 ora; cultura e ideali simili (soprattutto sotto
-l'Unione Europea); economia, trasporti e alloggi di alto livello; gran numero
-Paesi, soprattutto tra quelli più forti (dunque, alto numero di dati per
-edizioni ospitate), e per di più piccoli (viaggiare in Europa può essere più
-facile che da una parte all'altra della Cina). Dunque, abbiamo: Dunque, abbiamo:
+quando una di esse abbia ospitato i Giochi, ma 0 per chi ospita. La scelta dei
+gruppi mira a catturare l'effetto di competere in un Paese vicino che non sia il
+proprio, andando così ad escludere i fattori geografici. L'Europa è apparso il
+luogo ideale: massima differenza di 1 ora; cultura e ideali simili; economia,
+trasporti e alloggi di qualità; abbondanza di Paesi, soprattutto tra quelli più
+forti (conseguentemente, alto numero di dati per edizioni ospitate), e per di
+più piccoli (viaggiare in Europa può essere più facile che tra due estremi della
+Cina). Dunque, abbiamo:
 \begin{itemize}
     \item \textit{CLOSE\_WEST} (Belgio, Francia, Paesi Bassi)
     \item \textit{CLOSE\_CENTER} (Austria, Repubblica Ceca, Germania, Germania
     Ovest, Ungheria, Polonia, Slovenia, Slovacchia, Svizzera)
     \item \textit{CLOSE\_GMT1} (\textit{CLOSE\_CENTER} + \textit{CLOSE\_WEST} +
     Italia + Spagna): fuso orario GMT+1
-    \item \textit{CLOSE\_MAIN} (Francia, Germania, Italia, Spagna): le squadre
-    più forti in Europa continentale
+    \item \textit{CLOSE\_MAIN} (Francia, Germania, Italia, Spagna): i più forti
+    in Europa continentale
     \item \textit{CLOSE\_WIDE} (\textit{CLOSE\_GMT1} + Grecia + UK): gruppo
     allargato a due ospitanti importanti
 \end{itemize}
-Le suddivisioni Ovest e Centrale seguono i confini culturali e spaziali definiti
-dalla StAGN\cite{CentralEurope2026}.\\
-Inoltre, \textit{OLS} (Ordinary Least Squares) indica il metodo di regressione
-lineare utilizzato in seguito.\\
-Faremo riferimento ai team anche come Paesi; d'altronde, quelli senza uno Stato
-non sono stati considerati, non avendo dati macroeconomici.\\
+Le suddivisioni rispettano i confini culturali e spaziali definiti dalla
+StAGN\cite{WikipediaCentralEurope}.\\
+Ove non diversamente specificato, si parla di Olimpiadi estive.\\

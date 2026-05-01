@@ -226,7 +226,7 @@ def perform_granger(merged_df):
 
 	# Granger
 	# maxlag=2 means we check the previous 1 and 2 Olympics
-	results = grangercausalitytests(merged_df, maxlag=2)
+	results = grangercausalitytests(merged_df[[DF_COL_GDP, DF_COL_MEDALS]], maxlag=2)
 	print("\nGranger causality test results:")
 	for lag, test_results in results.items():
 		print(f"Lag {lag}:")
@@ -289,7 +289,7 @@ def plot_merged_series(medals_series, gdp_series, country_code, country_name, ou
 	if save:
 			save_plot(fig, country_code, out_file_tag=out_file_tag)
 
-def plot_merged_series2(medals_series, gdp_series, country_code, country_name, out_file_tag=None, save=False):
+def plot_merged_series2(medals_series, gdp_series, country_code, country_name, normalize_gdp=True, out_file_tag=None, save=False):
 	"""Plot both medals and GDP series side by side.
 	@param medals_series: pandas Series with medals data indexed by year
 	@param gdp_series: pandas Series with GDP data indexed by year
@@ -304,7 +304,11 @@ def plot_merged_series2(medals_series, gdp_series, country_code, country_name, o
 	
 	# Plot both series
 	ax.plot(medals_normalized, linewidth=2, marker='o', color='#1f77b4', label='Medals (% / 100)')
-	ax.plot(gdp_series, linewidth=2, marker='s', color='#ff7f0e', label='GDP Growth (log-diff)')
+	if normalize_gdp:
+		gdp_normalized = gdp_series / gdp_series.max()
+		ax.plot(gdp_normalized, linewidth=2, marker='s', color='#ff7f0e', label='GDP Growth (normalized)')
+	else:
+		ax.plot(gdp_series, linewidth=2, marker='s', color='#ff7f0e', label='GDP Growth (log-diff)')
 	
 	# Plot medals
 	ax.set_xlabel('Year', fontsize=12)

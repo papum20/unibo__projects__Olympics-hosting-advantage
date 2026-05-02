@@ -1,0 +1,23 @@
+\subsection{Bayesian Changepoint Detection}\label{sec:methods_bayesian}
+
+La solidità di questa fase analitica risiede nell'applicazione di due modelli 
+bayesiani statisticamente indipendenti, per escludere ogni possibilità di bias 
+di conferma. Il primo modello adotta una struttura \textit{Poisson-Gamma}: 
+poiché il conteggio delle medaglie è una variabile discreta non negativa, 
+la distribuzione di Poisson ne costituisce la descrizione probabilistica 
+naturale, mentre la distribuzione Gamma rappresenta il prior coniugato sul 
+parametro di intensità $\lambda$. 
+Per ogni possibile punto di rottura temporale $\tau$, il modello calcola la 
+log-verosimiglianza marginale della partizione, identificando il punto di 
+massima probabilità a posteriori (MAP) come la stima della svolta atletica. 
+Il secondo modello analizza il logaritmo del GDP nazionale mediante un 
+framework Gaussiano con prior non informativo su media e varianza 
+(schema Normal-Inverse-Gamma implicito). 
+
+In entrambi i casi, la ricerca del MAP è vincolata a una finestra temporale 
+di $\pm$20 anni rispetto agli anni di hosting, al fine di ancorare l'inferenza 
+e ridurre i falsi positivi su serie storiche rumorose.
+La distribuzione di probabilità a posteriori normalizzata, visualizzata nei 
+grafici come area ombreggiata, fornisce inoltre una misura della certezza 
+dell'inferenza: un picco stretto indica un changepoint ben identificato, 
+mentre una distribuzione piatta segnala ambiguità nei dati.

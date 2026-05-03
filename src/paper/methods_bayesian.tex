@@ -1,57 +1,19 @@
 \subsection{Bayesian Changepoint Detection}\label{sec:methods_bayesian}
 
-% Che significa "statisticamente indipendenti"? A meno che non ci sia una
-% ragione, "idipendenti" è più corto e comprensibile e meno ambiguo. A dire che
-% il modello è solido sono già i risultati, non serve sottolinearlo. "evitare",
-% è più corto e "escludere ogni possibilità" non mi sembra corretto: esistono
-% altre distribuzioni che potrebbero dare risultati diversi, quindi dire "ogni
-% possibilità" sembra troppo, è piuttosto un "ridurre le possibilità". Giusto?
-% Inoltre, perché solo bias di conferma? Questo migliora la solidità in
-% generale.
+% spero vada bene così e che si capiscano meglio i due metodi che mi avevi chiesto di ampliare
 
-% In ogni caso, non ho capito come siano stati usati i due modelli: i risultati
-% parlano in maniera generale, ma quindi i modelli dicono sempre la stessa cosa,
-% su ogni input? Se sì, andrebbe menzionato; se no, c'è qualcosa di sospetto...
+Per maggiore validità statistica, sono stati applicati due modelli bayesiani
+statisticamente indipendenti, ciascuno dei quali identifica un punto di massima
+probabilità a posteriori (MAP). Per le medaglie, variabile discreta non negativa,
+è stato adottato un framework \textit{Poisson-Gamma}; per il logaritmo del GDP,
+un framework Gaussiano con prior non informativo (schema Normal-Inverse-Gamma implicito). 
+La distanza temporale tra i due MAP, $\Delta\tau = \tau_{\text{medals}} - \tau_{\text{GDP}}$,
+quantifica l'anticipo con cui la crescita del PIL precede il cambio di regime
+nel medagliere, ovvero il \textit{lead effect}.
 
-% Correggimi se sbaglio, ma quella mi sembra una "spiegazione" di come funziona
-% il metodo (simile a quanto si trova online), mentre a noi serve fornire solo i
-% metodi usati, le ragioni e i risultati.
-
-
-%La solidità di questa fase analitica risiede nell'applicazione di due modelli
-%bayesiani statisticamente indipendenti, per escludere ogni possibilità di bias
-%di conferma. Il primo modello adotta una struttura \textit{Poisson-Gamma}:
-%poiché il conteggio delle medaglie è una variabile discreta non negativa, la
-%distribuzione di Poisson ne costituisce la descrizione probabilistica naturale,
-%mentre la distribuzione Gamma rappresenta il prior coniugato sul parametro di
-%intensità $\lambda$. Per ogni possibile punto di rottura temporale $\tau$, il
-%modello calcola la log-verosimiglianza marginale della partizione,
-%identificando il punto di massima probabilità a posteriori (MAP) come la stima
-%della svolta atletica. Il secondo modello analizza il logaritmo del GDP
-%nazionale mediante un framework Gaussiano con prior non informativo su media e
-%varianza (schema Normal-Inverse-Gamma implicito). 
-
-
-Per maggiore validità statistica, sono stati applicati due modelli indipendenti:
- per le medagle (variabile discreta non negativa) uno basato su
- \textit{Poisson-Gamma}, per il GDP (logaritmo) un framework Gaussiano con prior
- non informativo su media e varianza (schema Normal-Inverse-Gamma implicito).
-
-
-% "visualizzata nei grafici come area ombreggiata" messo nei grafici, così non
-% contano come parole.
-
-
-%In entrambi i casi, la ricerca del MAP è vincolata a una finestra temporale di
-%$\pm$20 anni rispetto agli anni di hosting, al fine di ancorare l'inferenza e
-%ridurre i falsi positivi su serie storiche rumorose. La distribuzione di
-%probabilità a posteriori normalizzata fornisce inoltre una misura della
-%certezza dell'inferenza: un picco stretto indica un changepoint ben
-%identificato, mentre una distribuzione piatta segnala ambiguità nei dati.
-
-La ricerca del changepoint (MAP --- punto di massima probabilità a posteriori) è
-stata limitata a una finestra di $\pm$20 anni dall'hosting, per evitare che il
-rumore statistico di periodi storici distanti generasse falsi positivi. La
+La ricerca del Massimo A Posteriori (MAP) è vincolata 
+a una finestra di $\pm$20 anni dall'hosting, al fine di ancorare l'inferenza e
+ridurre i falsi positivi su serie storiche rumorose. La
 distribuzione di probabilità a posteriori normalizzata fornisce inoltre una
 misura della certezza dell'inferenza: un picco stretto indica un changepoint ben
 identificato, mentre una distribuzione piatta segnala ambiguità nei dati.

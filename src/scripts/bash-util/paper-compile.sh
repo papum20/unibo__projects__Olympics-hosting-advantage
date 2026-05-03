@@ -4,7 +4,7 @@ if [ -d "src/paper/" ]; then
 	cd src/paper/
 fi
 
-rm -f main.aux main.bbl main.blg main.out main.log *.aux *.bbl *.blg
+rm -f main.pdf main.aux main.bbl main.blg main.out main.log *.aux *.bbl *.blg
 
 pdflatex main.tex
 bibtex main

@@ -1,66 +1,106 @@
 \subsection{Bayesian changepoint detection}\label{sec:results_bayesian}
 
+% I NOC non servono. Le parti rimosse mi sembrano verbose senza aggiungere
+% informazioni su metodo, processo, risultati.
+
+% Che significa "dinamiche strutturali"? E, in generale, l'uso massiccio di
+% "strutturale", che mi sembra un'aggiunta a volte fuori luogo.
+
+% "teoria incubazione": non la trovo, ci sono fonti?
+
 \subsubsection{Risultati: Casi di Conferma}
-I risultati rivelano una convergenza temporale che, nei casi più emblematici, 
-ridefinisce le dinamiche strutturali del vantaggio olimpico. Per la Cina (CHN), 
-il modello identifica la svolta del PIL nel 1993, e la svolta del medagliere nel 
-2004: un \textit{lead effect} di undici anni. Il PIL in forte espansione ha dunque 
-preceduto e, con ogni probabilità, finanziato la costruzione del sistema sportivo 
-che ha prodotto il dominio cinese a partire dai Giochi di Atene, raggiungendo il 
-proprio apice a Pechino 2008.
-Analogamente, per la Gran Bretagna (GBR) il modello rileva la svolta economica nel 
-1999 e quella atletica nel 2008, configurando un anticipo di nove anni compatibile 
-con i tempi di costruzione del programma UK Sport. Per l'Australia (AUS), il lead è 
-più lungo. 28 anni tra la svolta del PIL nel 1968 e quella del medagliere nel 1996, 
-ma coerente con la costruzione delle strutture che hanno preceduto Sydney 2000.
-Questi tre casi supportano quantitativamente quella che denominiamo Teoria dell'
-Effetto Incubazione: la spinta del PIL fornisce la copertura finanziaria per un 
-investimento sistemico nello sport d'élite, il cui rendimento si materializza nel 
-medagliere con un ritardo variabile, misurato in cicli olimpici, e che tende a 
-consolidarsi nelle edizioni successive all'evento casalingo.
+I risultati rivelano una convergenza temporale che, nei casi più emblematici,
+ridefinisce le dinamiche strutturali del vantaggio olimpico. Per la Cina, il
+modello identifica la svolta del PIL nel 1993 e la svolta del medagliere nel
+2004: un \textit{lead effect} di undici anni. Il PIL in forte espansione ha
+dunque preceduto e, con ogni probabilità, finanziato la costruzione del sistema
+sportivo che ha prodotto il dominio cinese a partire dai Giochi di Atene,
+raggiungendo il proprio apice a Pechino 2008. Analogamente, per la Gran Bretagna
+il modello rileva la svolta economica nel 1999 e quella atletica nel 2008,
+configurando un anticipo di nove anni compatibile con i tempi di costruzione del
+programma UK Sport. Per l'Australia, il lead è più lungo. 28 anni tra la svolta
+del PIL nel 1968 e quella del medagliere nel 1996, ma coerente con la
+costruzione delle strutture che hanno preceduto Sydney 2000.
+
+% questo lo sposterei dopo e unirei con la conclusione alla fine
+
+Questi tre casi
+supportano quantitativamente quella che denominiamo Teoria dell' Effetto
+Incubazione: la spinta del PIL fornisce la copertura finanziaria per un
+investimento sistemico nello sport, il cui rendimento si materializza nel
+medagliere con un ritardo variabile, che tende a consolidarsi nelle edizioni
+successive all'evento casalingo.
 
 \subsubsection{Limiti del Modello e Casi Anomali}
 
-Un'analisi rigorosa impone di affrontare esplicitamente i casi in cui il modello 
-produce risultati divergenti dalla teoria del lead-lag.
+% cosa è "teoria del lead-lag"? Il lag del lead effect, giusto? pure "lead
+% effect" non lo trovo. "flessione strutturale": dire solo flessione non basta?
+% La curva flette... strutturale messo in molti posti non lo capisco e rischia
+% di essere ambiguo o addirittura errato (a meno che tu non sia in grado di
+% spiegarlo). In ogni caso, la flessione è negativa? Se no non capisco questo
+% decoupling. A meno che tu non intenda che GDP cresce costante e medaglie non
+% costanti. E la flessione improvvisa o in un anno specifico? cosa è il
+% decoupling? Se è quello descritto nella frase dopo, meglio i due punti, per
+% far capire che è quello e che non sono invece due frasi sconnesse.
 
-Il caso italiano (ITA) è il più istruttivo: il modello individua una svolta simultanea 
-di PIL e medagliere nel 1968, sulla scia dei Giochi di Roma 1960, ma nelle decadi 
-successive si osserva un fenomeno di \textbackslash{}textbf\{decoupling\}. Il PIL 
-cresce in modo sostenuto fino ai primi anni 2000, mentre il rendimento olimpico subisce 
-una flessione strutturale. Questo dimostra che il PIL è condizione necessaria ma non 
-sufficiente: in assenza di una politica sportiva che canalizzi le risorse verso programmi 
-di alto rendimento, la crescita economica non si traduce automaticamente in successo olimpico.
+% comunque, mi sembra superfluo dire che un'analisi rigorosa richieda di
+% analizzare anche i risultati anomali: è la base del metodo scientifico.
 
-Il Brasile (BRA) presenta un'inversione temporale: la svolta del medagliere nel 1996 precede 
-quella del PIL nel 2007, suggerendo che in certi contesti sia l'ambizione olimpica a innescare 
-l'investimento, e non viceversa. Il Giappone (JPN), con un lag di 52 anni tra le due svolte, 
-costituisce invece un artefatto del modello: la stazionarietà pluridecennale del medagliere 
-e il picco isolato di Tokyo 2020 rendono il changepoint atletico statisticamente poco affidabile, 
-come confermato dalla distribuzione a posteriori piatta. Gli Stati Uniti (USA), infine, con 
-quattro edizioni ospitate e una dominanza ininterrotta, generano un livello di rumore tale da 
-rendere qualsiasi inferenza causale non interpretabile nel framework adottato.
+%Un'analisi rigorosa impone di affrontare esplicitamente i casi in cui il
+%modello produce risultati divergenti dalla teoria del lead-lag.
 
-\begin{figure}[htbp]
+Il caso italiano è il più istruttivo: il modello individua una svolta simultanea
+di PIL e medagliere nel 1968, sulla scia dei Giochi di Roma 1960, ma nelle
+decadi successive si osserva un fenomeno di
+\textbackslash{}textbf\{decoupling\}: il PIL cresce in modo sostenuto fino ai
+primi anni 2000, mentre il rendimento olimpico subisce una flessione
+strutturale. Questo dimostra che il PIL è condizione necessaria ma non
+sufficiente, in assenza di investimenti sportivi.
+
+Il Brasile presenta un'inversione temporale: la svolta del medagliere nel 1996
+precede quella del PIL nel 2007, suggerendo che in certi contesti sia
+l'ambizione olimpica a innescare l'investimento, e non viceversa. Il Giappone,
+con un lag di 52 anni tra le due svolte, costituisce invece un artefatto del
+modello: la stazionarietà pluridecennale del medagliere e il picco isolato di
+Tokyo 2020 rendono il changepoint atletico statisticamente poco affidabile, come
+confermato dalla distribuzione a posteriori piatta. Gli Stati Uniti, infine, non
+sono interpretabili, con il rumore generato da quattro edizioni ospitate e una
+dominanza ininterrotta.
+
+\begin{figure}[H]
     \centering
     \includegraphics[width=\linewidth]{../../docs/img/Bayesian_plot1.pdf}
-    \caption{Changepoint Detection per PIL e Medagliere in Nazioni Ospitanti(1)}
+    \caption{Changepoint Detection per PIL e Medagliere in Nazioni
+    Ospitanti(1).\\
+	La distribuzione di probabilità a posteriori normalizzata è visualizzata
+	come area ombreggiata. }
     \label{fig:bayesian_img1}
 \end{figure}
 
-\begin{figure}[htbp]
+\begin{figure}[H]
     \centering
     \includegraphics[width=\linewidth]{../../docs/img/Bayesian_plot2.pdf}
-    \caption{Changepoint Detection per PIL e Medagliere in Nazioni Ospitanti(2)}
+    \caption{Changepoint Detection per PIL e Medagliere in Nazioni
+    Ospitanti(2).\\
+	La distribuzione di probabilità a posteriori normalizzata è visualizzata
+	come area ombreggiata.}
     \label{fig:bayesian_img2}
 \end{figure}
 
-\subsubsection{Il PIL come Architetto, non come Catalizzatore}
 
-Nei paesi in forte espansione come Cina, Gran Bretagna, Australia, il PIL agisce da \textit{architetto} 
-del successo olimpico: la sua crescita strutturale abilita investimenti che si manifestano nel medagliere 
-con un anticipo di uno o due cicli olimpici, mentre l'assegnazione dei Giochi funge da catalizzatore di 
-un processo già in corso. Dove invece le risorse esistono ma la loro allocazione settoriale è inefficiente, 
-come nel caso italiano, il meccanismo si inceppa. Il successo olimpico è dunque il risultato di una maturazione 
-sistemica che si sviluppa su orizzonti decennali: il picco casalingo non è un'anomalia, ma la punta visibile 
-dell'iceberg dell'investimento sommerso.
+% È un riassunto che non aggiunge informazioni (risultati) a quanto già detto.
+% Ci si può fare un cenno nella conclusione (dove cercheremo di parlare di tutti
+% i metodi insieme, per risparmiare spazio).
+
+%\subsubsection{Il PIL come Architetto, non come Catalizzatore}
+%
+%Nei Paesi in forte espansione come Cina, Gran Bretagna, Australia, il PIL
+%agisce da \textit{architetto} del successo olimpico: la sua crescita
+%strutturale abilita investimenti che si manifestano nel medagliere con un
+%anticipo di uno o due cicli olimpici, mentre l'assegnazione dei Giochi funge da
+%catalizzatore di un processo già in corso. Dove invece le risorse esistono ma
+%la loro allocazione settoriale è inefficiente, come nel caso italiano, il
+%meccanismo si inceppa. Il successo olimpico è dunque il risultato di una
+%maturazione sistemica che si sviluppa su orizzonti decennali: il picco
+%casalingo non è un'anomalia, ma la punta visibile dell'iceberg
+%dell'investimento sommerso.

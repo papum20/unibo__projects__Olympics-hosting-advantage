@@ -22,3 +22,4 @@ src/paper/*.dvi
 src/paper/*.blg
 src/paper/*.bbl
 src/paper/*.aux
+live.main.tex

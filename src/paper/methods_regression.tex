@@ -29,11 +29,17 @@ ogni 4 anni, per avere dati più stabili, meno dipendenti da fattori casuali e
 più rappresentativi di ogni periodo. Gli errori robusti \textit{HC0} ovviano
 all'eteroschedasticità.\\
 \\
-Abbiamo anche condotto dei test di VIF per verificare la multicollinearità.
-Generalmente, solo \textit{HOST}, \textit{PRE}, \textit{POST} hanno valore <2.
-\textit{AM}, \textit{COMM}, \textit{YEAR} sono accettabili (<4) --- \textit{AM}
-e \textit{YEAR}, infatti, sono le maggiori cause di errori e collinearità.
-\textit{GDP} e \textit{POP} superano terribilmente 10, ma sono fondamentali per
-lo studio e comunque usati sovente insieme nella ricerca scientifica. Le
-variabili \textit{CLOSE} possono avere valori >5 a seconda della configurazione
---- con tante variabili di hosting, è facile avvicinarsi alla collinearità.
+
+% i numeri sono risusltati importanti che danno solidità e metodo scientifico.
+% "infatti, sono le maggiori cause di errori e collinearità" è il collegamento
+% logico tra risultati e ipotesi da scienziati. "avvicinarsi alla collinearità":
+% avvicinarsi è importante da dire.
+
+Nei test di VIF (per verificare la multicollinearità), generalmente solo
+\textit{HOST}, \textit{PRE}, \textit{POST} hanno valore <2. \textit{AM},
+\textit{COMM}, \textit{YEAR} sono accettabili (<4) --- \textit{AM} e
+\textit{YEAR}, infatti, sono le maggiori cause di errori e collinearità.
+\textit{GDP} e \textit{POP} superano abbondantemente 10, ma sono fondamentali
+per lo studio e comunque usati sovente insieme nella ricerca scientifica. Le
+variabili \textit{CLOSE} possono superare 5 a seconda della configurazione ---
+con tante variabili di hosting, è facile avvicinarsi alla collinearità.

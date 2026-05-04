@@ -95,15 +95,16 @@
 %piatta segnala ambiguità nei dati.
 
 
-Per maggiore validità statistica, sono stati applicati due modelli bayesiani
-statisticamente indipendenti, ciascuno dei quali identifica un changepoint (MAP
---- punto di massima probabilità a posteriori). Per le medaglie, variabile
-discreta non negativa, è stato adottato un framework \textit{Poisson-Gamma}; per
-il logaritmo del GDP, un framework Gaussiano con prior non informativo su media
-e varianza (schema Normal-Inverse-Gamma implicito). La distanza temporale tra i
-due MAP, $\Delta\tau = \tau_{\text{medals}} - \tau_{\text{GDP}}$, quantifica
-l'anticipo con cui la crescita del PIL precede il cambio di regime nel
-medagliere, ovvero il \textit{lead effect}.
+La \textit{Bayesian Changepoint Detection} è stata applicata per identificare
+changepoint (MAP --- punto di massima probabilità a posteriori) nelle serie
+(1924--2024) --- per maggiore validità statistica, due modelli statisticamente
+indipendenti. Per le medaglie, variabile discreta non negativa, è stato adottato
+un framework \textit{Poisson-Gamma}; per il logaritmo del GDP, uno Gaussiano con
+prior non informativo su media e varianza (schema Normal-Inverse-Gamma
+implicito). La distanza temporale tra i due MAP, $\Delta\tau =
+\tau_{\text{medals}} - \tau_{\text{GDP}}$, quantifica l'anticipo con cui la
+crescita del PIL precede il cambio di regime nel medagliere, ovvero il
+\textit{lead effect}.
 
 La ricerca del MAP è vincolata a una finestra di $\pm$20 anni dall'hosting, per
 ancorare l'inferenza ed evitare che il rumore statistico di periodi storici

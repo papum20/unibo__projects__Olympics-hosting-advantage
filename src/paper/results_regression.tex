@@ -22,7 +22,7 @@ raddoppiato le medaglie dal 2004 (10.45\% contro 6.80\%): l'effetto
 \textit{Host} ha quindi individuato qui il coefficiente più alto di tutti
 ($\sim$7.9). Ma, con \textit{MACRO}, esso scende a $\sim$5.2: l'incremento di
 medaglie sembra meno sorprendente tenendo conto dell'impennata della sua
-economia, confermata con Bayesian Changepoint (\textit{omitted variable bias}).
+economia, confermata con Bayesian Changepoint (\textit{omitted-variable bias}).
 Discorso simile per i suoi \textit{PRE2004} e \textit{POST2012}: nel primo caso,
 un minore incremento (da 6.27\% a 6.80\%) risulta in un coefficiente più basso,
 considerando \textit{MACRO}; nel secondo, nonostante il leggero decremento dal
@@ -193,14 +193,14 @@ Constant        & -9.016*** & -12.979***& -5.849*** & -17.792***    & -7.934***
 & (0.466***)       \\
                 & (-1.911***)& (2.406***)& (3.079***)& (2.083***)   & (0.700***)
                 & (0.6132***)      \\
-Inflate Const   & 18.51**   & -14.745***& -21.808***& ---           & ---
-& ---        \\
-                & (27.85***)& (-12.564***)& (-19.298***)& ---       & ---
-                & ---        \\
-Alpha           & ---       & 1.179***  & 0.218***  & ---           & ---
-& ---        \\
-                & ---       & (3.781***)& (0.652***)& ---           & ---
-                & ---        \\
+Inflate Const   & 18.51**   & -14.745***& -21.808***& ---           & --- & ---
+\\
+                & (27.85***)& (-12.564***)& (-19.298***)& ---       & --- & ---
+                \\
+Alpha           & ---       & 1.179***  & 0.218***  & ---           & --- & ---
+\\
+                & ---       & (3.781***)& (0.652***)& ---           & --- & ---
+                \\
 \bottomrule
 \multicolumn{6}{l}{\normalsize Coefficienti con (senza) GDP/POP/COMM.\@ YEAR
 usati ma omessi.\@ Significatività: * $p<0.1$, ** $p<0.05$, *** $p<0.01$.} \\
@@ -209,16 +209,15 @@ usati ma omessi.\@ Significatività: * $p<0.1$, ** $p<0.05$, *** $p<0.01$.} \\
 \end{table}
 
 
-\cref{tab:ols_timeframes} mostra OLS, con tutte le variabili, compreso
-\textit{CLOSE}, dal 1900 (con o senza \textit{MACRO}), confrontandolo con i
-periodi da 1932, 1964 e 1996, e con 1964 con lag di \textit{GDP} e \textit{POP}
-di 7 anni, che potrebbe essere più descrittivo: tenendo conto che una sede si
-decide 7 anni prima, un Paese non si candiderà prima di essere sicuro di avere
-investito abbastanza. Ciononostante, i risultati non mostrano differenze
-rilevanti (in coefficiente o significatività), neanche su altre configurazioni e
-con lag fino a 28 anni: probabilmente, la ricchezza relativa tra i Paesi non è
-cambiata molto nel tempo e rimane (solitamente) un buon predittore di
-medaglie.\\
+\cref{tab:ols_timeframes} mostra OLS, aggiungendo \textit{CLOSE}, dal 1900,
+confrontandolo con i periodi da 1932, 1964 e 1996, e con 1964 con lag di
+\textit{GDP} e \textit{POP} di 7 anni, che potrebbe essere più descrittivo:
+tenendo conto che una sede si decide 7 anni prima, un Paese non si candiderà
+prima di essere sicuro di avere investito abbastanza. Ciononostante, i risultati
+non mostrano differenze rilevanti (in coefficiente o significatività), neanche
+su altre configurazioni e con lag fino a 28 anni: probabilmente, la ricchezza
+relativa tra i Paesi non è cambiata molto nel tempo e rimane (solitamente) un
+buon predittore di medaglie.\\
 Pure il periodo non cambia particolarmente, eccezion fatta per \textit{GDP}, non
 significativo con 1900 e 1964: tutte le configurazioni sembrano sufficientemente
 espressive, viste anche le metriche di valutazione simili (visibilmente migliori
@@ -247,8 +246,8 @@ determinanti; addirittura \textit{WIDE} ha sempre un impatto negativo (o scarsa
 significatività). Al contrario, \textit{GMT1} è quasi sempre stato positivo,
 specialmente in passato; \textit{WEST} perlopiù positivo (3 casi su 5). Si noti
 che \textit{CLOSE\_WEST\_2024} è più alta negli altri periodi che per il 1900:
-ben 4 edizioni del gruppo si sono tenute prima del 1932 e le loro variabili
-devono aver avuto una certa influenza.\\
+le variabili delle ben 4 edizioni del gruppo tenutesi prima del 1932 devono aver
+avuto una certa influenza.\\
 In conclusione, come per \textit{HOST}, la vicinanza può aver influito in alcuni
 casi, maggiormente in passato. Gli scarsi risultati di \textit{MAIN} (con Spagna
 e Italia non confinanti) e \textit{WIDE} (allargato da Grecia a Inghilterra)
@@ -280,10 +279,10 @@ Constant           & 1.542*** & -4.624*  & -7.740*** & -5.737*** & -6.006*** &
 -8.151*** \\
 AM (History)  & 0.554*** & 0.506*** & 0.497*** & 0.498***  & 0.495***  &
 0.463***  \\
-ln\_GDP                & -        & 0.138    & 0.280*** & 0.106     & 0.124
-& 0.268***  \\
-ln\_Population         & -        & 0.503*** & 0.547*** & 0.531***  & 0.537***
-& 0.631***  \\
+ln\_GDP                & -        & 0.138    & 0.280*** & 0.106     & 0.124 &
+0.268***  \\
+ln\_Population         & -        & 0.503*** & 0.547*** & 0.531***  & 0.537*** &
+0.631***  \\
 Is\_Communist      & -        & 0.831*** & 1.145*** & 1.009***  & 1.031***  &
 0.696***  \\
 \midrule
@@ -386,7 +385,7 @@ Come in Csurilla\cite{csurillaLessObviousEffect2023}, \textit{MACRO} ha un
 enorme impatto su entrambi, mentre \textit{AM} produce effetti visibili ma non
 rivoluzionari (anche se le metriche migliorano molto). \textit{YEAR}, invece,
 influisce poco su entrambi.\\
-\textit{POP} è significativo, dato la distribuzione delle medaglie spostata
+\textit{POP} è significativo, data la distribuzione delle medaglie spostata
 tutta verso pochi Paesi grandi e ricchi: con una regressione su pochi (per
 esempio, top 12 dal 1900), il p-value aumenta. Inoltre, aggiunge informazione
 fondamentale a \textit{GPD}: la Svizzera, con alto \textit{GPDpc} e bassa

@@ -1,50 +1,20 @@
 \section{Metodologie e Dati}\label{sec:methods}
 
-% La nuova versione era più verbosa, rimuoveva informazioni importanti e
-% aggiungeva inessattezze o ambiguità (sono regressione lineare,
-% "inamovibile"...).
+%aggiungendo una sola parola ho spiegato la scelta dei metodi.
+%io non capivo quello che avevi scritto tu, spero che ora capiamo entrambi
 
-% Riguardo ad ANOVA, non ho capito il significato di quello che avevi scritto,
-% se hai voglia, puoi spiegarcelo. Però, intanto, basta dire citare
-% l'eteroschedacitià come assunzione non soddisfatta, salvando tanto spazio.
-
-Diversi metodi sono stati impiegati, per dimostrare risultati diversi e per
-averne maggiore riscontro.\\
+Diversi metodi sono stati impiegati per produrre evidenze complementari.\\
 I periodi analizzati terminano nel 2026 (anno di Giochi Invernali) e partono in
-uno tra 1996, 1964, 1932, 1900: la scelta di ognuno minimizza il rumore dovuto
-agli anni appena precedenti (per esempio, guardare il 1948 significherebbe usare
-PIL della seconda guerra mondiale). In particolare, il 1932 è distanziato dalla
-prima guerra mondiale, il 1964 dalla seconda, il 1996 dalla guerra fredda; il
-1900 rappresenta la seconda edizione (la prima va scartata per fini statistici).
-I quattro anni appartengono anche a periodi diversi per numero di partecipanti,
-rispettivamente 25, 41, 85, 164.\\
-
-%Diversi metodi sono stati impiegati, per dimostrare risultati diversi e per
-%avere maggiore riscontro.\\
-%Per la causalità si è usata la Regressione Lineare Multipla in luogo del test di Granger,
-%che non poteva essere applicato, in mancanza di stazionarietà delle serie di GDP 
-%e medaglie (misurata con ADF test), inamovibile anche applicando modifiche come 
-%logaritmo, differenza logaritmica, e percentuale (medaglie).
-%Questa scelta è stata preferita anche all'Analisi della Covarianza (ANCOVA) 
-%per una ragione sostanziale: in questo contesto PIL e popolazione non sono 
-%variabili rumorose, bensì i predittori causali di primario interesse. 
-%Come argomentato da Miller e Chapman (2001) in 
-%\textit{Misunderstanding Analysis of Covariance}, applicare 
-%l'ANCOVA su variabili interconnesse del mondo reale rischia di sottrarre 
-%artificialmente varianza significativa. 
-%La Regressione Multipla permette invece di quantificare il peso reale di ciascun 
-%predittore, incluso il \textit{fattore host} -- in modo coerente alle dinamiche 
-%geopolitiche .\\
-%Per comprendere se la ricchezza agisca davvero come meccanismo 
-%strutturale, è stata condotta un'analisi basata sulla 
-%\textit{Bayesian Changepoint Detection}, volta a individuare i punti di rottura 
-%nel PIL e nel medagliere delle sedici nazioni ospitanti nel periodo 1924--2024.\\
-%I periodi analizzati terminano nel 2026 (anno di Giochi Invernali) con anno di partenza scelto 
-%per minimizzare il rumore dei periodi storici eccezionali: il 1932 è distanziato 
-%dalla Prima Guerra Mondiale, il 1964 dalla Seconda, il 1996 dalla Guerra Fredda; 
-%il 1900 rappresenta la seconda edizione in assoluto. I quattro anni corrispondono 
-%anche a fasi distinte per numero di partecipanti (rispettivamente 25, 41, 85 
-%e 164 nazioni) offrendo prospettive analitiche complementari.\\
+uno tra 1996, 1964, 1932, 1900: scelti per distanziarsi dai principali conflitti 
+storici (la prima va scartata per fini statistici). E corrispondenti a fasi 
+distinte per numero di partecipanti (25, 41, 85, 164 nazioni).
+Si è usata la Regressione Lineare Multipla: il test di Granger
+richiede stazionarietà delle serie (ADF test), mentre
+l'ANCOVA sottrarrebbe varianza a predittori
+(PIL e popolazione) causali, non variabili di disturbo.
+Per verificare se il GDP agisca sistematicamente, è stata
+applicata la \textit{Bayesian Changepoint Detection} per le
+nazioni ospitanti nel periodo 1924-2024.
 
 
 \input{methods_data}

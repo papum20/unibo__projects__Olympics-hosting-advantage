@@ -6,7 +6,7 @@
 La regressione è stata usata per mostrare causalità. Granger non non poteva
 essere utilizzato, in mancanza di stazionarietà delle serie di GDP e medaglie
 (misurata con ADF test), pure applicando modifiche come logaritmo, differenza di
-logaritmi, percentuale (medaglie); ANOVA (e ANCOVA) per motivi che includono
+logaritmi, percentuale (di medaglie); ANOVA (e ANCOVA) per motivi che includono
 l'eteroschedacitià.\\
 
 Il nostro lavoro espande quello di Csurilla\cite{csurillaLessObviousEffect2023}
@@ -15,13 +15,12 @@ principale e ZINB come paragone, nonché ``ponte'' con il loro.\\
 Non avendo effettuato un'analisi a livello di sport, infatti, c'erano erorri di
 esecuzione della regressione, probabilmente dovuti a casi di collinearità
 (perfetta o quasi) tra variabili, a cui ZINB è molto sensibile. D'altronde,
-proprio per evitare collinearità perfetta, usando \textit{YEAR} escludiamo un
+proprio per evitare collinearità perfetta, usando \textit{YEAR} escludiamo l'ultimo
 anno: il suo effetto è già assorbito da \textit{CONST}.\\
 \\
 Consci dei requisiti di OLS, abbiamo applicato alcune accortezze. Innanzitutto,
-abbiamo considerato le medaglie (totali) vinte da un team in un anno come
-percentuale su quelle disponibili, evitando così di usare valori discreti, ma
-andando anche a rimuovere il problema della loro disponibilità variabile di anno
+prendendo le medaglie come percentuale su quelle disponibili in un anno, si evita di usare valori discreti,
+andando oltretutto a rimuovere il problema della loro disponibilità variabile di anno
 in anno (altrimenti catturato da \textit{YEAR}). In secondo luogo, lo abbiamo
 eseguito solo sui top 40 team per media di medaglie (presi prioritariamente
 tra gli host degli anni considerati, poi tra gli altri): compromesso per

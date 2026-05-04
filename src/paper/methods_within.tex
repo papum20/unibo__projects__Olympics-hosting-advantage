@@ -1,0 +1,94 @@
+\subsection{Analisi Within Country e Test dei Segni}\label{sec:methods_within}
+
+%Per analizzare l'home advantage è stato effettuato un confronto within-country:
+%la performance di ogni Paese che ha ospitato almeno una volta è stata
+%confrontata con la media delle performance dello stesso Paese quando non ha
+%ospitato. Obiettivo di tale analisi è verificare se esiste un vantaggio
+%sistematico quando un Paese ospita le Olimpiadi.
+
+%Calcolati i delta, ovvero le differenze fra la percentuale di medaglie vinte
+%quando un Paese è ospitante e la media delle percentuali di medaglie vinte
+%quando non lo è, è stato effettuato un Test dei Segni su tali delta. Il Test
+%dei Segni è un test statistico non parametrico utilizzato per determinare se
+%esiste una differenza sistematica tra coppie di osservazioni correlate. Tale
+%test è statisticamente meno potente rispetto ad alternative come il t Test o il
+%test di Wilcoxon. Tuttavia, questi due test richiedono che i dati provengano da
+%distribuzioni normali o simmetriche, requisiti che abbiamo verificato che i
+%nostri dati non rispettano.
+
+
+%Per analizzare l'home advantage è stato effettuato un confronto within-country:
+%la performance di ogni Paese che ha ospitato almeno una volta è stata
+%confrontata con la media delle performance dello stesso Paese quando non ha
+%ospitato.
+
+
+% dettagli implementativi, non necessari
+
+%Dal dataset originale sono quindi state estratte le righe relative a tutti i
+%Paesi che hanno ospitato almeno una volta le Olimpiadi.
+
+% unito sopra
+
+%Fatto ciò, è stata calcolata la media delle percentuali di medaglie vinte da
+%ogni Paese nelle edizioni in cui i paesi erano ospitanti e la media delle
+%percentuali di medaglie vinte quando invece non lo erano. Sono stati poi
+%calcolati i delta, ovvero le differenze fra queste due misure.
+
+
+Sono state applicate due tecniche per constatare l'home advantage, confrontando,
+per ogni Paese, la media delle medaglie (in percentuale) vinte in casa e
+fuori.\\
+Un'alisi within-country ha calcolato le differenze.\\
+
+
+
+% IMPORTANTE: a cosa è stato applicato il sign test? Io ho scritto quello, ma
+% non lo so io!
+
+% non dobbiamo spiegare come funzionino i metodi, solo enunciarli e mostrarne i
+% risultati e la validità.
+
+
+%Il Test dei Segni è un test statistico non parametrico utilizzato per
+%determinare se esiste una differenza sistematica tra coppie di osservazioni
+%correlate. Viene spesso impiegato come alternativa al test t di Student o al
+%test di Wilcoxon quando non è possibile garantire le assunzioni sulla
+%distribuzione dei dati.
+%
+%In particolare, il test t di Student richiede che la distribuzione dei dati sia
+%normale, mentre il test di Wilcoxon richiede che le differenze che si vogliono
+%analizzare siano distribuite in maniera simmetrica.
+%
+%il Test dei Segni si basa esclusivamente sulla direzione della differenza tra
+%le coppie. Per ogni coppia di dati (x, y), il test assegna:
+%
+%\begin{itemize} \item Un segno più se x $>$ y; \item Un segno meno se x $<$ y;
+%    \item I casi di parità (differenza pari a zero) vengono solitamente esclusi
+%    dall'analisi. \end{itemize}
+%
+%Sotto l'ipotesi nulla H0, ci si aspetta che il numero di segni positivi e
+%negativi sia approssimativamente uguale, seguendo una distribuzione binomiale
+%con probabilità p-value pari a 0.5.
+%
+%Sebbene sia molto flessibile, il Test dei Segni ha una minore potenza
+%statistica rispetto al test di Wilcoxon, poiché ignora l'entità numerica delle
+%differenze. Tuttavia, in presenza di distribuzioni fortemente non simmetriche,
+%la sua affidabilità lo rende preferibile per evitare errori di tipo I (falsi
+%positivi).
+%
+%Nel nostro caso, non conoscendo la distribuzione dei dati e avendo verificato
+%una forte asimmetria, non è stato possibile usare il test t di Student o il
+%test di Wilcoxon. Le differenze analizzate dal test dei segni sono i delta
+%calcolati nel Within-Country Comparison.
+
+
+% come è stata verificata l'asimmetria? Se non a occhio ma con un metodo, è
+% IMPORTANTE dirlo!
+
+Il Test dei Segni, poi, prendendo in input queste ultime, ritorna un segno
+(positivo o negativo).\\
+Le (più espressive) alternative Student's T-test e Wilcoxon (che esprimono anche
+il valore della differenza) non potevano essere applicate, richiedendo,
+rispettivamente, una distribuzione normale dei dati e una simmetrica delle
+differenze.

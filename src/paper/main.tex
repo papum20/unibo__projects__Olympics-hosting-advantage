@@ -1,27 +1,19 @@
 \documentclass[12pt,journal,onecolumn]{IEEEtran}
-%\documentclass[conference]{IEEEtran}
-%\documentclass[12pt,a4paper]{article}
+%\documentclass[conference]{IEEEtran} \documentclass[12pt,a4paper]{article}
 %
 \usepackage[T1]{fontenc}
 \usepackage{graphicx}
 \addtolength{\topmargin}{0.02in}
 \addtolength{\textheight}{-0.02in}
 \setlength{\marginparwidth}{2cm}
-\usepackage[
-    disable,     % hide all todos
-    % obeyDraft,   % show todos only in draft mode
-    % obeyFinal,   % hide todos if in final mode
-    % textsize=footnotesize,
-    textwidth=.9\marginparwidth,
-    colorinlistoftodos,
-    prependcaption,
-    linecolor=green,backgroundcolor=green!25,bordercolor=green
-]{todonotes}
+\usepackage[ disable,     % hide all todos
+    % obeyDraft,   % show todos only in draft mode obeyFinal,   % hide todos if
+    % in final mode textsize=footnotesize,
+    textwidth=.9\marginparwidth, colorinlistoftodos, prependcaption,
+    linecolor=green,backgroundcolor=green!25,bordercolor=green ]{todonotes}
 \usepackage{amsfonts}
 \usepackage{mathtools}
-\usepackage[bookmarks=false,
-    hidelinks,
-    linktocpage=false,
+\usepackage[bookmarks=false, hidelinks, linktocpage=false,
     breaklinks=false,draft]{hyperref}
 \usepackage{makecell}
 \usepackage{xcolor}
@@ -38,14 +30,14 @@
 
 
 \makeatletter
-\if@todonotes@disabled
-\else % todonotes is enabled, increase paper size to get bigger margins
+\if@todonotes@disabled \else
+% todonotes is enabled, increase paper size to get bigger margins
 \paperwidth=\dimexpr \paperwidth + 6cm\relax
 \oddsidemargin=\dimexpr\oddsidemargin + 3cm\relax
-\evensidemargin=\dimexpr\evensidemargin + 3cm\relax
-\marginparwidth=\dimexpr \marginparwidth + 3cm\relax
-\let\oldtitle\title
-\renewcommand{\title}[1]{\oldtitle{#1\(_{\colorbox{red!20}{\tiny disable todos}}\)}}
+\evensidemargin=\dimexpr\evensidemargin + 3cm\relax \marginparwidth=\dimexpr
+\marginparwidth + 3cm\relax \let\oldtitle\title
+\renewcommand{\title}[1]{\oldtitle{#1\(_{\colorbox{red!20}{\tiny disable
+todos}}\)}}
 \fi
 \makeatother
 
@@ -54,25 +46,28 @@
 
 \begin{document}
 %
-\title{Persistenza dell'effetto Host nelle Olimpiadi controllando (alcune) variabili macroeconomiche\\
-[0.5ex] \large Progetto di Human Data Science, Università di Bologna, 2025--2026}
+\title{Persistenza dell'effetto Host nelle Olimpiadi controllando (alcune)
+variabili macroeconomiche\\
+[0.5ex] \large Progetto di Human Data Science, Università di Bologna,
+2025--2026}
 
 % IEEE format doesn't use running titles
 
 \author{
   \small
   \begin{tabular}{c c c}
-    \begin{minipage}[t]{0.3\textwidth}\centering
-      \IEEEauthorblockN{Daniele D'Ugo}\\
+    \begin{minipage}[t]{0.3\textwidth}\centering \IEEEauthorblockN{Daniele
+      D'Ugo}\\
       \IEEEauthorblockA{daniele.dugo@studio.unibo.it \\ Mat.: 0001186581}
     \end{minipage} & 
-    \begin{minipage}[t]{0.3\textwidth}\centering
-      \IEEEauthorblockN{Simona Paparesta}\\
+    \begin{minipage}[t]{0.3\textwidth}\centering \IEEEauthorblockN{Simona
+      Paparesta}\\
       \IEEEauthorblockA{simona.paparesta@studio.unibo.it \\ Mat.: 0001019811}
     \end{minipage} & 
-    \begin{minipage}[t]{0.3\textwidth}\centering
-      \IEEEauthorblockN{Tommaso Compagnucci}\\
-      \IEEEauthorblockA{tommaso.compagnucci2@studio.unibo.it \\ Mat.: 0001176284}
+    \begin{minipage}[t]{0.3\textwidth}\centering \IEEEauthorblockN{Tommaso
+      Compagnucci}\\
+      \IEEEauthorblockA{tommaso.compagnucci2@studio.unibo.it \\ Mat.:
+      0001176284}
     \end{minipage}
   \end{tabular}
 }
@@ -81,9 +76,28 @@
 
 \maketitle              % typeset the header of the contribution
 %
+%TC:ignore
 \begin{abstract}
-
+Giornali e opinioni comuni associano spesso ospitare le Olimpiadi a un vantaggio
+competitivo (\textit{home advantage}): è ragionevole pensare che gli atleti
+performino meglio nell'ambiente a loro più noto e senza doversi preoccupare di
+ostacoli geografici come viaggi e barriere culturali. Tuttavia, gli strumenti
+impiegati da molti studi a loro supporto mostrano solo una correlazione tra i
+due fenomeni, non una causalità. Il nostro lavoro ha applicato dunque una
+varietà di tecniche per constatare sia correlazione che causalità con l'hosting
+(con effetti pre e post), così come con altre variabili storiche (blocco
+comunista, media di medaglie, dummy per anno) o macroeconomiche (PIL,
+popolazione), per valutare quanto ognuna influisca sui risultati. Difatti,
+mentre un'analisi within country e un Test dei Segni confermano spesso
+l'importanza di un (\textit{home advantage}), la Bayesian Changepoint Detection
+individua una crescita economica, in alcuni Paesi, che ne predice una sportiva,
+suggerendo la presenza di fattori; infine, modelli di regressione di tipo ZINB e
+OLS attribuiscono rilevanza a quasi ogni parametro considerato, togliendone
+invece alla variabile di \textit{Host} (di solito senza però azzerarla).
+Opportune accortezze sono state prese in considerazione per applicare ogni
+metodo.
 \end{abstract}
+%TC:endignore
 
 % IEEE uses different keywords format
 \begin{IEEEkeywords}

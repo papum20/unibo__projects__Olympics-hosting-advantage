@@ -44,7 +44,13 @@ DF_COL_IS_HOST_CLOSE_MAIN	= 'Is_Host_Close_Main'
 DF_COL_IS_HOST_CLOSE_WEST	= 'Is_Host_Close_West'
 DF_COL_IS_HOST_CLOSE_WIDE	= 'Is_Host_Close_Wide'
 DF_COL_MEDALS				= 'Medals'
+DF_COL_MEDALS_AVAILABLE		= 'Medals_Available'
+DF_COL_MEDALS_HOME			= 'Med_Home'
+DF_COL_MEDALS_AWAY			= 'Med_Away'
+DF_COL_MEDALS_HOME_DIFF		= 'Med_HomeDiff'
+DF_COL_NOC					= 'NOC'
 DF_COL_POPULATION			= 'Population'
+DF_COL_YEAR					= 'Year'
 
 def DF_COL_YEAR_DUMMY(year: int) -> str:
 	return f'YEAR{year}'
@@ -536,6 +542,26 @@ def _get_all_countries_list(
 	return countries
 
 
+def _get_total_medals_by_year(
+	year_start	: int	= MEDALS_FULL_YEAR_FIRST,
+	year_end	: int	= MEDALS_FULL_YEAR_LAST,
+	medals_season: str	= 'S',
+) -> pd.Series:
+	"""Get a Series with total medals awarded each year in the specified season."""
+	df = pd.read_csv(DS_MEDALS_FULL_PATH, usecols=['Year', 'Season', 'Total_Medals'])
+	df = df[(df['Year'] >= year_start) & (df['Year'] <= year_end)]
+
+	if medals_season == 'S':
+		df = df[df['Season'] == 'Summer']
+	elif medals_season == 'W':
+		df = df[df['Season'] == 'Winter']
+	elif medals_season == 'B':
+		df = df[df['Season'].isin(['Summer', 'Winter'])]
+
+	total_medals_by_year = df.groupby('Year')['Total_Medals'].sum()
+	return total_medals_by_year
+
+
 def get_top_countries_by_medals(
 	n				: int	= 40,
 	year_start		: int	= MEDALS_FULL_YEAR_FIRST,
@@ -677,6 +703,81 @@ def load_medals(
 	medals_df = medals_df[(medals_df.index >= year_start) & (medals_df.index <= year_end)]
 	return medals_df
 
+
+
+class DsMedalsAggrType(Enum):
+	AVG = "avg"
+	SUM = "sum"
+
+def load_medals_homeDiff(
+	countries_list			: list[str]|None	= None,
+	year_start				: int				= MEDALS_FULL_YEAR_FIRST,
+	year_end				: int				= MEDALS_FULL_YEAR_LAST,
+	medals_season			: str				= 'S',
+	remove_boycott			: bool				= False,
+	medals_data_type		: DsMedalsDataType	= DsMedalsDataType.DEFAULT,
+	medals_aggr_type		: DsMedalsAggrType	= DsMedalsAggrType.AVG,
+	medals_dataset_path		: str				= DS_MEDALS_FULL_PATH,
+	is_verbose				: bool				= True
+) -> tuple[pd.DataFrame, str]:
+	"""Calculate the difference in medals won when hosting vs not hosting.
+	@param countries_list: Optional list of country codes to include. If None, includes all countries.
+	@param medals_season: Season of medals to include (S for Summer, W for Winter, B for Both).
+	@param remove_boycott: Whether to exclude years with boycotts from the calculation.
+	@param medals_data_type: Type of transformation to apply to the medals series (DEFAULT, LN_DIFF, PERCENTAGE)
+	@param medals_aggr_type: Whether to calculate the average (AVG) or total (SUM) medals for home and away.
+	@param medals_dataset_path: Path to the medals dataset CSV file
+	@param is_verbose: Whether to print the number of unique countries found in the dataset
+	@return: DataFrame with columns for Home Medal Count, Away Medal Count, and the Difference.
+	"""
+
+	if countries_list is None:
+		countries_list = _get_all_countries_list(year_start, year_end)
+		if is_verbose:
+			print(f"Found {len(countries_list)} unique countries in the medals dataset for season '{medals_season}'.")
+
+	total_medals_df = _get_total_medals_by_year(year_start, year_end, medals_season)
+
+	results = []
+	
+	for country in countries_list:
+		medals_df = load_medals(
+			country=country,
+			year_start=year_start,
+			year_end=year_end,
+			medals_season=medals_season,
+			dataset_path=medals_dataset_path,
+			data_type=medals_data_type
+		)
+		
+		if remove_boycott:
+			medals_df = medals_df[~medals_df.index.isin([YEAR_BOYCOTT_URS, YEAR_BOYCOTT_USA])]
+
+		# Get total medals available only for years this country participated
+		available_medals_series = total_medals_df.loc[medals_df.index]
+
+		if medals_aggr_type == DsMedalsAggrType.AVG:
+			home_medals		= medals_df[medals_df[DF_COL_IS_HOST] == True]['Total_Medals'].mean()
+			away_medals		= medals_df[medals_df[DF_COL_IS_HOST] == False]['Total_Medals'].mean()
+			total_medals	= available_medals_series.mean()
+		elif medals_aggr_type == DsMedalsAggrType.SUM:
+			home_medals		= medals_df[medals_df[DF_COL_IS_HOST] == True]['Total_Medals'].sum()
+			away_medals		= medals_df[medals_df[DF_COL_IS_HOST] == False]['Total_Medals'].sum()
+			total_medals	= available_medals_series.sum()
+		else:
+			raise ValueError(f"Unsupported medals_aggr_type: {medals_aggr_type}")
+
+		diff		= home_medals - away_medals
+
+		results.append({
+			DF_COL_NOC:					country,
+			DF_COL_MEDALS_HOME:			home_medals,
+			DF_COL_MEDALS_AWAY:			away_medals,
+			DF_COL_MEDALS_HOME_DIFF:	diff,
+			DF_COL_MEDALS_AVAILABLE:	total_medals,
+		})
+
+	return pd.DataFrame(results), '+'.join(countries_list)
 
 
 def load_medals_series(
@@ -914,6 +1015,16 @@ def _get_hosting_schedule(
 	hosts = hosts.set_index('Year')
 	
 	return hosts
+
+
+def get_hosts_unique_list(
+	medals_season		: str,
+	year_start			: int	= MEDALS_FULL_YEAR_FIRST,
+	year_end			: int	= MEDALS_FULL_YEAR_LAST,
+) -> list[str]:
+	"""Get the list of unique host countries in the given season and year range."""
+	hosts_df = _get_hosting_schedule(medals_season, year_start, year_end)
+	return hosts_df['NOC'].unique().tolist()
 
 
 def merge_series(

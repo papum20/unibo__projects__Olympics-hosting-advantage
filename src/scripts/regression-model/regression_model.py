@@ -37,6 +37,7 @@ from util.load_ds import (
 	DF_COL_IS_HOST_CLOSE_MAIN,
 	DF_COL_IS_HOST_CLOSE_WEST,
 	DF_COL_IS_HOST_CLOSE_WIDE,
+	DF_COL_YEAR,
 	DF_COL_MEDALS,
 	DF_COL_POPULATION,
 	is_dfCol_yearDummy,
@@ -51,7 +52,7 @@ from util.load_ds import (
 )
 from util.plot_gdp import plot_gdp
 from util.plot_medals import plot_medals
-from util.common import Logger, print_ds
+from util.common import Logger, LoggerType, print_ds
 
 
 
@@ -289,26 +290,29 @@ def plot_merged_series(medals_series, gdp_series, country_code, country_name, ou
 	if save:
 			save_plot(fig, country_code, out_file_tag=out_file_tag)
 
-def plot_merged_series2(medals_series, gdp_series, country_code, country_name, normalize_gdp=True, out_file_tag=None, save=False):
+def plot_merged_series2(medals_series, gdp_series, year_series, country_code, country_name, normalize_gdp=True, out_file_tag=None, save=False):
 	"""Plot both medals and GDP series side by side.
 	@param medals_series: pandas Series with medals data indexed by year
 	@param gdp_series: pandas Series with GDP data indexed by year
+	@param year_series: pandas Series with year data
 	@param country_code: Country code (NOC)
 	@param country_name: Country name for title
 	@param save: Boolean flag to save the plot to file (default False)
 	"""
 	fig, ax = plt.subplots(figsize=(14, 6))
 	
+	x_vals = year_series
+	
 	# Normalize medals by dividing by 100 (since it's a percentage)
 	medals_normalized = medals_series / 100.0
 	
 	# Plot both series
-	ax.plot(medals_normalized, linewidth=2, marker='o', color='#1f77b4', label='Medals (% / 100)')
+	ax.plot(x_vals, medals_normalized, linewidth=2, marker='o', color='#1f77b4', label='Medals (% / 100)')
 	if normalize_gdp:
-		gdp_normalized = gdp_series / gdp_series.max()
-		ax.plot(gdp_normalized, linewidth=2, marker='s', color='#ff7f0e', label='GDP Growth (normalized)')
+		gdp_normalized = gdp_series / 60748.77541208376
+		ax.plot(x_vals, gdp_normalized, linewidth=2, marker='s', color='#ff7f0e', label='GDP Growth (normalized)')
 	else:
-		ax.plot(gdp_series, linewidth=2, marker='s', color='#ff7f0e', label='GDP Growth (log-diff)')
+		ax.plot(x_vals, gdp_series, linewidth=2, marker='s', color='#ff7f0e', label='GDP Growth (log-diff)')
 	
 	# Plot medals
 	ax.set_xlabel('Year', fontsize=12)
@@ -319,8 +323,8 @@ def plot_merged_series2(medals_series, gdp_series, country_code, country_name, n
 	ax.set_axisbelow(True)
 	
 	# Generate x-axis ticks every 10 years
-	min_year = min(int(medals_normalized.index.min()), int(gdp_series.index.min()))
-	max_year = max(int(medals_normalized.index.max()), int(gdp_series.index.max()))
+	min_year = int(x_vals.min())
+	max_year = int(x_vals.max())
 	x_ticks = list(range(min_year, max_year + 1, 10))
 	ax.set_xticks(x_ticks)
 	ax.set_xticklabels([str(year) for year in x_ticks], rotation=45)
@@ -560,6 +564,7 @@ if __name__ == "__main__":
 
 		if log_output:
 			sys.stdout = Logger(
+				logger_type=LoggerType.REGRESSION,
 				noc=noc_top if noc_top != 0 else noc_list,
 				year_start=year_start,
 				year_end=year_end,
@@ -607,12 +612,12 @@ if __name__ == "__main__":
 
 			# Plot
 			plot_gdp(gdp_series, noc, country_name, actual_year_start, actual_year_end, y_min=None,
-				out_file_tag='log_diff', save=save_plot_flag)
+				out_file_tag='log_diff' if gdp_type == DsGdpDataType.LN_DIFF else None, save=save_plot_flag)
 
 			plot_medals(medals_series, noc, actual_year_start, actual_year_end, medals_season=medals_season,
-				out_file_tag='perc', save=save_plot_flag)
+				out_file_tag='', save=save_plot_flag, med_perc=(medals_data_type == DsMedalsDataType.PERCENTAGE))
 			
-			plot_merged_series2(merged_df[DF_COL_MEDALS], merged_df[DF_COL_GDP], noc, country_name,
+			plot_merged_series2(merged_df[DF_COL_MEDALS], merged_df[DF_COL_GDP], merged_df.index, noc, "",
 					out_file_tag=f'{actual_year_start}-{actual_year_end}', save=save_plot_flag)
 
 
@@ -661,8 +666,8 @@ if __name__ == "__main__":
 				is_verbose				= verbose
 			)
 
-			actual_year_start	= max(merged_df.index.min(), year_start)
-			actual_year_end		= min(merged_df.index.max(), year_end)
+			actual_year_start	= max(merged_df[DF_COL_YEAR].min(), year_start)
+			actual_year_end		= min(merged_df[DF_COL_YEAR].max(), year_end)
 			print(f"Using data from {actual_year_start} to {actual_year_end} (requested: {year_start}-{year_end})")
 
 			print_ds(merged_df,		f"{country_name} stacked data",			verbose, n=20)
@@ -694,9 +699,9 @@ if __name__ == "__main__":
 					out_file_tag=f'log_diff_{tag_boycott}_{tag_ctrl_vars}_{tag_gdp_mean}_shift{shift}', save=save_plot_flag)
 
 				plot_medals(medals_series, noc, actual_year_start, actual_year_end, medals_season=medals_season,
-					out_file_tag=f'perc_{tag_boycott}_{tag_ctrl_vars}_{tag_gdp_mean}', save=save_plot_flag)
+					out_file_tag=f'perc_{tag_boycott}_{tag_ctrl_vars}_{tag_gdp_mean}', save=save_plot_flag, med_perc=(medals_data_type == DsMedalsDataType.PERCENTAGE))
 				
-				plot_merged_series2(merged_df[DF_COL_MEDALS], merged_df[DF_COL_GDP], noc, country_name,
+				plot_merged_series2(merged_df[DF_COL_MEDALS], merged_df[DF_COL_GDP], merged_df[DF_COL_YEAR], noc, country_name,
 						out_file_tag=f'{actual_year_start}-{actual_year_end}_shift{shift}_{tag_boycott}_{tag_ctrl_vars}_{tag_gdp_mean}', save=save_plot_flag)
 
 

@@ -54,6 +54,7 @@ def plot_medals(
 	medals_season					= 'S',
 	y_min			: float|None	= 0,
 	out_file_tag					= None,
+	med_perc			: bool			= False,
 	save							= False
 ):
 	"""Plot the medals series and optionally save to file.
@@ -69,20 +70,25 @@ def plot_medals(
 	fig, ax = plt.subplots(figsize=(12, 6))
 	ax.plot(medals_series, linewidth=2, marker='o')
 	ax.set_xlabel('Year', fontsize=12)
-	ax.set_ylabel('Total Medals', fontsize=12)
-	ax.set_title(f'{noc} Total Medals by Year', fontsize=14)
+	if med_perc:
+		ax.set_ylabel('Medals (%)', fontsize=12)
+	else:
+		ax.set_ylabel('Total Medals', fontsize=12)
+	ax.set_title(f'{noc} Medals by Year', fontsize=14)
 	
 	# Generate x-axis ticks based on medal type
-	if medals_season == 'S':
-		# Summer Olympics: every 4 years starting from 1896
-		x_ticks = list(range(1896, 2028, 4))
-	elif medals_season == 'W':
-		# Winter Olympics: 1896-1992 every 4 years, then 1994 onwards every 4 years
-		x_ticks = list(range(1896, 1996, 4)) + list(range(1994, 2028, 4))
-		x_ticks = sorted(set(x_ticks))  # Remove duplicates and sort
-	else:  # medals_type == 'B'
-		# Both: every 4 years starting from 1896
-		x_ticks = list(range(1896, 2028, 4))
+	#if medals_season == 'S':
+	#	# Summer Olympics: every 4 years starting from 1896
+	#	x_ticks = list(range(1896, 2028, 4))
+	#elif medals_season == 'W':
+	#	# Winter Olympics: 1896-1992 every 4 years, then 1994 onwards every 4 years
+	#	x_ticks = list(range(1896, 1996, 4)) + list(range(1994, 2028, 4))
+	#	x_ticks = sorted(set(x_ticks))  # Remove duplicates and sort
+	#else:  # medals_type == 'B'
+	#	# Both: every 4 years starting from 1896
+	#	x_ticks = list(range(1896, 2028, 4))
+
+	x_ticks = list(range(year_start, year_end, 4))
 	
 	ax.set_xticks(x_ticks)
 	ax.set_xticklabels([str(year) for year in x_ticks], rotation=45)
@@ -99,6 +105,8 @@ def plot_medals(
 	
 	# Save the plot if requested
 	if save:
+		if med_perc:
+			out_file_tag = f'perc_{out_file_tag}' if out_file_tag else 'perc'
 		save_plot(fig, noc, medals_season=medals_season, out_file_tag=out_file_tag, year_start=year_start, year_end=year_end)
 
 	plt.close(fig)

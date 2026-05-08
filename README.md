@@ -36,6 +36,18 @@ paper:
 ./src/scripts/bash-util/paper-count-words.sh
 ```
 
+chi-squared:
+```bash
+# help
+python src/scripts/chi_squared/chi_squared.py --help
+
+# one country
+python src/scripts/chi_squared/chi_squared.py -s S -n GBR --start-year 1924 --end-year 2024 -v --show
+
+# all hosts country
+python src/scripts/chi_squared/chi_squared.py -s S --noc-hosts --start-year 1924 --end-year 2024 -v --show
+```
+
 regression models - usage:
 ```bash
 python src/scripts/regression-model/regression_model.py --help

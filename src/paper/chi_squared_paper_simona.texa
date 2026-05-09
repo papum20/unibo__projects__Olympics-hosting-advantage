@@ -1,0 +1,138 @@
+\documentclass{article}
+\usepackage{graphicx} %for images
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage[utf8]{inputenc}
+\usepackage{float}
+
+\title{Test del chi quadro}
+\date{May 2026}
+
+\begin{document}
+
+\maketitle
+
+\section{Introduzione}
+Questo studio esamina se l'ospitare i Giochi Olimpici influisce significativamente 
+sul numero di medaglie vinte dai paesi ospitanti. Abbiamo analizzato i 16 paesi 
+che hanno ospitato almeno una volta tra il 1924 e il 2024, per un totale di 384 
+partecipazioni olimpiche. 
+\subsection{Ipotesi iniziale}
+H0 (Ipotesi Nulla): Ospitare le olimpiadi non influisce sul numero di medaglie 
+vinte da un paese.\\
+H1 (Ipotesi Alternativa): Ospitare le olimpiadi influisce significativamente sul
+numero di medaglie vinte.
+
+\section{Metodologie}
+\subsection{I dati}
+I dati sono stati estratti da un dataset storico completo delle Olimpiadi moderne
+presente su Kaggle, integrato dal 2017 in poi dai dati presenti su Wikipedia
+(1924-2024), contenente informazioni su:
+Paese partecipante (NOC - National Olympic Committee)
+Anno dell'evento olimpico
+Status di ospitalità binario
+Numero totale di medaglie vinte (oro, argento, bronzo sommate)
+
+\subsection{Il metodo}
+Il test chi-quadrato è stato applicato a tutti i paesi con frequenze attese $\ge$ 
+5. Per i paesi che non soddisfacevano questa assunzione (Grecia e Messico), i 
+risultati sono riportati con un avviso di cautela (*), in quanto non 
+statisticamente affidabili secondo gli standard di Cochran (1954).\\
+Il test chi-quadrato di Pearson è stato utilizzato per testare l'indipendenza 
+tra due variabili categoriche: ospitalità (sì/no) e performance medagliistica 
+(alto/basso).
+
+Formula:\\
+$O_i$ = frequenza osservata\\
+$E_i$ = frequenza attesa sotto ipotesi nulla
+$$\chi^2= \sum_{i=1}^{2} \frac{(O_i - E_i)^2}{E_i}$$
+
+Frequenze attese:
+$$E_{ospita}=\text{Medaglie Totali} \times \frac{n_{ospita}}{n_{totale}}$$\\
+$$E_{\text {non\_ospita}}=\text{Medaglie Totali} \times \frac{n_{non\_ospita}}
+{n_{totale}}$$
+
+\section{Risultati}
+Quattordici paesi su sedici hanno mostrato un effetto ospitalità statisticamente 
+significativo (p < 0.05). Tuttavia, due paesi (Grecia e Messico) non soddisfacevano 
+le assunzioni del test chi-quadrato a causa di partecipazioni limitate e basso 
+numero di medaglie totali (frequenze attese = 3.12 < 5). Questi risultati sono 
+stati esclusi dall'analisi principale per non compromettere la validità statistica 
+delle conclusioni.
+
+\newcolumntype{C}{>{\centering\arraybackslash}X}
+
+\begin{table}[H]
+\centering
+\caption{Analisi e risultati per ogni nazione}
+\label{tab:medaglie_chi2}
+\small 
+\setlength{\tabcolsep}{2pt} 
+\begin{tabularx}{\textwidth}{@{} l *{9}{C} @{}}
+\toprule
+\textbf{Paese} & \textbf{Nr. host} & \textbf{Nr. non host} & \textbf{tot medaglie} 
+& \textbf{Med host} & \textbf{Med attese host} & \textbf{Med non host} & 
+\textbf{Med attese non host} & \textbf{P Value} & \textbf{Risultati} \\
+\midrule
+AUS & 2 & 22 & 586  & 93  & 48.83  & 493  & 537.17 & 0.0000 & True  \\
+BRA & 1 & 22 & 166  & 19  & 7.22   & 147  & 158.78 & 0.0000 & True  \\
+CHN & 1 & 13 & 722  & 100 & 51.57  & 622  & 670.43 & 0.0000 & True  \\
+ESP & 1 & 22 & 180  & 22  & 7.83   & 158  & 172.17 & 0.0000 & True  \\
+GBR & 2 & 22 & 716  & 92  & 59.67  & 624  & 656.33 & 0.0000 & True  \\
+FRA & 2 & 22 & 635  & 104 & 52.92  & 531  & 582.08 & 0.0000 & True  \\
+GRE & 1 & 23 & 75   & 16  & 3.12*  & 59   & 71.88  & 0.0000 & True  \\
+GER & 1 & 15 & 755  & 101 & 47.19  & 654  & 707.81 & 0.0000 & True  \\
+USA & 3 & 20 & 2253 & 384 & 293.87 & 1869 & 1959.13& 0.0000 & True  \\
+KOR & 1 & 18 & 315  & 33  & 16.58  & 282  & 298.42 & 0.0000 & True  \\
+JPN & 2 & 20 & 538  & 87  & 48.91  & 451  & 489.09 & 0.0000 & True  \\
+FIN & 1 & 22 & 243  & 22  & 10.57  & 221  & 232.43 & 0.0003 & True  \\
+MEX & 1 & 23 & 75   & 9   & 3.12*  & 66   & 71.88  & 0.0007 & True  \\
+NED & 1 & 23 & 341  & 23  & 14.21  & 318  & 326.79 & 0.0172 & True  \\
+ITA & 1 & 23 & 630  & 36  & 26.25  & 594  & 603.75 & 0.0519 & False \\
+CAN & 1 & 22 & 313  & 11  & 13.61  & 302  & 299.39 & 0.4696 & False \\
+\bottomrule
+\end{tabularx}
+\vspace{2pt} 
+\raggedright 
+\scriptsize 
+\textit{* = Questi risultati non soddisfano le assunzioni del test del $\chi^2$}
+\end{table}
+
+\subsection{Risultati significativi}
+Risultati significativi con un p value di 0.00 sono AUS, BRA, CHN, ESP, GBR, FRA, 
+GER, USA, KOR, JPN, FIN, per un totale di 11 stati. Per il NED, invece ha comunque
+un valore molto basso di 0.0172.\\
+Le frequenze attese di Grecia e Messico, per quanto diano un P value molto basso, 
+come abbiamo detto non sono considerabili valide perchè non rispettano le assunzioni 
+del test del $\chi$ quadro.
+
+\subsection{Risultati non significativi}
+
+ITALIA - P value: 0.0519\\
+Per un totale di 24 partecipazioni, di cui in 1 ospita, per un totale di 630 medaglie \\
+La frequenza attesa quando ospita: 26.25 e medaglie reali: 36, con una differenza 
+di +9.75 medaglie. 
+L'effetto positivo è debole e non statisticamente significativo, dimostrando un 
+trend positivo (+36.9\%), tale che non possiamo escludere il caso con certezza statistica.\\
+CANADA - P value: 0.4696\\
+Per un totale di 23 partecipazioni, di cui in 1 ospita, per un totale di 313 medaglie\\
+La frequenza attesa quando ospita: 13.61 e medaglie reali: 11, con una differenza 
+di -2.61 medaglie.
+Il trend negativo (-15.38\%) è l'unico riscontrato nei 16 stati analizzati, 
+con il P value più alto trovato. 
+
+
+\section{Conclusioni}
+Dei 16 paesi analizzati, 2 (Grecia e Messico) sono stati esclusi per violazione delle
+assunzioni del test, riducendo il campione valido a 14 paesi. Di questi, 12 
+presentano una relazione statisticamente significativa tra ospitalità e performance sul 
+medagliere (p < 0.05), suggerendo un effetto "home advantage" robusto nelle olimpiadi.
+Italia e Canada sono gli unici due stati che non mostrano effetti significativi 
+dall'ospitare i Giochi Olimpici.
+Una limitazione dello studio riguarda i paesi con storia breve di ospitalità 
+olimpica. Paesi come Grecia e Messico, che hanno ospitato solo una volta nel 
+periodo analizzato, producono distribuzioni molto sbilanciate che violano le assunzioni 
+parametriche. Studi futuri potrebbero utilizzare metodi non parametrici 
+(es. Fisher's Exact Test) o raccogliere dati su periodi più lunghi per affrontare 
+questo problema.
+\end{document}

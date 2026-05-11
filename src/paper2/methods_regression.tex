@@ -1,0 +1,45 @@
+\subsection{Regressione}\label{sec:methods_regression}
+
+La regressione è stata usata per mostrare causalità. Granger non poteva essere
+utilizzato, in mancanza di stazionarietà di GDP e medaglie (misurata con ADF
+test), pure applicando modifiche come logaritmo, differenza di logaritmi,
+percentuale (di medaglie); ANOVA (e ANCOVA) per motivi che includono
+l'l'eteroschedasticità.\\
+
+Il nostro lavoro espande quello di Csurilla\cite{csurillaLessObviousEffect2023}
+analizzando altri fattori e impiegando OLS (regressione lineare) come modello
+principale e ZINB come paragone, nonché ``ponte'' con il loro.\\
+Non avendo effettuato un'analisi a livello di sport, infatti, c'erano errori di
+esecuzione della regressione, probabilmente dovuti a collinearità (perfetta o
+quasi) tra variabili, a cui ZINB è sensibile. Proprio per evitare collinearità
+perfetta, usando \textit{YEAR} escludiamo l'ultimo anno: il suo effetto è già
+assorbito da \textit{CONST}.\\
+\\
+Consci dei requisiti di OLS, abbiamo applicato alcune accortezze. Innanzitutto,
+prendere le medaglie come percentuale su quelle disponibili in un anno evita
+valori discreti, andando oltretutto ad ovviare alla loro disponibilità variabile
+di anno in anno (altrimenti catturato da \textit{YEAR}). In secondo luogo, lo
+abbiamo eseguito solo sui top 40 team per media di medaglie (in realtà, 40 presi
+prima tra gli host degli anni considerati, poi tra gli altri): un compromesso
+per un dataset ampio ma senza troppi zeri (nelle prime edizioni ci sarebbero
+comunque molti meno partecipanti), presumibilmente motivo di perfect
+separation\cite{WikipediaSeparation} (soprattutto su \textit{AM}).\\
+\textit{GDP} e \textit{POP} sono nuovamente in logaritmo e come media geometrica
+ogni 4 anni, per avere dati più stabili, meno dipendenti da fattori casuali e
+più rappresentativi di ogni periodo. Gli errori robusti \textit{HC0} ovviano
+all'eteroschedasticità.\\
+\\
+
+% i numeri sono risusltati importanti che danno solidità e metodo scientifico.
+% "infatti, sono le maggiori cause di errori e collinearità" è il collegamento
+% logico tra risultati e ipotesi da scienziati. "avvicinarsi alla collinearità":
+% avvicinarsi è importante da dire.
+
+Nei test di VIF (per verificare la multicollinearità), generalmente solo
+\textit{HOST}, \textit{PRE}, \textit{POST} hanno valore <2. \textit{AM},
+\textit{COMM}, \textit{YEAR} sono accettabili (<4) --- \textit{AM} e
+\textit{YEAR}, infatti, sono le maggiori cause di errori e collinearità.
+\textit{GDP} e \textit{POP} superano abbondantemente 10, ma sono fondamentali
+per lo studio e comunque usati sovente insieme nella ricerca scientifica. Le
+variabili \textit{CLOSE} possono superare 5 a seconda della configurazione ---
+con tante variabili di hosting, è facile avvicinarsi alla collinearità.

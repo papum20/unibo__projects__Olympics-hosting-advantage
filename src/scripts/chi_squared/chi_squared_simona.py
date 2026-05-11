@@ -42,6 +42,11 @@ for noc in host_nocs:
     # Il test è affidabile solo se frequenze attese >= 5
     chi_valid = (e_h >= 5) and (e_nh >= 5)
     warning = None
+    # Cochran's rule (of thumb):
+    # For tables with more than a single degree of freedom,
+    # a minimum expected frequency of 5 can be regarded as adequate,
+    # although when there is only a single degree of freedom
+    # a minimum expected frequency of 10 is much safer
 
     if not chi_valid:
         warning = "⚠️ Frequenze attese < 5: risultati non affidabili (poche medaglie o partecipazioni sbilanciate)"

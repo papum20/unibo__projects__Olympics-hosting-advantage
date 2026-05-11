@@ -23,6 +23,8 @@ from util.load_ds import (
 	DS_GDP_WBOD_PATH,
 	DS_GDPPC_MADDISON_PATH,
 	DF_COL_AM_HISTORY,
+	DF_COL_EVENTS,
+	DF_COL_EVENTS_HOME,
 	DF_COL_GDP,
 	DF_COL_IS_BOYCOTT_URS,
 	DF_COL_IS_BOYCOTT_USA,
@@ -36,9 +38,11 @@ from util.load_ds import (
 	DF_COL_IS_HOST_CLOSE_WEST,
 	DF_COL_IS_HOST_CLOSE_WIDE,
 	DF_COL_MEDALS_AVAILABLE,
+	DF_COL_MEDALS_AVAILABLE_HOME,
 	DF_COL_MEDALS_AWAY,
 	DF_COL_MEDALS_HOME,
 	DF_COL_MEDALS_HOME_DIFF,
+	DF_COL_NOC,
 	DF_COL_POPULATION,
 )
 from util.common import Logger, LoggerType
@@ -80,6 +84,11 @@ CTRL_VARS = set(CTRL_VARS_DICT.keys()) | {
 
 DF_COL_MEDAL_WON		= 'Medal_Won'
 DF_COL_MEDAL_NOT_WON	= 'Medal_Not_Won'
+
+DF_COL_CHI_STAT		= 'Chi2_Stat'
+DF_COL_CHI_P		= 'Chi2_PValue'
+DF_COL_CHI_DOF		= 'Chi2_DOF'
+DF_COL_CHI_EXP_FREQ = 'Chi2_ExpectedFreq'
 
 
 
@@ -152,7 +161,7 @@ def perform_dagostino_k2_test(medal_diff_df):
 # CHI CONTINGENCY TABLE
 #
 
-def perform_chiSquared_test(medal_diff_df):
+def perform_chiSquared_test(medal_diff_df, is_verbose=False) -> stats.contingency.Chi2ContingencyResult:
 	# The chi-squared test of independence is used to determine if there is a significant association between two categorical variables. 
 	# In our case, we want to see if there is an association between "competing at home" (Host vs Non-Host) and "winning a medal" (Won Medal vs Did Not Win Medal).
 
@@ -173,56 +182,118 @@ def perform_chiSquared_test(medal_diff_df):
 		#index=['Home (Host)', 'Away (Non-Host)']
 	)
 
-	print("\n--- Contingency Table ---")
-	print(contingency_table_df)
-	print("\n")
+	if is_verbose:
+		print("\n--- Contingency Table ---")
+		print(contingency_table_df)
+		print("\n")
 
 	# 2. Perform the Chi-Squared Test of Independence
-	chi2_stat, p_value, dof, expected_freq = stats.chi2_contingency(contingency_table_df)
+	res = stats.chi2_contingency(contingency_table_df)
+	chi2_stat, p_value, dof, expected_freq = res
 
-	print(f"Chi-Squared Statistic: {chi2_stat:.4f}")
-	print(f"P-value: {p_value:.6f}")
-	print(f"Degrees of Freedom: {dof}")
-	print("Expected Frequencies:")
+	if is_verbose:
+		print(f"Chi-Squared Statistic: {chi2_stat:.4f}")
+		print(f"P-value: {p_value:.6f}")
+		print(f"Degrees of Freedom: {dof}")
+		print("Expected Frequencies:")
+		print(expected_freq)
 
 	# Interpretation
 	alpha = 0.05
-	if p_value < alpha:	# type: ignore
-		print("\nConclusion: Reject the null hypothesis.")
-		print("There is a statistically significant relationship between competing at home and winning a medal (Home Advantage confirmed!).")
-	else:
-		print("\nConclusion: Fail to reject the null hypothesis.")
-		print("There is no significant difference in medal-winning rates between home and away games.")
+	if is_verbose:
+		if p_value < alpha:	# type: ignore
+			print("\nConclusion: Reject the null hypothesis.")
+			print("There is a statistically significant relationship between competing at home and winning a medal (Home Advantage confirmed!).")
+		else:
+			print("\nConclusion: Fail to reject the null hypothesis.")
+			print("There is no significant difference in medal-winning rates between home and away games.")
+
+	return res
 
 
-# observed vs expected.
-# an alternative; not needed
-def perform_chiSquared_goodnessOfFit():
+# observed vs expected:
+# compare, for the hosted editions, medals won from the host vs Rest Of the World
+def perform_chiSquared_goodnessOfFit_ROW(medal_diff_df, is_verbose=False) -> tuple[float, float]:
 	# The chi-squared goodness of fit test is used to determine if a sample data matches a population with a specific distribution. 
 	# In our case, we want to see if the observed medal counts for the host country differ significantly from what we would expect based on historical averages.
-
 
 	# Suppose in the host year there were 1000 total medals awarded.
 	# Based on historical average, the host country usually wins 4% (Expected = 40 medals).
 	# However, during their host year, they actually won 60 medals (Observed = 60).
 	# The rest of the world won the remaining medals.
 
-	# [Host Country Medals, Rest of the World Medals]
-	observed = [60, 940] 
-	expected = [40, 960]
+	won_tot		= medal_diff_df[DF_COL_MEDALS_HOME].sum() + medal_diff_df[DF_COL_MEDALS_AWAY].sum()
+	host_rate	= medal_diff_df[DF_COL_EVENTS_HOME].sum() / medal_diff_df[DF_COL_EVENTS].sum()
 
+	# [Host Country Medals, Rest of the World Medals]
+	observed = [
+		medal_diff_df[DF_COL_MEDALS_HOME].sum(),
+		medal_diff_df[DF_COL_MEDALS_AVAILABLE_HOME].sum() - medal_diff_df[DF_COL_MEDALS_HOME].sum()
+	]
+	expected = [
+		host_rate * won_tot,
+		medal_diff_df[DF_COL_MEDALS_AVAILABLE_HOME].sum() - host_rate * won_tot
+	]
+
+	if is_verbose:
+		print("\n--- Observed vs Expected ---")
+		print(f"Observed (Home, Away): {observed}")
+		print(f"Expected (Home, Away): {expected}")
+		print("\n")
+		
 	# Perform Chi-Squared Goodness of Fit test
 	chi2_stat, p_value = stats.chisquare(f_obs=observed, f_exp=expected)
 
 	print(f"Chi-Squared Statistic: {chi2_stat:.4f}")
 	print(f"P-value: {p_value:.6f}")
 
-	if p_value < 0.05:
-		print("\nConclusion: Reject the null hypothesis.")
-		print("The country won a significantly different amount of medals than expected (Home Advantage confirmed).")
-	else:
-		print("\nConclusion: Fail to reject the null hypothesis.")
-		print("The medal count is in line with historical expectations.")
+	if is_verbose:
+		if p_value < 0.05:
+			print("\nConclusion: Reject the null hypothesis.")
+			print("The country won a significantly different amount of medals than expected (Home Advantage confirmed).")
+		else:
+			print("\nConclusion: Fail to reject the null hypothesis.")
+			print("The medal count is in line with historical expectations.")
+
+	return chi2_stat, p_value
+
+
+# observed vs expected:
+# compare, for a country, medals won hosting vs away
+def perform_chiSquared_goodnessOfFit_own(medal_diff_df, is_verbose=False) -> tuple[float, float]:
+	won_tot		= medal_diff_df[DF_COL_MEDALS_HOME].sum() + medal_diff_df[DF_COL_MEDALS_AWAY].sum()
+
+	# [Won Home, Won Aways]
+	observed = [
+		medal_diff_df[DF_COL_MEDALS_HOME].sum(),
+		medal_diff_df[DF_COL_MEDALS_AWAY].sum()
+	]
+	expected = [
+		won_tot / medal_diff_df[DF_COL_EVENTS].sum() * medal_diff_df[DF_COL_EVENTS_HOME].sum(),
+		won_tot / medal_diff_df[DF_COL_EVENTS].sum() * (medal_diff_df[DF_COL_EVENTS].sum() - medal_diff_df[DF_COL_EVENTS_HOME].sum())
+	]
+
+	if is_verbose:
+		print("\n--- Observed vs Expected ---")
+		print(f"Observed (Home, Away): {observed}")
+		print(f"Expected (Home, Away): {expected}")
+		print("\n")
+
+	# Perform Chi-Squared Go1odness of Fit test
+	chi2_stat, p_value = stats.chisquare(f_obs=observed, f_exp=expected)
+
+	print(f"Chi-Squared Statistic: {chi2_stat:.4f}")
+	print(f"P-value: {p_value:.6f}")
+
+	if is_verbose:
+		if p_value < 0.05:
+			print("\nConclusion: Reject the null hypothesis.")
+			print("The country won a significantly different amount of medals than expected (Home Advantage confirmed).")
+		else:
+			print("\nConclusion: Fail to reject the null hypothesis.")
+			print("The medal count is in line with historical expectations.")
+
+	return chi2_stat, p_value
 
 
 
@@ -416,7 +487,49 @@ if __name__ == "__main__":
 		print(f"Running with args: {args}")
 
 
-		shift = 0
+
+		res_chi_squared = pd.DataFrame(columns=[
+			DF_COL_NOC,
+			DF_COL_MEDALS_HOME,
+			DF_COL_MEDALS_AWAY,
+			DF_COL_MEDALS_HOME_DIFF,
+			DF_COL_MEDALS_AVAILABLE,
+			DF_COL_MEDALS_AVAILABLE_HOME,
+			DF_COL_EVENTS,
+			DF_COL_EVENTS_HOME,
+			DF_COL_CHI_STAT,
+			DF_COL_CHI_P,
+			DF_COL_CHI_DOF,
+			DF_COL_CHI_EXP_FREQ
+		])
+
+		res_chi_squared_goodnessOfFit_own = pd.DataFrame(columns=[
+			DF_COL_NOC,
+			DF_COL_MEDALS_HOME,
+			DF_COL_MEDALS_AWAY,
+			DF_COL_MEDALS_HOME_DIFF,
+			DF_COL_MEDALS_AVAILABLE,
+			DF_COL_MEDALS_AVAILABLE_HOME,
+			DF_COL_EVENTS,
+			DF_COL_EVENTS_HOME,
+			DF_COL_CHI_STAT,
+			DF_COL_CHI_P
+		])
+
+		res_chi_squared_goodnessOfFit_ROW = pd.DataFrame(columns=[
+			DF_COL_NOC,
+			DF_COL_MEDALS_HOME,
+			DF_COL_MEDALS_AWAY,
+			DF_COL_MEDALS_HOME_DIFF,
+			DF_COL_MEDALS_AVAILABLE,
+			DF_COL_MEDALS_AVAILABLE_HOME,
+			DF_COL_EVENTS,
+			DF_COL_EVENTS_HOME,
+			DF_COL_CHI_STAT,
+			DF_COL_CHI_P
+		])
+
+		# Aggregated
 
 		medal_diff_df, country_name = load_medals_homeDiff(
 				countries_list			= noc_list,
@@ -428,14 +541,143 @@ if __name__ == "__main__":
 				medals_aggr_type		= DsMedalsAggrType.SUM,
 				is_verbose				= verbose
 			)
+
+		if verbose:
+			print(medal_diff_df.to_string())
 		
 		plot_normality(medal_diff_df, title_prefix=f"{country_name} - " if country_name else '', show_plots=show_plots)
 		perform_shapiro_wilk_test(medal_diff_df)
 		perform_dagostino_k2_test(medal_diff_df)
 
-		perform_chiSquared_test(medal_diff_df)
-		
+		res = perform_chiSquared_test(medal_diff_df, is_verbose=verbose)
 
+		res_chi_squared = pd.concat([res_chi_squared, pd.DataFrame([{
+				DF_COL_NOC: 'ALL',
+				DF_COL_MEDALS_HOME: medal_diff_df[DF_COL_MEDALS_HOME].sum(),
+				DF_COL_MEDALS_AWAY: medal_diff_df[DF_COL_MEDALS_AWAY].sum(),
+				DF_COL_MEDALS_HOME_DIFF: medal_diff_df[DF_COL_MEDALS_HOME_DIFF].sum(),
+				DF_COL_MEDALS_AVAILABLE: medal_diff_df[DF_COL_MEDALS_AVAILABLE].sum(),
+				DF_COL_MEDALS_AVAILABLE_HOME: medal_diff_df[DF_COL_MEDALS_AVAILABLE_HOME].sum(),
+				DF_COL_EVENTS: medal_diff_df[DF_COL_EVENTS].sum(),
+				DF_COL_EVENTS_HOME: medal_diff_df[DF_COL_EVENTS_HOME].sum(),
+				DF_COL_CHI_STAT: res[0],
+				DF_COL_CHI_P: res[1],
+				DF_COL_CHI_DOF: res[2],
+				DF_COL_CHI_EXP_FREQ: res[3]
+			}])
+		])
+		
+		stat, pval = perform_chiSquared_goodnessOfFit_own(medal_diff_df, is_verbose=verbose)
+
+		res_chi_squared_goodnessOfFit_own = pd.concat([res_chi_squared_goodnessOfFit_own, pd.DataFrame([{
+				DF_COL_NOC: 'ALL',
+				DF_COL_MEDALS_HOME: medal_diff_df[DF_COL_MEDALS_HOME].sum(),
+				DF_COL_MEDALS_AWAY: medal_diff_df[DF_COL_MEDALS_AWAY].sum(),
+				DF_COL_MEDALS_HOME_DIFF: medal_diff_df[DF_COL_MEDALS_HOME_DIFF].sum(),
+				DF_COL_MEDALS_AVAILABLE: medal_diff_df[DF_COL_MEDALS_AVAILABLE].sum(),
+				DF_COL_MEDALS_AVAILABLE_HOME: medal_diff_df[DF_COL_MEDALS_AVAILABLE_HOME].sum(),
+				DF_COL_EVENTS: medal_diff_df[DF_COL_EVENTS].sum(),
+				DF_COL_EVENTS_HOME: medal_diff_df[DF_COL_EVENTS_HOME].sum(),
+				DF_COL_CHI_STAT: stat,
+				DF_COL_CHI_P: pval
+			}])
+		])
+
+		stat, pval = perform_chiSquared_goodnessOfFit_ROW(medal_diff_df, is_verbose=verbose)
+		res_chi_squared_goodnessOfFit_ROW = pd.concat([res_chi_squared_goodnessOfFit_ROW, pd.DataFrame([{
+				DF_COL_NOC: 'ALL',
+				DF_COL_MEDALS_HOME: medal_diff_df[DF_COL_MEDALS_HOME].sum(),
+				DF_COL_MEDALS_AWAY: medal_diff_df[DF_COL_MEDALS_AWAY].sum(),
+				DF_COL_MEDALS_HOME_DIFF: medal_diff_df[DF_COL_MEDALS_HOME_DIFF].sum(),
+				DF_COL_MEDALS_AVAILABLE: medal_diff_df[DF_COL_MEDALS_AVAILABLE].sum(),
+				DF_COL_MEDALS_AVAILABLE_HOME: medal_diff_df[DF_COL_MEDALS_AVAILABLE_HOME].sum(),
+				DF_COL_EVENTS: medal_diff_df[DF_COL_EVENTS].sum(),
+				DF_COL_EVENTS_HOME: medal_diff_df[DF_COL_EVENTS_HOME].sum(),
+				DF_COL_CHI_STAT: stat,
+				DF_COL_CHI_P: pval
+			}])
+		])
+
+
+
+		# by NOC
+
+		for noc in noc_list:
+
+			if verbose:
+				print(f"\n\n=== Analyzing NOC: {noc} ===")
+				
+			medal_diff_df, country_name = load_medals_homeDiff(
+					countries_list			= [noc],
+					medals_season			= medals_season,
+					year_start				= year_start,
+					year_end				= year_end,
+					remove_boycott			= exclude_boycott,
+					medals_data_type		= medals_data_type,
+					medals_aggr_type		= DsMedalsAggrType.SUM,
+					is_verbose				= verbose
+				)
+			
+			res = perform_chiSquared_test(medal_diff_df, is_verbose=verbose)
+
+			res_chi_squared = pd.concat([res_chi_squared, pd.DataFrame([{
+					DF_COL_NOC: noc,
+					DF_COL_MEDALS_HOME: medal_diff_df[DF_COL_MEDALS_HOME].sum(),
+					DF_COL_MEDALS_AWAY: medal_diff_df[DF_COL_MEDALS_AWAY].sum(),
+					DF_COL_MEDALS_HOME_DIFF: medal_diff_df[DF_COL_MEDALS_HOME_DIFF].sum(),
+					DF_COL_MEDALS_AVAILABLE: medal_diff_df[DF_COL_MEDALS_AVAILABLE].sum(),
+					DF_COL_MEDALS_AVAILABLE_HOME: medal_diff_df[DF_COL_MEDALS_AVAILABLE_HOME].sum(),
+					DF_COL_EVENTS: medal_diff_df[DF_COL_EVENTS].sum(),
+					DF_COL_EVENTS_HOME: medal_diff_df[DF_COL_EVENTS_HOME].sum(),
+					DF_COL_CHI_STAT: res[0],
+					DF_COL_CHI_P: res[1],
+					DF_COL_CHI_DOF: res[2],
+					DF_COL_CHI_EXP_FREQ: res[3]
+				}])
+			])
+
+			stat, pval = perform_chiSquared_goodnessOfFit_own(medal_diff_df, is_verbose=verbose)
+
+			res_chi_squared_goodnessOfFit_own = pd.concat([res_chi_squared_goodnessOfFit_own, pd.DataFrame([{
+					DF_COL_NOC: noc,
+					DF_COL_MEDALS_HOME: medal_diff_df[DF_COL_MEDALS_HOME].sum(),
+					DF_COL_MEDALS_AWAY: medal_diff_df[DF_COL_MEDALS_AWAY].sum(),
+					DF_COL_MEDALS_HOME_DIFF: medal_diff_df[DF_COL_MEDALS_HOME_DIFF].sum(),
+					DF_COL_MEDALS_AVAILABLE: medal_diff_df[DF_COL_MEDALS_AVAILABLE].sum(),
+					DF_COL_MEDALS_AVAILABLE_HOME: medal_diff_df[DF_COL_MEDALS_AVAILABLE_HOME].sum(),
+					DF_COL_EVENTS: medal_diff_df[DF_COL_EVENTS].sum(),
+					DF_COL_EVENTS_HOME: medal_diff_df[DF_COL_EVENTS_HOME].sum(),
+					DF_COL_CHI_STAT: stat,
+					DF_COL_CHI_P: pval
+				}])
+			])
+			
+			stat, pval = perform_chiSquared_goodnessOfFit_ROW(medal_diff_df, is_verbose=verbose)
+
+			res_chi_squared_goodnessOfFit_ROW = pd.concat([res_chi_squared_goodnessOfFit_ROW, pd.DataFrame([{
+					DF_COL_NOC: noc,
+					DF_COL_MEDALS_HOME: medal_diff_df[DF_COL_MEDALS_HOME].sum(),
+					DF_COL_MEDALS_AWAY: medal_diff_df[DF_COL_MEDALS_AWAY].sum(),
+					DF_COL_MEDALS_HOME_DIFF: medal_diff_df[DF_COL_MEDALS_HOME_DIFF].sum(),
+					DF_COL_MEDALS_AVAILABLE: medal_diff_df[DF_COL_MEDALS_AVAILABLE].sum(),
+					DF_COL_MEDALS_AVAILABLE_HOME: medal_diff_df[DF_COL_MEDALS_AVAILABLE_HOME].sum(),
+					DF_COL_EVENTS: medal_diff_df[DF_COL_EVENTS].sum(),
+					DF_COL_EVENTS_HOME: medal_diff_df[DF_COL_EVENTS_HOME].sum(),
+					DF_COL_CHI_STAT: stat,
+					DF_COL_CHI_P: pval
+				}])
+			])
+
+		print("\n\n=== Final Results: Chi-Squared Test of Independence ===")
+		print(res_chi_squared)
+
+		print("\n\n=== Final Results: Chi-Squared Goodness of Fit (Own vs Expected) ===")
+		print(res_chi_squared_goodnessOfFit_own)
+
+		print("\n\n=== Final Results: Chi-Squared Goodness of Fit (Host vs Rest of the World) ===")
+		print(res_chi_squared_goodnessOfFit_ROW)
+		
+		
 	except Exception as e:
 		# so will also print to log
 		print(f"[ERROR]: {e}")

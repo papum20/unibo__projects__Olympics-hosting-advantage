@@ -1,0 +1,63 @@
+\subsection{Correlazione}\label{sec:methods_correlation}
+
+%Ci sono fattori sistematici che influenzano la performance dei vari Paesi alle
+%Olimpiadi?
+
+% info generali e probabilmente scontate, le mettiamo in generale solo se
+% entrano
+
+%Nella letteratura esistente, due dei fattori che più vengono tenuti in
+%considerazione sono la ricchezza e la popolazione di un Paese: \begin{itemize}
+%\item la ricchezza, in quanto permette al Paese di investire nelle
+%infrastrutture sportive e nel sostegno agli atleti \item la popolazione, in
+%quanto al crescere del numero di abitanti, probabilisticamente, cresce la
+%dimensione del bacino di potenziali talenti \end{itemize}
+%
+%Per verificare correlazione tra ricchezza/popolazione e performance Olimpica,
+%abbiamo deciso di utilizzare la correlazione di Spearman.
+
+% altre descrizioni implementative e spiegazioni non necessarie qui
+
+%Il coefficiente di correlazione di Spearman è una misura statistica non
+%parametrica che valuta la forza e la direzione della relazione tra due
+%variabili. A differenza della correlazione di Pearson, che misura la relazione
+%lineare, Spearman valuta la relazione monotonica.
+%
+%Il calcolo non si basa sui valori grezzi dei dati, ma sui loro ranghi (ovvero
+%sulla loro posizione in classifica). Il procedimento prevede di:
+%
+%\begin{enumerate} \item Ordinare i dati di ciascuna variabile dal più piccolo
+%    al più grande. \item Assegnare un rango (1, 2, 3...) a ogni valore. \item
+%    Calcolare il coefficiente di correlazione basandosi sulla differenza tra i
+%    ranghi delle due variabili. \end{enumerate}
+
+% fonti per queste cose catturate? soprattutto se in dubbio, se queste cose non
+% sono state determinanti nei risultati, si possono togliere.
+
+%Abbiamo deciso di utilizzare Spearman invece del più classico Pearson per due
+%ragioni principali: \begin{itemize} \item Spearman non richiede che i dati
+%seguano una distribuzione normale \item Spearman è in grado di catturare
+%relazioni che Pearson ignorerebbe, come ad esempio una crescita esponenziale o
+%logaritmica. Spearman non richiede che i dati crescano secondo una linea retta;
+%è sufficiente che, al crescere di una variabile, l'altra tenda a crescere (o
+%decrescere) in modo costante, anche se con un ritmo non uniforme. \end{itemize}
+
+% unito nei risultati
+
+%Il coefficiente di Spearman varia da -1 (perfetta relazione monotonica
+%negativa) a +1 (perfetta relazione monotonica positiva). Uno 0 indica assenza
+%di relazione.
+
+
+Per mostrare correlazione tra ricchezza/popolazione e performance Olimpica,
+abbiamo deciso di utilizzare la correlazione di Spearman, che valuta la
+relazione monotonica tra due variabili.\\
+Pearson avrebbe richiesto una distribuzione normale dei dati.
+
+% ma questo requisito, a noi vale?
+
+%    \item Spearman è in grado di catturare relazioni che Pearson ignorerebbe,
+%    come ad esempio una crescita esponenziale o logaritmica. Spearman non
+%    richiede che i dati crescano secondo una linea retta; è sufficiente che, al
+%    crescere di una variabile, l'altra tenda a crescere (o decrescere) in modo
+%    costante, anche se con un ritmo non uniforme.

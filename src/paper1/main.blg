@@ -1,0 +1,70 @@
+This is BibTeX, Version 0.99e
+Capacity: max_strings=200000, hash_size=200000, hash_prime=170003
+The top-level auxiliary file: main.aux
+Reallocating 'name_of_file' (item size: 1) to 9 items.
+The style file: IEEEtran.bst
+Reallocating 'name_of_file' (item size: 1) to 7 items.
+Reallocating 'singl_function' (item size: 4) to 100 items.
+Reallocating 'singl_function' (item size: 4) to 100 items.
+Reallocating 'singl_function' (item size: 4) to 100 items.
+Reallocating 'wiz_functions' (item size: 4) to 6000 items.
+Reallocating 'singl_function' (item size: 4) to 100 items.
+Database file #1: biblio.bib
+-- IEEEtran.bst version 1.12 (2007/01/11) by Michael Shell.
+-- http://www.michaelshell.org/tex/ieeetran/bibtex/
+-- See the "IEEEtran_bst_HOWTO.pdf" manual for usage information.
+Warning--empty author in WikipediaCentralEurope
+Warning--empty author in WikipediaOlympics
+Warning--empty author in WikipediaW2018
+Warning--empty author in WikipediaS2020
+Warning--empty author in WikipediaW2022
+Warning--empty author in WikipediaS2024
+Warning--empty author in WikipediaW2026
+Warning--empty author in WikipediaOAR
+Warning--empty author in WikipediaROC
+Warning--empty author in WikipediaSeparation
+Warning--empty author in WikipediaLeadLagEffect
+
+Done.
+You've used 26 entries,
+            4024 wiz_defined-function locations,
+            934 strings with 10463 characters,
+and the built_in function-call counts, 11836 in all, are:
+= -- 952
+> -- 168
+< -- 59
++ -- 99
+- -- 26
+* -- 553
+:= -- 1952
+add.period$ -- 52
+call.type$ -- 26
+change.case$ -- 26
+chr.to.int$ -- 120
+cite$ -- 37
+duplicate$ -- 1024
+empty$ -- 1080
+format.name$ -- 35
+if$ -- 2633
+int.to.chr$ -- 0
+int.to.str$ -- 26
+missing$ -- 161
+newline$ -- 105
+num.names$ -- 11
+pop$ -- 395
+preamble$ -- 1
+purify$ -- 0
+quote$ -- 2
+skip$ -- 930
+stack$ -- 0
+substring$ -- 310
+swap$ -- 695
+text.length$ -- 19
+text.prefix$ -- 0
+top$ -- 5
+type$ -- 26
+warning$ -- 11
+while$ -- 32
+width$ -- 28
+write$ -- 237
+(There were 11 warnings)

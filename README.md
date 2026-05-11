@@ -31,6 +31,7 @@ Paper/report: `docs/report.pdf`
 paper:
 ```bash
 # compile
+#./src/scripts/bash-util/paper-compile.sh [DIR=src/paper1/]
 ./src/scripts/bash-util/paper-compile.sh
 # count words
 ./src/scripts/bash-util/paper-count-words.sh
@@ -39,13 +40,13 @@ paper:
 chi-squared:
 ```bash
 # help
-python src/scripts/chi_squared/chi_squared.py --help
+python src/scripts/chi_squared/chi_squared_daniele.py --help
 
 # one country
-python src/scripts/chi_squared/chi_squared.py -s S -n GBR --start-year 1924 --end-year 2024 -v --show
+python src/scripts/chi_squared/chi_squared_daniele.py -s S -n GBR --start-year 1924 --end-year 2024 -v --show
 
 # all hosts country
-python src/scripts/chi_squared/chi_squared.py -s S --noc-hosts --start-year 1924 --end-year 2024 -v --show
+python src/scripts/chi_squared/chi_squared_daniele.py -s S --noc-hosts --start-year 1924 --end-year 2024 -v --show
 ```
 
 regression models - usage:

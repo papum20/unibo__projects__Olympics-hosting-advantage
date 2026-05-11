@@ -30,27 +30,30 @@ YEAR_BOYCOTT_URS	= 1980	# hosted by URS, boycotted by USA bloc
 YEAR_BOYCOTT_USA	= 1984
 
 # Columns names in returned DataFrames
-DF_COL_AM_HISTORY			= 'Avg_Medals_History'
-DF_COL_GDP					= 'GDP'
-DF_COL_IS_BOYCOTT_URS		= f'Is_Boycott{YEAR_BOYCOTT_URS}'
-DF_COL_IS_BOYCOTT_USA		= f'Is_Boycott{YEAR_BOYCOTT_USA}'
-DF_COL_IS_COMMUNIST			= 'Is_Communist'
-DF_COL_IS_HOST				= 'Is_Host'
-DF_COL_IS_HOST_PRE			= 'Is_Host_Pre'
-DF_COL_IS_HOST_POST			= 'Is_Host_Post'
-DF_COL_IS_HOST_CLOSE_CENTER	= 'Is_Host_Close_Center'
-DF_COL_IS_HOST_CLOSE_GMT1	= 'Is_Host_Close_GMT1'
-DF_COL_IS_HOST_CLOSE_MAIN	= 'Is_Host_Close_Main'
-DF_COL_IS_HOST_CLOSE_WEST	= 'Is_Host_Close_West'
-DF_COL_IS_HOST_CLOSE_WIDE	= 'Is_Host_Close_Wide'
-DF_COL_MEDALS				= 'Medals'
-DF_COL_MEDALS_AVAILABLE		= 'Medals_Available'
-DF_COL_MEDALS_HOME			= 'Med_Home'
-DF_COL_MEDALS_AWAY			= 'Med_Away'
-DF_COL_MEDALS_HOME_DIFF		= 'Med_HomeDiff'
-DF_COL_NOC					= 'NOC'
-DF_COL_POPULATION			= 'Population'
-DF_COL_YEAR					= 'Year'
+DF_COL_AM_HISTORY				= 'Avg_Medals_History'
+DF_COL_EVENTS					= 'Events'
+DF_COL_EVENTS_HOME				= 'Events_Home'
+DF_COL_GDP						= 'GDP'
+DF_COL_IS_BOYCOTT_URS			= f'Is_Boycott{YEAR_BOYCOTT_URS}'
+DF_COL_IS_BOYCOTT_USA			= f'Is_Boycott{YEAR_BOYCOTT_USA}'
+DF_COL_IS_COMMUNIST				= 'Is_Communist'
+DF_COL_IS_HOST					= 'Is_Host'
+DF_COL_IS_HOST_PRE				= 'Is_Host_Pre'
+DF_COL_IS_HOST_POST				= 'Is_Host_Post'
+DF_COL_IS_HOST_CLOSE_CENTER		= 'Is_Host_Close_Center'
+DF_COL_IS_HOST_CLOSE_GMT1		= 'Is_Host_Close_GMT1'
+DF_COL_IS_HOST_CLOSE_MAIN		= 'Is_Host_Close_Main'
+DF_COL_IS_HOST_CLOSE_WEST		= 'Is_Host_Close_West'
+DF_COL_IS_HOST_CLOSE_WIDE		= 'Is_Host_Close_Wide'
+DF_COL_MEDALS					= 'Medals'
+DF_COL_MEDALS_AVAILABLE			= 'Medals_Available'
+DF_COL_MEDALS_AVAILABLE_HOME	= 'Medals_Available_Home'
+DF_COL_MEDALS_HOME				= 'Med_Home'
+DF_COL_MEDALS_AWAY				= 'Med_Away'
+DF_COL_MEDALS_HOME_DIFF			= 'Med_HomeDiff'
+DF_COL_NOC						= 'NOC'
+DF_COL_POPULATION				= 'Population'
+DF_COL_YEAR						= 'Year'
 
 def DF_COL_YEAR_DUMMY(year: int) -> str:
 	return f'YEAR{year}'
@@ -750,19 +753,25 @@ def load_medals_homeDiff(
 			data_type=medals_data_type
 		)
 		
+		events_home_n	= medals_df[medals_df[DF_COL_IS_HOST] == True].shape[0]
+		events_n		= medals_df.shape[0]
+		
 		if remove_boycott:
 			medals_df = medals_df[~medals_df.index.isin([YEAR_BOYCOTT_URS, YEAR_BOYCOTT_USA])]
 
+		host_years = medals_df[medals_df[DF_COL_IS_HOST] == True].index
 		# Get total medals available only for years this country participated
 		available_medals_series = total_medals_df.loc[medals_df.index]
 
 		if medals_aggr_type == DsMedalsAggrType.AVG:
-			home_medals		= medals_df[medals_df[DF_COL_IS_HOST] == True]['Total_Medals'].mean()
-			away_medals		= medals_df[medals_df[DF_COL_IS_HOST] == False]['Total_Medals'].mean()
-			total_medals	= available_medals_series.mean()
+			home_medals			= medals_df[medals_df[DF_COL_IS_HOST] == True]['Total_Medals'].mean()
+			away_medals			= medals_df[medals_df[DF_COL_IS_HOST] == False]['Total_Medals'].mean()
+			total_medals_home	= total_medals_df.loc[host_years].mean()
+			total_medals		= available_medals_series.mean()
 		elif medals_aggr_type == DsMedalsAggrType.SUM:
-			home_medals		= medals_df[medals_df[DF_COL_IS_HOST] == True]['Total_Medals'].sum()
-			away_medals		= medals_df[medals_df[DF_COL_IS_HOST] == False]['Total_Medals'].sum()
+			home_medals			= medals_df[medals_df[DF_COL_IS_HOST] == True]['Total_Medals'].sum()
+			away_medals			= medals_df[medals_df[DF_COL_IS_HOST] == False]['Total_Medals'].sum()
+			total_medals_home	= total_medals_df.loc[host_years].sum()
 			total_medals	= available_medals_series.sum()
 		else:
 			raise ValueError(f"Unsupported medals_aggr_type: {medals_aggr_type}")
@@ -770,11 +779,14 @@ def load_medals_homeDiff(
 		diff		= home_medals - away_medals
 
 		results.append({
-			DF_COL_NOC:					country,
-			DF_COL_MEDALS_HOME:			home_medals,
-			DF_COL_MEDALS_AWAY:			away_medals,
-			DF_COL_MEDALS_HOME_DIFF:	diff,
-			DF_COL_MEDALS_AVAILABLE:	total_medals,
+			DF_COL_NOC:						country,
+			DF_COL_MEDALS_HOME:				home_medals,
+			DF_COL_MEDALS_AWAY:				away_medals,
+			DF_COL_MEDALS_HOME_DIFF:		diff,
+			DF_COL_MEDALS_AVAILABLE:		total_medals,
+			DF_COL_MEDALS_AVAILABLE_HOME:	total_medals_home,
+			DF_COL_EVENTS:					events_n,
+			DF_COL_EVENTS_HOME:				events_home_n
 		})
 
 	return pd.DataFrame(results), '+'.join(countries_list)

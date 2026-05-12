@@ -366,6 +366,19 @@ if __name__ == "__main__":
 		)
 
 		parser.add_argument(
+			'--pre-host',
+			action='store_true',
+			help='Consider only years up until the country\'s first time hosting (inclusive) (flag, no value needed)'
+		)
+
+		parser.add_argument(
+			'--min-events',
+			type=int,
+			default=0,
+			help='Minimum number of events for a country to be included - default: 0 (no filter)'
+		)
+
+		parser.add_argument(
 			'--gdp-avg',
 			action='store_true',
 			help='Use 4-year geometric mean of GDP instead of raw values (flag, no value needed)'
@@ -452,8 +465,10 @@ if __name__ == "__main__":
 		save_plot_flag		= args.save
 		year_start			= args.start_year
 		year_end			= args.end_year
+		min_events			= args.min_events
 		
 		exclude_boycott		= args.exclude_boycott
+		use_pre_host		= args.pre_host
 		use_gdp_mean		= args.gdp_avg
 		use_gdp_tot			= args.gdp_tot
 		use_population_mean	= args.pop_avg
@@ -547,7 +562,9 @@ if __name__ == "__main__":
 				medals_season			= medals_season,
 				year_start				= year_start,
 				year_end				= year_end,
+				min_events_n			= min_events,
 				remove_boycott			= exclude_boycott,
+				until_first_host		= use_pre_host,
 				medals_data_type		= medals_data_type,
 				medals_aggr_type		= DsMedalsAggrType.SUM,
 				is_verbose				= verbose
@@ -634,11 +651,18 @@ if __name__ == "__main__":
 					medals_season			= medals_season,
 					year_start				= year_start,
 					year_end				= year_end,
+					min_events_n			= min_events,
 					remove_boycott			= exclude_boycott,
+					until_first_host		= use_pre_host,
 					medals_data_type		= medals_data_type,
 					medals_aggr_type		= DsMedalsAggrType.SUM,
 					is_verbose				= verbose
 				)
+			
+			if medal_diff_df.empty:
+				if verbose:
+					print(f"No data available for NOC {noc} after applying filters. Skipping.")
+				continue
 			
 			res = perform_chiSquared_test(medal_diff_df, is_verbose=verbose)
 

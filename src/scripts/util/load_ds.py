@@ -716,8 +716,10 @@ def load_medals_homeDiff(
 	countries_list			: list[str]|None	= None,
 	year_start				: int				= MEDALS_FULL_YEAR_FIRST,
 	year_end				: int				= MEDALS_FULL_YEAR_LAST,
+	min_events_n			: int				= 0,
 	medals_season			: str				= 'S',
 	remove_boycott			: bool				= False,
+	until_first_host		: bool				= False,
 	medals_data_type		: DsMedalsDataType	= DsMedalsDataType.DEFAULT,
 	medals_aggr_type		: DsMedalsAggrType	= DsMedalsAggrType.AVG,
 	medals_dataset_path		: str				= DS_MEDALS_FULL_PATH,
@@ -725,8 +727,10 @@ def load_medals_homeDiff(
 ) -> tuple[pd.DataFrame, str]:
 	"""Calculate the difference in medals won when hosting vs not hosting.
 	@param countries_list: Optional list of country codes to include. If None, includes all countries.
+	@param min_events_n: Minimum number of events participated in to be included in the calculation.
 	@param medals_season: Season of medals to include (S for Summer, W for Winter, B for Both).
 	@param remove_boycott: Whether to exclude years with boycotts from the calculation.
+	@param until_first_host: Whether to only consider years up until the country's first time hosting (inclusive).
 	@param medals_data_type: Type of transformation to apply to the medals series (DEFAULT, LN_DIFF, PERCENTAGE)
 	@param medals_aggr_type: Whether to calculate the average (AVG) or total (SUM) medals for home and away.
 	@param medals_dataset_path: Path to the medals dataset CSV file
@@ -755,6 +759,10 @@ def load_medals_homeDiff(
 		
 		if remove_boycott:
 			medals_df = medals_df[~medals_df.index.isin([YEAR_BOYCOTT_URS, YEAR_BOYCOTT_USA])]
+
+		if until_first_host:
+			first_host_year = medals_df[medals_df[DF_COL_IS_HOST] == True].index.min()
+			medals_df = medals_df[medals_df.index <= first_host_year]
 
 		events_home_n	= medals_df[medals_df[DF_COL_IS_HOST] == True].shape[0]
 		events_n		= medals_df.shape[0]
@@ -788,6 +796,9 @@ def load_medals_homeDiff(
 			DF_COL_EVENTS:					events_n,
 			DF_COL_EVENTS_HOME:				events_home_n
 		})
+
+	# Filter out countries with fewer than min_events_n events
+	results = [r for r in results if r[DF_COL_EVENTS] >= min_events_n]
 
 	return pd.DataFrame(results), '+'.join(countries_list)
 

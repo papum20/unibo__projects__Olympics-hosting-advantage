@@ -1,15 +1,26 @@
 \section{Risultati}\label{sec:results}
 
-Quattordici paesi su sedici hanno mostrato un effetto ospitalità statisticamente
-significativo (p < 0.05). Tuttavia, due paesi (Grecia e Messico) non
-soddisfacevano le assunzioni del test chi-quadrato a causa di partecipazioni
+Nella prima analisi (\cref{tab:chi2}), 15 Paesi su 18 hanno mostrato un effetto
+ospitalità statisticamente significativo (p < 0.05). Tuttavia, due (Grecia e
+Messico) non soddisfacevano la regola di Cochran a causa di partecipazioni
 limitate e basso numero di medaglie totali (frequenze attese = 3.12 < 5). Questi
 risultati sono stati esclusi dall'analisi principale per non compromettere la
-validità statistica delle conclusioni.
+validità statistica delle conclusioni.\\
+Anche da aggregati hanno p-value < 0.05.\\
+Tra i Paesi non significativi, la Germania Ovest potrebbe costituire un errore
+statistico, avendo partecipato a troppe poche edizioni rispetto agli altri (5 su
+24). \\
+Nell'analisi escludendo gli anni di boicottaggio (\cref{tab:chi2_excl_boycott}),
+le stesse tre Nazioni non soddisfano le assunzioni, mentre l'URSS non compare
+più, avendo ospitato solo nel 1984. A quelle non significative, invece, si
+aggiungono gli USA:\@ dato il grande numero di medaglie ottenuto in casa proprio
+dagli Stati Uniti (e URSS) in questi due anni, era da aspettarselo. Inoltre,
+anche il Canada, che non era significativo neanche prima, ha boicottato nel 1980
+e performato bene nel 1984.
 
 \newcolumntype{C}{>{\centering\arraybackslash}X}
 
-\begin{table}[H]
+\begin{table}[p]
 \centering
 \caption{Risultati Test Chi Quadro per ogni Nazione e aggregato}\label{tab:chi2}
 \small 
@@ -45,14 +56,15 @@ validità statistica delle conclusioni.
 \raggedright
 \scriptsize
 \textit{Per leggibilità, righe ordinate per compatibilità con Cochran, poi p-value e NOC.}\\
-\textit{* = Questi risultati non soddisfano le assunzioni del test del $\chi^2$}
+\textit{``ALL'' include tutti i paesi con medaglie Host attese $\ge$ 5.}\\
+\textit{* = Questi risultati non soddisfano le assunzioni del test del $\chi^2$ (medaglie Host attese $\ge$ 5)}
 \end{table}
 
 
 
 \newcolumntype{C}{>{\centering\arraybackslash}X}
 
-\begin{table}[H]
+\begin{table}[p]
 \centering
 \caption{Risultati Test Chi Quadro per ogni Nazione e aggregato (esclusi anni di boicottaggio)}\label{tab:chi2_excl_boycott}
 \small 
@@ -63,25 +75,25 @@ validità statistica delle conclusioni.
 \cmidrule(lr){1-1} \cmidrule(lr){2-2} \cmidrule(lr){3-4} \cmidrule(lr){5-9} \cmidrule(lr){10-12}
 \textbf{\#} & \textbf{NOC} & \textbf{Host} & \textbf{Away} & \textbf{Tot} & \textbf{Host} & \textbf{attese Host} & \textbf{Away} & \textbf{attese Away} & \textbf{$\chi^2$} & \textbf{p-value} & \textbf{p < 0.05} \\
 \midrule
-0           &          ALL &            22 &           299 &         8810 &           994 &         603.8006     &          7816 &            8206.1994 &          270.7157 &           0.0000 &     True\\\midrule
-1           &          AUS &             2 &            22 &          553 &            93 &          46.0833     &           460 &             506.9167 &           52.1073 &           0.0000 &     True\\
-2           &          BRA &             1 &            22 &          154 &            19 &           6.6957     &           135 &             147.3043 &           23.6390 &           0.0000 &     True\\
-3           &          CHN &             1 &            14 &          690 &           100 &          46.0000     &           590 &             644.0000 &           67.9193 &           0.0000 &     True\\
-4           &          ESP &             1 &            22 &          169 &            22 &           7.3478     &           147 &             161.6522 &           30.5457 &           0.0000 &     True\\
-5           &          FRA &             2 &            22 &          593 &           104 &          49.4167     &           489 &             543.5833 &           65.7711 &           0.0000 &     True\\
-6           &          GBR &             2 &            22 &          658 &            92 &          54.8333     &           566 &             603.1667 &           27.4822 &           0.0000 &     True\\
-7           &          GER &             1 &            15 &          755 &           101 &          47.1875     &           654 &             707.8125 &           65.4588 &           0.0000 &     True\\
-8           &          JPN &             2 &            20 &          507 &            87 &          46.0909     &           420 &             460.9091 &           39.9408 &           0.0000 &     True\\
-9           &          KOR &             1 &            18 &          296 &            33 &          15.5789     &           263 &             280.4211 &           20.5633 &           0.0000 &     True\\
-10          &          URS &             1 &             8 &          810 &             0 &          90.0000     &           810 &             720.0000 &          101.2500 &           0.0000 &     True\\
-11          &          FIN &             1 &            22 &          223 &            22 &           9.6957     &           201 &             213.3043 &           16.3247 &           0.0001 &     True\\
-12          &          USA &             3 &            20 &         2080 &           211 &         271.3043     &          1869 &            1808.6957 &           15.4148 &           0.0001 &     True\\
-13          &          NED &             1 &            23 &          325 &            23 &          13.5417     &           302 &             311.4583 &            6.8935 &           0.0087 &     True\\
-14          &          ITA &             1 &            23 &          583 &            36 &          24.2917     &           547 &             558.7083 &            5.8887 &           0.0152 &     True\\
-15          &          FRG &             1 &             4 &          145 &            40 &          29.0000     &           105 &             116.0000 &            5.2155 &           0.0224 &     True\\\midrule
-16          &          CAN &             1 &            22 &          269 &            11 &          11.6957     &           258 &             257.3043 &            0.0433 &           0.8352 &    False\\\midrule
-17          &          GRE &             1 &            23 &           70 &            16 &           2.9167$^*$ &            54 &              67.0833 &           61.2398 &           0.0000 &     True\\
-18          &          MEX &             1 &            23 &           65 &             9 &           2.7083$^*$ &            56 &              62.2917 &           15.2515 &           0.0001 &     True\\
+0           & ALL          &            20 &           270 &         8000 &           994 &             551.7241 &          7006 &            7448.2759 &          380.8016 &           0.0000 &              True\\\midrule
+1           & AUS          &             2 &            20 &          553 &            93 &              50.2727 &           460 &             502.7273 &           39.9458 &           0.0000 &              True\\
+2           & BRA          &             1 &            20 &          154 &            19 &               7.3333 &           135 &             146.6667 &           19.4886 &           0.0000 &              True\\
+3           & CHN          &             1 &            13 &          690 &           100 &              49.2857 &           590 &             640.7143 &           56.1984 &           0.0000 &              True\\
+4           & ESP          &             1 &            20 &          169 &            22 &               8.0476 &           147 &             160.9524 &           25.3991 &           0.0000 &              True\\
+5           & FRA          &             2 &            20 &          593 &           104 &              53.9091 &           489 &             539.0909 &           51.1975 &           0.0000 &              True\\
+6           & GBR          &             2 &            20 &          658 &            92 &              59.8182 &           566 &             598.1818 &           19.0450 &           0.0000 &              True\\
+7           & GER          &             1 &            15 &          755 &           101 &              47.1875 &           654 &             707.8125 &           65.4588 &           0.0000 &              True\\
+8           & JPN          &             2 &            19 &          507 &            87 &              48.2857 &           420 &             458.7143 &           34.3075 &           0.0000 &              True\\
+9           & KOR          &             1 &            17 &          296 &            33 &              16.4444 &           263 &             279.5556 &           17.6479 &           0.0000 &              True\\
+10          & FIN          &             1 &            20 &          223 &            22 &              10.6190 &           201 &             212.3810 &           12.8074 &           0.0003 &              True\\
+11          & NED          &             1 &            21 &          325 &            23 &              14.7727 &           302 &             310.2273 &            4.8001 &           0.0285 &              True\\\midrule
+12          & ITA          &             1 &            21 &          583 &            36 &              26.5000 &           547 &             556.5000 &            3.5678 &           0.0589 &             False\\
+13          & USA          &             2 &            20 &         2080 &           211 &             189.0909 &          1869 &            1890.9091 &            2.7924 &           0.0947 &             False\\
+14          & FRG          &             1 &             3 &          145 &            40 &              36.2500 &           105 &             108.7500 &            0.5172 &           0.4720 &             False\\
+15          & CAN          &             1 &            21 &          269 &            11 &              12.2273 &           258 &             256.7727 &            0.1290 &           0.7194 &             False\\\midrule
+16          & GRE          &             1 &            21 &           70 &            16 &               3.1818 &            54 &              66.8182 &           54.0980 &           0.0000 &              True\\
+17          & MEX          &             1 &            21 &           65 &             9 &               2.9545 &            56 &              62.0455 &           12.9590 &           0.0003 &              True\\
+
 \bottomrule
 \multicolumn{12}{l}{
 	}\\
@@ -90,31 +102,45 @@ validità statistica delle conclusioni.
 \raggedright
 \scriptsize
 \textit{Per leggibilità, righe ordinate per compatibilità con Cochran, poi p-value e NOC.}\\
-\textit{* = Questi risultati non soddisfano le assunzioni del test del $\chi^2$}
+\textit{``ALL'' include tutti i paesi con medaglie Host attese $\ge$ 5.}\\
+\textit{* = Questi risultati non soddisfano le assunzioni del test del $\chi^2$ (medaglie Host attese $\ge$ 5)}
 \end{table}
 
 
 
 \subsection{Risultati significativi}
-Risultati significativi con un p-value <0.0001 sono AUS, BRA, CHN, ESP, GBR,
-FRA, GER, USA, KOR, JPN, FIN, per un totale di 11 stati. Per NED, invece, ha
-comunque un valore molto basso di 0.0172.\\
+
+Risultati significativi con un p-value <0.0001 sono AUS, BRA, CHN, ESP, FRA,
+GBR, GER, USA, KOR, JPN, KOR, URS, USA, per un totale di 11 stati. Altri valori
+sotto la soglia si hanno per NED (0.0172) e FIN (0.0003).\\
 Le frequenze attese di Grecia e Messico, per quanto diano un p-value molto
 basso, come abbiamo detto non sono considerabili valide perchè non rispettano le
-assunzioni del test del $\chi$ quadro.
+assunzioni del test del $\chi$ quadro.\\
+\\
+Escludendo gli anni di boicottaggio, 9 Paesi hanno p-value <0.0001, FIN 0.0003 e
+NED 0.0285: in totale, 13 su 17 sono significativi. Di questi, GRE e MEX sono
+ancora significativi ma da escludere.
+
 
 \subsection{Risultati non significativi}
 
-ITALIA --- P value: 0.0519\\
-24 partecipazioni (di cui in 1 ospita), per un totale di 630 medaglie \\
-Frequenza attesa quando ospita di 26.25 e 36 medaglie reali, con una differenza
-di +9.75 medaglie.\\
-L'effetto positivo è debole e non statisticamente significativo, dimostrando un
-trend positivo (+36.9\%) tale che non possiamo escludere il caso con certezza
-statistica.\\
-CANADA --- P value: 0.4696\\
-23 partecipazioni (di cui in 1 ospita), per un totale di 313 medaglie\\
-Frequenza attesa quando ospita di 13.61 e 11 medaglie reali, con una differenza
-di -2.61 medaglie.\\
-Il trend negativo (-15.38\%) è l'unico riscontrato nei 16 stati analizzati, con
-il P value più alto trovato. 
+Per l'Italia, P value di 0.0519 e 24 partecipazioni (di cui in 1 ospita), per un
+totale di 630 medaglie; frequenza attesa quando ospita di 26.25 e 36 medaglie
+reali, con una differenza di +9.75 medaglie. L'effetto positivo è debole e non
+statisticamente significativo, dimostrando un trend positivo (+36.9\%) tale che
+non possiamo escludere il caso con certezza statistica.\\
+Per il Canada,  P value di 0.4696 e 23 partecipazioni (di cui in 1 ospita), per
+un totale di 313 medaglie; frequenza attesa quando ospita di 13.61 e 11 medaglie
+reali, con una differenza di -2.61 medaglie. Il trend negativo (-15.38\%) è
+l'unico riscontrato nei 16 stati analizzati, con il P value più alto trovato.\\
+Per la Germania Ovest, P value di 0.8886 e 5 partecipazioni (di cui in 1
+ospita), per un totale di 204 medaglie; frequenza attesa quando ospita di 40.8 e
+40 medaglie reali, con una differenza di -0.8 medaglie.\\
+\\
+Escludendo gli anni di boicottaggio, ITA, CAN e FRG rimangono non
+significativi.\\
+Vi si aggiungono gli USA, con P value di 0.0947 e 22 partecipazioni su 22 (di
+cui in 2 ospita), per un totale di 2080 medaglie; frequenza attesa quando ospita
+di 189.09 e 211 medaglie reali, con una differenza di +21.91 medaglie. Per il
+team più vincente di tutti, l'incremento dovrebbe essere maggiore, per essere
+considerato rilevante.\\

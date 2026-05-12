@@ -469,7 +469,7 @@ if __name__ == "__main__":
 		DS_GDP_PATH = DS_GDP_WBOD_PATH if use_gdp_tot else DS_GDPPC_MADDISON_PATH
 
 		if noc_hosts:
-			noc_list = get_hosts_unique_list(medals_season=medals_season, year_start=year_start, year_end=year_end)
+			noc_list = get_hosts_unique_list(medals_season=medals_season, year_start=year_start, year_end=year_end, remove_boycott=exclude_boycott)
 			noc_top = 0
 			print(f"Using all host countries in the selected years (total hosts: {len(noc_list)}):\n{', '.join(noc_list)}\n")
 		elif noc_top != 0:

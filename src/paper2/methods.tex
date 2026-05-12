@@ -1,9 +1,13 @@
 \section{Metodologie e Dati}\label{sec:methods}
 
 \subsection{I dati}
+Nel repository del progetto\cite{our-repo} sono disponibili sorgenti, risultati,
+riferimenti e i dataset.\\
 I dati sono stati estratti da un dataset storico completo delle Olimpiadi
-moderne presente su Kaggle, integrato dal 2017 in poi dai dati presenti su
-Wikipedia (1924--2024), con informazioni su:
+moderne presente su Kaggle\cite{120YearsOlympic}, integrato dal 2017 in poi dai
+dati presenti su
+Wikipedia\cite{WikipediaOlympics,WikipediaW2018,WikipediaS2020,WikipediaW2022,WikipediaS2024,WikipediaW2026}
+(1924--2024), con informazioni su:
 \begin{itemize}
 	\item Paese partecipante (codice NOC --- National Olympic Committee)
 	\item Anno dell'evento olimpico
@@ -11,7 +15,15 @@ Wikipedia (1924--2024), con informazioni su:
 	\item Numero totale di medaglie vinte (oro, argento, bronzo sommate)
 \end{itemize}
 Le medaglie vengono contate per evento, vale a dire che gli sport di squadra
-possono fornirne una per team, piuttosto che una per ogni suo membro.
+possono fornirne una per team, piuttosto che una per ogni suo membro.\\
+\\
+Gli Stati storici di Unione Sovietica (URS, 1952--1988) e Germania Ovest (FRG,
+1968--1988) non sono stati uniti, rispettivamente, con Russia e Germania, in
+quanto avevano confini diversi. D'altra parte, per via di svariati avvenimenti
+storici, molti team non hanno partecipato a tutte le edizioni: tra i 18
+analizzati, solo 7 (AUS, FRA, GBR, NED, ITA, GRE, MEX) hanno partecipato a 24
+edizioni.\\
+
 
 \subsection{Il metodo}
 Il test chi-quadrato di Pearson è stato utilizzato per testare l'indipendenza
@@ -19,12 +31,12 @@ tra due variabili categoriche: ospitalità (sì/no) e numero di medaglie.\\
 Il test è stato applicato individualmente a ognuno dei 18 Paesi che abbiano
 ospitato almeno un'edizione nel periodo selezionato. Per i paesi che non
 soddisfacevano l'assunzione $\textit{frequenze\_attese} \ge 5$ (Grecia e
-Messico), i risultati sono riportati con un avviso di cautela (*), in quanto non
-statisticamente affidabili secondo gli standard di
-Cochran\cite{kroonenbergTaleCochransRule2018}.\\
+Messico), i risultati sono riportati nelle ultime righe delle tabelle con un
+avviso di cautela (*), in quanto non statisticamente affidabili secondo gli
+standard della regola di Cochran\cite{kroonenbergTaleCochransRule2018}.\\
 \\
 Inoltre, è stato applicato in maniera aggregata (per somma) a tutti i Paesi così
-selezionati e che soddisfacessero il teorema di Cochran (16 in totale).\\
+selezionati e che soddisfacessero la regola di Cochran (16 in totale).\\
 Il risultato aggregato fornirà una valutazione generale dell'effetto host,
 mentre quelli individuali delle singole Nazioni permetteranno di comprendere
 quali, di preciso, ne abbiano beneficiato.\\
@@ -50,3 +62,13 @@ aggregata:\\
 \[
 	\chi^2= \sum_{i=1}^{2} \frac{(O_i - E_i)^2}{E_{i}}
 \]
+
+In un'analisi aggiuntiva, abbiamo escluso per tutti le edizioni di 1980 e 1984.
+In esse, infatti, in piena Guerra Fredda, i due ospitanti URS e USA --- tra i
+team più vincenti di sempre --- si sono boicottati a vicenda, con il risultato
+che l'altro ha vinto molte più medaglie del solito: 195 per l'URS nel 1980
+(30.90\% del totale disponibile quell'anno), 173 per gli USA nel 1984 (21.57\%
+del totale disponibile quell'anno).\\
+Di preciso, gli Stati selezionati che non hanno partecipato in una di queste due
+edizioni sono: CHN, JPN, KOR, USA, FRG, CAN nel 1980; URS nel 1984; si ricorda
+che, in quel periodo, non esisteva la Germania (GER) ma la Germania Ovest (FRG).

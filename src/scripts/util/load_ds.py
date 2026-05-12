@@ -753,11 +753,11 @@ def load_medals_homeDiff(
 			data_type=medals_data_type
 		)
 		
-		events_home_n	= medals_df[medals_df[DF_COL_IS_HOST] == True].shape[0]
-		events_n		= medals_df.shape[0]
-		
 		if remove_boycott:
 			medals_df = medals_df[~medals_df.index.isin([YEAR_BOYCOTT_URS, YEAR_BOYCOTT_USA])]
+
+		events_home_n	= medals_df[medals_df[DF_COL_IS_HOST] == True].shape[0]
+		events_n		= medals_df.shape[0]
 
 		host_years = medals_df[medals_df[DF_COL_IS_HOST] == True].index
 		# Get total medals available only for years this country participated
@@ -1033,9 +1033,12 @@ def get_hosts_unique_list(
 	medals_season		: str,
 	year_start			: int	= MEDALS_FULL_YEAR_FIRST,
 	year_end			: int	= MEDALS_FULL_YEAR_LAST,
+	remove_boycott		: bool	= False
 ) -> list[str]:
 	"""Get the list of unique host countries in the given season and year range."""
 	hosts_df = _get_hosting_schedule(medals_season, year_start, year_end)
+	if remove_boycott:
+		hosts_df = hosts_df[~hosts_df.index.isin([YEAR_BOYCOTT_URS, YEAR_BOYCOTT_USA])]
 	return hosts_df['NOC'].unique().tolist()
 
 

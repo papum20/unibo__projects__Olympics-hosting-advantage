@@ -11,39 +11,89 @@ validità statistica delle conclusioni.
 
 \begin{table}[H]
 \centering
-\caption{Analisi e risultati per ogni nazione}
-\label{tab:medaglie_chi2}
+\caption{Risultati Test Chi Quadro per ogni Nazione e aggregato}\label{tab:chi2}
 \small 
 \setlength{\tabcolsep}{2pt} 
-\begin{tabularx}{\textwidth}{@{} l *{9}{C} @{}}
+\begin{tabularx}{\textwidth}{@{} l *{11}{C} @{}}
 \toprule
-\textbf{Paese} & \textbf{Nr. host} & \textbf{Nr. non host} & \textbf{tot
-medaglie} & \textbf{Med host} & \textbf{Med attese host} & \textbf{Med non host}
-& \textbf{Med attese non host} & \textbf{P Value} & \textbf{Risultati} \\
+\textbf{\#} & \multicolumn{1}{c}{\textbf{NOC}} & \multicolumn{2}{c}{\textbf{Events}} & \multicolumn{5}{c}{\textbf{Medals}} & \multicolumn{3}{c}{\textbf{Results}} \\
+\cmidrule(lr){1-1} \cmidrule(lr){2-2} \cmidrule(lr){3-4} \cmidrule(lr){5-9} \cmidrule(lr){10-12}
+\textbf{\#} & \textbf{NOC} & \textbf{Host} & \textbf{Away} & \textbf{Tot} & \textbf{Host} & \textbf{attese Host} & \textbf{Away} & \textbf{attese Away} & \textbf{$\chi^2$} & \textbf{p-value} & \textbf{p < 0.05} \\
 \midrule
-AUS & 2 & 22 & 586  & 93  & 48.83  & 493  & 537.17 & 0.0000 & True  \\
-BRA & 1 & 22 & 166  & 19  & 7.22   & 147  & 158.78 & 0.0000 & True  \\
-CHN & 1 & 13 & 722  & 100 & 51.57  & 622  & 670.43 & 0.0000 & True  \\
-ESP & 1 & 22 & 180  & 22  & 7.83   & 158  & 172.17 & 0.0000 & True  \\
-GBR & 2 & 22 & 716  & 92  & 59.67  & 624  & 656.33 & 0.0000 & True  \\
-FRA & 2 & 22 & 635  & 104 & 52.92  & 531  & 582.08 & 0.0000 & True  \\
-GRE & 1 & 23 & 75   & 16  & 3.12*  & 59   & 71.88  & 0.0000 & True  \\
-GER & 1 & 15 & 755  & 101 & 47.19  & 654  & 707.81 & 0.0000 & True  \\
-USA & 3 & 20 & 2253 & 384 & 293.87 & 1869 & 1959.13& 0.0000 & True  \\
-KOR & 1 & 18 & 315  & 33  & 16.58  & 282  & 298.42 & 0.0000 & True  \\
-JPN & 2 & 20 & 538  & 87  & 48.91  & 451  & 489.09 & 0.0000 & True  \\
-FIN & 1 & 22 & 243  & 22  & 10.57  & 221  & 232.43 & 0.0003 & True  \\
-MEX & 1 & 23 & 75   & 9   & 3.12*  & 66   & 71.88  & 0.0007 & True  \\
-NED & 1 & 23 & 341  & 23  & 14.21  & 318  & 326.79 & 0.0172 & True  \\
-ITA & 1 & 23 & 630  & 36  & 26.25  & 594  & 603.75 & 0.0519 & False \\
-CAN & 1 & 22 & 313  & 11  & 13.61  & 302  & 299.39 & 0.4696 & False \\
+0           &          ALL &            22 &           299 &         9602 &          1362 &         658.0810     &          8240 &            8943.9190 &          808.3508 &           0.0000 &        True\\\midrule
+1           &          AUS &             2 &            22 &          586 &            93 &          48.8333     &           493 &             537.1667 &           43.5774 &           0.0000 &        True\\
+2           &          BRA &             1 &            22 &          166 &            19 &           7.2174     &           147 &             158.7826 &           20.1098 &           0.0000 &        True\\
+3           &          CHN &             1 &            14 &          722 &           100 &          48.1333     &           622 &             673.8667 &           59.8817 &           0.0000 &        True\\
+4           &          ESP &             1 &            22 &          180 &            22 &           7.8261     &           158 &             172.1739 &           26.8374 &           0.0000 &        True\\
+5           &          FRA &             2 &            22 &          635 &           104 &          52.9167     &           531 &             582.0833 &           53.7966 &           0.0000 &        True\\
+6           &          GBR &             2 &            22 &          716 &            92 &          59.6667     &           624 &             656.3333 &           19.1143 &           0.0000 &        True\\
+7           &          GER &             1 &            15 &          755 &           101 &          47.1875     &           654 &             707.8125 &           65.4588 &           0.0000 &        True\\
+8           &          JPN &             2 &            20 &          538 &            87 &          48.9091     &           451 &             489.0909 &           32.6322 &           0.0000 &        True\\
+9           &          KOR &             1 &            18 &          315 &            33 &          16.5789     &           282 &             298.4211 &           17.1683 &           0.0000 &        True\\
+10          &          URS &             1 &             8 &         1005 &           195 &         111.6667     &           810 &             893.3333 &           69.9627 &           0.0000 &        True\\
+11          &          USA &             3 &            20 &         2253 &           384 &         293.8696     &          1869 &            1959.1304 &           31.7897 &           0.0000 &        True\\
+12          &          FIN &             1 &            22 &          243 &            22 &          10.5652     &           221 &             232.4348 &           12.9385 &           0.0003 &        True\\
+13          &          NED &             1 &            23 &          341 &            23 &          14.2083     &           318 &             326.7917 &            5.6765 &           0.0172 &        True\\\midrule
+14          &          ITA &             1 &            23 &          630 &            36 &          26.2500     &           594 &             603.7500 &            3.7789 &           0.0519 &       False\\
+15          &          CAN &             1 &            22 &          313 &            11 &          13.6087     &           302 &             299.3913 &            0.5228 &           0.4696 &       False\\
+16          &          FRG &             1 &             4 &          204 &            40 &          40.8000     &           164 &             163.2000 &            0.0196 &           0.8886 &       False\\\midrule
+17          &          GRE &             1 &            23 &           75 &            16 &           3.1250$^*$ &            59 &              71.8750 &           55.3513 &           0.0000 &        True\\
+18          &          MEX &             1 &            23 &           75 &             9 &           3.1250$^*$ &            66 &              71.8750 &           11.5252 &           0.0007 &        True\\
 \bottomrule
 \end{tabularx}
-\vspace{2pt} 
-\raggedright 
-\scriptsize 
+\vspace{2pt}
+\raggedright
+\scriptsize
+\textit{Per leggibilità, righe ordinate per compatibilità con Cochran, poi p-value e NOC.}\\
 \textit{* = Questi risultati non soddisfano le assunzioni del test del $\chi^2$}
 \end{table}
+
+
+
+\newcolumntype{C}{>{\centering\arraybackslash}X}
+
+\begin{table}[H]
+\centering
+\caption{Risultati Test Chi Quadro per ogni Nazione e aggregato (esclusi anni di boicottaggio)}\label{tab:chi2_excl_boycott}
+\small 
+\setlength{\tabcolsep}{2pt} 
+\begin{tabularx}{\textwidth}{@{} l *{11}{C} @{}}
+\toprule
+\textbf{\#} & \multicolumn{1}{c}{\textbf{NOC}} & \multicolumn{2}{c}{\textbf{Events}} & \multicolumn{5}{c}{\textbf{Medals}} & \multicolumn{3}{c}{\textbf{Results}} \\
+\cmidrule(lr){1-1} \cmidrule(lr){2-2} \cmidrule(lr){3-4} \cmidrule(lr){5-9} \cmidrule(lr){10-12}
+\textbf{\#} & \textbf{NOC} & \textbf{Host} & \textbf{Away} & \textbf{Tot} & \textbf{Host} & \textbf{attese Host} & \textbf{Away} & \textbf{attese Away} & \textbf{$\chi^2$} & \textbf{p-value} & \textbf{p < 0.05} \\
+\midrule
+0           &          ALL &            22 &           299 &         8810 &           994 &         603.8006     &          7816 &            8206.1994 &          270.7157 &           0.0000 &     True\\\midrule
+1           &          AUS &             2 &            22 &          553 &            93 &          46.0833     &           460 &             506.9167 &           52.1073 &           0.0000 &     True\\
+2           &          BRA &             1 &            22 &          154 &            19 &           6.6957     &           135 &             147.3043 &           23.6390 &           0.0000 &     True\\
+3           &          CHN &             1 &            14 &          690 &           100 &          46.0000     &           590 &             644.0000 &           67.9193 &           0.0000 &     True\\
+4           &          ESP &             1 &            22 &          169 &            22 &           7.3478     &           147 &             161.6522 &           30.5457 &           0.0000 &     True\\
+5           &          FRA &             2 &            22 &          593 &           104 &          49.4167     &           489 &             543.5833 &           65.7711 &           0.0000 &     True\\
+6           &          GBR &             2 &            22 &          658 &            92 &          54.8333     &           566 &             603.1667 &           27.4822 &           0.0000 &     True\\
+7           &          GER &             1 &            15 &          755 &           101 &          47.1875     &           654 &             707.8125 &           65.4588 &           0.0000 &     True\\
+8           &          JPN &             2 &            20 &          507 &            87 &          46.0909     &           420 &             460.9091 &           39.9408 &           0.0000 &     True\\
+9           &          KOR &             1 &            18 &          296 &            33 &          15.5789     &           263 &             280.4211 &           20.5633 &           0.0000 &     True\\
+10          &          URS &             1 &             8 &          810 &             0 &          90.0000     &           810 &             720.0000 &          101.2500 &           0.0000 &     True\\
+11          &          FIN &             1 &            22 &          223 &            22 &           9.6957     &           201 &             213.3043 &           16.3247 &           0.0001 &     True\\
+12          &          USA &             3 &            20 &         2080 &           211 &         271.3043     &          1869 &            1808.6957 &           15.4148 &           0.0001 &     True\\
+13          &          NED &             1 &            23 &          325 &            23 &          13.5417     &           302 &             311.4583 &            6.8935 &           0.0087 &     True\\
+14          &          ITA &             1 &            23 &          583 &            36 &          24.2917     &           547 &             558.7083 &            5.8887 &           0.0152 &     True\\
+15          &          FRG &             1 &             4 &          145 &            40 &          29.0000     &           105 &             116.0000 &            5.2155 &           0.0224 &     True\\\midrule
+16          &          CAN &             1 &            22 &          269 &            11 &          11.6957     &           258 &             257.3043 &            0.0433 &           0.8352 &    False\\\midrule
+17          &          GRE &             1 &            23 &           70 &            16 &           2.9167$^*$ &            54 &              67.0833 &           61.2398 &           0.0000 &     True\\
+18          &          MEX &             1 &            23 &           65 &             9 &           2.7083$^*$ &            56 &              62.2917 &           15.2515 &           0.0001 &     True\\
+\bottomrule
+\multicolumn{12}{l}{
+	}\\
+\end{tabularx}
+\vspace{2pt}
+\raggedright
+\scriptsize
+\textit{Per leggibilità, righe ordinate per compatibilità con Cochran, poi p-value e NOC.}\\
+\textit{* = Questi risultati non soddisfano le assunzioni del test del $\chi^2$}
+\end{table}
+
+
 
 \subsection{Risultati significativi}
 Risultati significativi con un p-value <0.0001 sono AUS, BRA, CHN, ESP, GBR,

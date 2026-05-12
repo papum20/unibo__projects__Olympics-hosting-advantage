@@ -31,10 +31,11 @@ Paper/report: `docs/report.pdf`
 paper:
 ```bash
 # compile
-#./src/scripts/bash-util/paper-compile.sh [DIR=src/paper1/]
-./src/scripts/bash-util/paper-compile.sh
+#./src/scripts/bash-util/paper-compile.sh [DIR=src/paper1/ [--save]]
+./src/scripts/bash-util/paper-compile.sh src/paper2 --save
 # count words
-./src/scripts/bash-util/paper-count-words.sh
+#./src/scripts/bash-util/paper-count-words.sh [DIR=src/paper1/]
+./src/scripts/bash-util/paper-count-words.sh src/paper2/
 ```
 
 chi-squared:

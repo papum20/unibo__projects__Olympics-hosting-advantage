@@ -37,6 +37,7 @@ from util.load_ds import (
 	DF_COL_IS_HOST_CLOSE_MAIN,
 	DF_COL_IS_HOST_CLOSE_WEST,
 	DF_COL_IS_HOST_CLOSE_WIDE,
+	DF_COL_MEDALS,
 	DF_COL_MEDALS_AVAILABLE,
 	DF_COL_MEDALS_AVAILABLE_HOME,
 	DF_COL_MEDALS_AWAY,
@@ -82,13 +83,20 @@ CTRL_VARS = set(CTRL_VARS_DICT.keys()) | {
 	'YEAR'
 }
 
-DF_COL_MEDAL_WON		= 'Medal_Won'
-DF_COL_MEDAL_NOT_WON	= 'Medal_Not_Won'
+P_VALUE_SIGNIFICANCE_LEVEL = 0.05
 
-DF_COL_CHI_STAT		= 'Chi2_Stat'
-DF_COL_CHI_P		= 'Chi2_PValue'
-DF_COL_CHI_DOF		= 'Chi2_DOF'
-DF_COL_CHI_EXP_FREQ = 'Chi2_ExpectedFreq'
+DF_COL_EVENTS_AWAY		= 'Events_Away'
+
+DF_COL_MEDALS_HOME_EXPECTED	= 'Medals_Home_Expected'
+DF_COL_MEDALS_AWAY_EXPECTED	= 'Medals_Away_Expected'
+DF_COL_MEDAL_WON			= 'Medal_Won'
+DF_COL_MEDAL_NOT_WON		= 'Medal_Not_Won'
+
+DF_COL_CHI_STAT			= 'Chi2_Stat'
+DF_COL_CHI_P			= 'Chi2_PValue'
+DF_COL_CHI_DOF			= 'Chi2_DOF'
+DF_COL_CHI_EXP_FREQ 	= 'Chi2_ExpectedFreq'
+DF_COL_P_SIGNIFICANT	= f'P < {P_VALUE_SIGNIFICANCE_LEVEL}'
 
 
 
@@ -263,7 +271,7 @@ def perform_chiSquared_goodnessOfFit_ROW(medal_diff_df, is_verbose=False) -> tup
 def perform_chiSquared_goodnessOfFit_own(medal_diff_df, is_verbose=False) -> tuple[float, float]:
 	won_tot		= medal_diff_df[DF_COL_MEDALS_HOME].sum() + medal_diff_df[DF_COL_MEDALS_AWAY].sum()
 
-	# [Won Home, Won Aways]
+	# [Won Home, Won Away]
 	observed = [
 		medal_diff_df[DF_COL_MEDALS_HOME].sum(),
 		medal_diff_df[DF_COL_MEDALS_AWAY].sum()
@@ -279,7 +287,7 @@ def perform_chiSquared_goodnessOfFit_own(medal_diff_df, is_verbose=False) -> tup
 		print(f"Expected (Home, Away): {expected}")
 		print("\n")
 
-	# Perform Chi-Squared Go1odness of Fit test
+	# Perform Chi-Squared Goodness of Fit test
 	chi2_stat, p_value = stats.chisquare(f_obs=observed, f_exp=expected)
 
 	print(f"Chi-Squared Statistic: {chi2_stat:.4f}")
@@ -490,43 +498,46 @@ if __name__ == "__main__":
 
 		res_chi_squared = pd.DataFrame(columns=[
 			DF_COL_NOC,
-			DF_COL_MEDALS_HOME,
-			DF_COL_MEDALS_AWAY,
-			DF_COL_MEDALS_HOME_DIFF,
-			DF_COL_MEDALS_AVAILABLE,
-			DF_COL_MEDALS_AVAILABLE_HOME,
-			DF_COL_EVENTS,
 			DF_COL_EVENTS_HOME,
+			DF_COL_EVENTS_AWAY,
+			DF_COL_MEDALS,
+			DF_COL_MEDALS_HOME,
+			DF_COL_MEDALS_HOME_EXPECTED,
+			DF_COL_MEDALS_AWAY,
+			DF_COL_MEDALS_AWAY_EXPECTED,
 			DF_COL_CHI_STAT,
 			DF_COL_CHI_P,
+			DF_COL_P_SIGNIFICANT,
 			DF_COL_CHI_DOF,
 			DF_COL_CHI_EXP_FREQ
 		])
 
 		res_chi_squared_goodnessOfFit_own = pd.DataFrame(columns=[
 			DF_COL_NOC,
-			DF_COL_MEDALS_HOME,
-			DF_COL_MEDALS_AWAY,
-			DF_COL_MEDALS_HOME_DIFF,
-			DF_COL_MEDALS_AVAILABLE,
-			DF_COL_MEDALS_AVAILABLE_HOME,
-			DF_COL_EVENTS,
 			DF_COL_EVENTS_HOME,
+			DF_COL_EVENTS_AWAY,
+			DF_COL_MEDALS,
+			DF_COL_MEDALS_HOME,
+			DF_COL_MEDALS_HOME_EXPECTED,
+			DF_COL_MEDALS_AWAY,
+			DF_COL_MEDALS_AWAY_EXPECTED,
 			DF_COL_CHI_STAT,
-			DF_COL_CHI_P
+			DF_COL_CHI_P,
+			DF_COL_P_SIGNIFICANT
 		])
 
 		res_chi_squared_goodnessOfFit_ROW = pd.DataFrame(columns=[
 			DF_COL_NOC,
-			DF_COL_MEDALS_HOME,
-			DF_COL_MEDALS_AWAY,
-			DF_COL_MEDALS_HOME_DIFF,
-			DF_COL_MEDALS_AVAILABLE,
-			DF_COL_MEDALS_AVAILABLE_HOME,
-			DF_COL_EVENTS,
 			DF_COL_EVENTS_HOME,
+			DF_COL_EVENTS_AWAY,
+			DF_COL_MEDALS,
+			DF_COL_MEDALS_HOME,
+			DF_COL_MEDALS_HOME_EXPECTED,
+			DF_COL_MEDALS_AWAY,
+			DF_COL_MEDALS_AWAY_EXPECTED,
 			DF_COL_CHI_STAT,
-			DF_COL_CHI_P
+			DF_COL_CHI_P,
+			DF_COL_P_SIGNIFICANT
 		])
 
 		# Aggregated
@@ -553,48 +564,59 @@ if __name__ == "__main__":
 
 		res_chi_squared = pd.concat([res_chi_squared, pd.DataFrame([{
 				DF_COL_NOC: 'ALL',
-				DF_COL_MEDALS_HOME: medal_diff_df[DF_COL_MEDALS_HOME].sum(),
-				DF_COL_MEDALS_AWAY: medal_diff_df[DF_COL_MEDALS_AWAY].sum(),
-				DF_COL_MEDALS_HOME_DIFF: medal_diff_df[DF_COL_MEDALS_HOME_DIFF].sum(),
-				DF_COL_MEDALS_AVAILABLE: medal_diff_df[DF_COL_MEDALS_AVAILABLE].sum(),
-				DF_COL_MEDALS_AVAILABLE_HOME: medal_diff_df[DF_COL_MEDALS_AVAILABLE_HOME].sum(),
-				DF_COL_EVENTS: medal_diff_df[DF_COL_EVENTS].sum(),
 				DF_COL_EVENTS_HOME: medal_diff_df[DF_COL_EVENTS_HOME].sum(),
+				DF_COL_EVENTS_AWAY: medal_diff_df[DF_COL_EVENTS].sum() - medal_diff_df[DF_COL_EVENTS_HOME].sum(),
+				DF_COL_MEDALS: medal_diff_df[DF_COL_MEDALS_HOME].sum() + medal_diff_df[DF_COL_MEDALS_AWAY].sum(),
+				DF_COL_MEDALS_HOME: medal_diff_df[DF_COL_MEDALS_HOME].sum(),
+				DF_COL_MEDALS_HOME_EXPECTED: res[3][0, 0],	# type: ignore
+				DF_COL_MEDALS_AWAY: medal_diff_df[DF_COL_MEDALS_AWAY].sum(),
+				DF_COL_MEDALS_AWAY_EXPECTED: res[3][1, 0],	# type: ignore
 				DF_COL_CHI_STAT: res[0],
-				DF_COL_CHI_P: res[1],
+				DF_COL_CHI_P: round(res[1], 4),	# type: ignore
+				DF_COL_P_SIGNIFICANT: res[1] < P_VALUE_SIGNIFICANCE_LEVEL,	# type: ignore
 				DF_COL_CHI_DOF: res[2],
 				DF_COL_CHI_EXP_FREQ: res[3]
 			}])
 		])
 		
-		stat, pval = perform_chiSquared_goodnessOfFit_own(medal_diff_df, is_verbose=verbose)
+		stat, pval			= perform_chiSquared_goodnessOfFit_own(medal_diff_df, is_verbose=verbose)
+		won_tot				= medal_diff_df[DF_COL_MEDALS_HOME].sum() + medal_diff_df[DF_COL_MEDALS_AWAY].sum()
+		expected_home_own	= won_tot / medal_diff_df[DF_COL_EVENTS].sum() * medal_diff_df[DF_COL_EVENTS_HOME].sum()
+		expected_away_own	= won_tot / medal_diff_df[DF_COL_EVENTS].sum() * (medal_diff_df[DF_COL_EVENTS].sum() - medal_diff_df[DF_COL_EVENTS_HOME].sum())
 
 		res_chi_squared_goodnessOfFit_own = pd.concat([res_chi_squared_goodnessOfFit_own, pd.DataFrame([{
 				DF_COL_NOC: 'ALL',
-				DF_COL_MEDALS_HOME: medal_diff_df[DF_COL_MEDALS_HOME].sum(),
-				DF_COL_MEDALS_AWAY: medal_diff_df[DF_COL_MEDALS_AWAY].sum(),
-				DF_COL_MEDALS_HOME_DIFF: medal_diff_df[DF_COL_MEDALS_HOME_DIFF].sum(),
-				DF_COL_MEDALS_AVAILABLE: medal_diff_df[DF_COL_MEDALS_AVAILABLE].sum(),
-				DF_COL_MEDALS_AVAILABLE_HOME: medal_diff_df[DF_COL_MEDALS_AVAILABLE_HOME].sum(),
-				DF_COL_EVENTS: medal_diff_df[DF_COL_EVENTS].sum(),
 				DF_COL_EVENTS_HOME: medal_diff_df[DF_COL_EVENTS_HOME].sum(),
+				DF_COL_EVENTS_AWAY: medal_diff_df[DF_COL_EVENTS].sum() - medal_diff_df[DF_COL_EVENTS_HOME].sum(),
+				DF_COL_MEDALS: won_tot,
+				DF_COL_MEDALS_HOME: medal_diff_df[DF_COL_MEDALS_HOME].sum(),
+				DF_COL_MEDALS_HOME_EXPECTED: expected_home_own,
+				DF_COL_MEDALS_AWAY: medal_diff_df[DF_COL_MEDALS_AWAY].sum(),
+				DF_COL_MEDALS_AWAY_EXPECTED: expected_away_own,
 				DF_COL_CHI_STAT: stat,
-				DF_COL_CHI_P: pval
+				DF_COL_CHI_P: round(pval, 4),
+				DF_COL_P_SIGNIFICANT: pval < P_VALUE_SIGNIFICANCE_LEVEL	# type: ignore
 			}])
 		])
 
 		stat, pval = perform_chiSquared_goodnessOfFit_ROW(medal_diff_df, is_verbose=verbose)
+		won_tot = medal_diff_df[DF_COL_MEDALS_HOME].sum() + medal_diff_df[DF_COL_MEDALS_AWAY].sum()
+		host_rate = medal_diff_df[DF_COL_EVENTS_HOME].sum() / medal_diff_df[DF_COL_EVENTS].sum()
+		expected_home_row = host_rate * won_tot
+		expected_away_row = won_tot - expected_home_row
+
 		res_chi_squared_goodnessOfFit_ROW = pd.concat([res_chi_squared_goodnessOfFit_ROW, pd.DataFrame([{
 				DF_COL_NOC: 'ALL',
-				DF_COL_MEDALS_HOME: medal_diff_df[DF_COL_MEDALS_HOME].sum(),
-				DF_COL_MEDALS_AWAY: medal_diff_df[DF_COL_MEDALS_AWAY].sum(),
-				DF_COL_MEDALS_HOME_DIFF: medal_diff_df[DF_COL_MEDALS_HOME_DIFF].sum(),
-				DF_COL_MEDALS_AVAILABLE: medal_diff_df[DF_COL_MEDALS_AVAILABLE].sum(),
-				DF_COL_MEDALS_AVAILABLE_HOME: medal_diff_df[DF_COL_MEDALS_AVAILABLE_HOME].sum(),
-				DF_COL_EVENTS: medal_diff_df[DF_COL_EVENTS].sum(),
 				DF_COL_EVENTS_HOME: medal_diff_df[DF_COL_EVENTS_HOME].sum(),
+				DF_COL_EVENTS_AWAY: medal_diff_df[DF_COL_EVENTS].sum() - medal_diff_df[DF_COL_EVENTS_HOME].sum(),
+				DF_COL_MEDALS: won_tot,
+				DF_COL_MEDALS_HOME: medal_diff_df[DF_COL_MEDALS_HOME].sum(),
+				DF_COL_MEDALS_HOME_EXPECTED: expected_home_row,
+				DF_COL_MEDALS_AWAY: medal_diff_df[DF_COL_MEDALS_AWAY].sum(),
+				DF_COL_MEDALS_AWAY_EXPECTED: expected_away_row,
 				DF_COL_CHI_STAT: stat,
-				DF_COL_CHI_P: pval
+				DF_COL_CHI_P: round(pval, 4),
+				DF_COL_P_SIGNIFICANT: pval < P_VALUE_SIGNIFICANCE_LEVEL	# type: ignore
 			}])
 		])
 
@@ -622,61 +644,74 @@ if __name__ == "__main__":
 
 			res_chi_squared = pd.concat([res_chi_squared, pd.DataFrame([{
 					DF_COL_NOC: noc,
-					DF_COL_MEDALS_HOME: medal_diff_df[DF_COL_MEDALS_HOME].sum(),
-					DF_COL_MEDALS_AWAY: medal_diff_df[DF_COL_MEDALS_AWAY].sum(),
-					DF_COL_MEDALS_HOME_DIFF: medal_diff_df[DF_COL_MEDALS_HOME_DIFF].sum(),
-					DF_COL_MEDALS_AVAILABLE: medal_diff_df[DF_COL_MEDALS_AVAILABLE].sum(),
-					DF_COL_MEDALS_AVAILABLE_HOME: medal_diff_df[DF_COL_MEDALS_AVAILABLE_HOME].sum(),
-					DF_COL_EVENTS: medal_diff_df[DF_COL_EVENTS].sum(),
 					DF_COL_EVENTS_HOME: medal_diff_df[DF_COL_EVENTS_HOME].sum(),
+					DF_COL_EVENTS_AWAY: medal_diff_df[DF_COL_EVENTS].sum() - medal_diff_df[DF_COL_EVENTS_HOME].sum(),
+					DF_COL_MEDALS: medal_diff_df[DF_COL_MEDALS_HOME].sum() + medal_diff_df[DF_COL_MEDALS_AWAY].sum(),
+					DF_COL_MEDALS_HOME: medal_diff_df[DF_COL_MEDALS_HOME].sum(),
+					DF_COL_MEDALS_HOME_EXPECTED: res[3][0, 0],	# type: ignore
+					DF_COL_MEDALS_AWAY: medal_diff_df[DF_COL_MEDALS_AWAY].sum(),
+					DF_COL_MEDALS_AWAY_EXPECTED: res[3][1, 0],	# type: ignore
 					DF_COL_CHI_STAT: res[0],
-					DF_COL_CHI_P: res[1],
+					DF_COL_CHI_P: round(res[1], 4),	# type: ignore
+					DF_COL_P_SIGNIFICANT: res[1] < P_VALUE_SIGNIFICANCE_LEVEL,	# type: ignore
 					DF_COL_CHI_DOF: res[2],
 					DF_COL_CHI_EXP_FREQ: res[3]
 				}])
 			])
 
 			stat, pval = perform_chiSquared_goodnessOfFit_own(medal_diff_df, is_verbose=verbose)
+			won_tot = medal_diff_df[DF_COL_MEDALS_HOME].sum() + medal_diff_df[DF_COL_MEDALS_AWAY].sum()
+			expected_home_own = won_tot / medal_diff_df[DF_COL_EVENTS].sum() * medal_diff_df[DF_COL_EVENTS_HOME].sum()
+			expected_away_own = won_tot / medal_diff_df[DF_COL_EVENTS].sum() * (medal_diff_df[DF_COL_EVENTS].sum() - medal_diff_df[DF_COL_EVENTS_HOME].sum())
 
 			res_chi_squared_goodnessOfFit_own = pd.concat([res_chi_squared_goodnessOfFit_own, pd.DataFrame([{
 					DF_COL_NOC: noc,
-					DF_COL_MEDALS_HOME: medal_diff_df[DF_COL_MEDALS_HOME].sum(),
-					DF_COL_MEDALS_AWAY: medal_diff_df[DF_COL_MEDALS_AWAY].sum(),
-					DF_COL_MEDALS_HOME_DIFF: medal_diff_df[DF_COL_MEDALS_HOME_DIFF].sum(),
-					DF_COL_MEDALS_AVAILABLE: medal_diff_df[DF_COL_MEDALS_AVAILABLE].sum(),
-					DF_COL_MEDALS_AVAILABLE_HOME: medal_diff_df[DF_COL_MEDALS_AVAILABLE_HOME].sum(),
-					DF_COL_EVENTS: medal_diff_df[DF_COL_EVENTS].sum(),
 					DF_COL_EVENTS_HOME: medal_diff_df[DF_COL_EVENTS_HOME].sum(),
+					DF_COL_EVENTS_AWAY: medal_diff_df[DF_COL_EVENTS].sum() - medal_diff_df[DF_COL_EVENTS_HOME].sum(),
+					DF_COL_MEDALS: won_tot,
+					DF_COL_MEDALS_HOME: medal_diff_df[DF_COL_MEDALS_HOME].sum(),
+					DF_COL_MEDALS_HOME_EXPECTED: expected_home_own,
+					DF_COL_MEDALS_AWAY: medal_diff_df[DF_COL_MEDALS_AWAY].sum(),
+					DF_COL_MEDALS_AWAY_EXPECTED: expected_away_own,
 					DF_COL_CHI_STAT: stat,
-					DF_COL_CHI_P: pval
+					DF_COL_CHI_P: round(pval, 4),
+					DF_COL_P_SIGNIFICANT: pval < P_VALUE_SIGNIFICANCE_LEVEL	# type: ignore
 				}])
 			])
 			
 			stat, pval = perform_chiSquared_goodnessOfFit_ROW(medal_diff_df, is_verbose=verbose)
+			won_tot = medal_diff_df[DF_COL_MEDALS_HOME].sum() + medal_diff_df[DF_COL_MEDALS_AWAY].sum()
+			host_rate = medal_diff_df[DF_COL_EVENTS_HOME].sum() / medal_diff_df[DF_COL_EVENTS].sum()
+			expected_home_row = host_rate * won_tot
+			expected_away_row = won_tot - expected_home_row
 
 			res_chi_squared_goodnessOfFit_ROW = pd.concat([res_chi_squared_goodnessOfFit_ROW, pd.DataFrame([{
 					DF_COL_NOC: noc,
-					DF_COL_MEDALS_HOME: medal_diff_df[DF_COL_MEDALS_HOME].sum(),
-					DF_COL_MEDALS_AWAY: medal_diff_df[DF_COL_MEDALS_AWAY].sum(),
-					DF_COL_MEDALS_HOME_DIFF: medal_diff_df[DF_COL_MEDALS_HOME_DIFF].sum(),
-					DF_COL_MEDALS_AVAILABLE: medal_diff_df[DF_COL_MEDALS_AVAILABLE].sum(),
-					DF_COL_MEDALS_AVAILABLE_HOME: medal_diff_df[DF_COL_MEDALS_AVAILABLE_HOME].sum(),
-					DF_COL_EVENTS: medal_diff_df[DF_COL_EVENTS].sum(),
 					DF_COL_EVENTS_HOME: medal_diff_df[DF_COL_EVENTS_HOME].sum(),
+					DF_COL_EVENTS_AWAY: medal_diff_df[DF_COL_EVENTS].sum() - medal_diff_df[DF_COL_EVENTS_HOME].sum(),
+					DF_COL_MEDALS: won_tot,
+					DF_COL_MEDALS_HOME: medal_diff_df[DF_COL_MEDALS_HOME].sum(),
+					DF_COL_MEDALS_HOME_EXPECTED: expected_home_row,
+					DF_COL_MEDALS_AWAY: medal_diff_df[DF_COL_MEDALS_AWAY].sum(),
+					DF_COL_MEDALS_AWAY_EXPECTED: expected_away_row,
 					DF_COL_CHI_STAT: stat,
-					DF_COL_CHI_P: pval
+					DF_COL_CHI_P: round(pval, 4),
+					DF_COL_P_SIGNIFICANT: pval < P_VALUE_SIGNIFICANCE_LEVEL	# type: ignore
 				}])
 			])
 
+		res_chi_squared						= res_chi_squared.sort_values(by=[DF_COL_CHI_P, DF_COL_NOC], na_position='last').reset_index(drop=True)
+		res_chi_squared_goodnessOfFit_own	= res_chi_squared_goodnessOfFit_own.sort_values(by=[DF_COL_CHI_P, DF_COL_NOC], na_position='last').reset_index(drop=True)
+		res_chi_squared_goodnessOfFit_ROW	= res_chi_squared_goodnessOfFit_ROW.sort_values(by=[DF_COL_CHI_P, DF_COL_NOC], na_position='last').reset_index(drop=True)
+
 		print("\n\n=== Final Results: Chi-Squared Test of Independence ===")
-		print(res_chi_squared)
+		print(res_chi_squared.to_string(float_format=lambda x: f'{x:.4f}'))
 
 		print("\n\n=== Final Results: Chi-Squared Goodness of Fit (Own vs Expected) ===")
-		print(res_chi_squared_goodnessOfFit_own)
+		print(res_chi_squared_goodnessOfFit_own.to_string(float_format=lambda x: f'{x:.4f}'))
 
 		print("\n\n=== Final Results: Chi-Squared Goodness of Fit (Host vs Rest of the World) ===")
-		print(res_chi_squared_goodnessOfFit_ROW)
-		
+		print(res_chi_squared_goodnessOfFit_ROW.to_string(float_format=lambda x: f'{x:.4f}'))
 		
 	except Exception as e:
 		# so will also print to log

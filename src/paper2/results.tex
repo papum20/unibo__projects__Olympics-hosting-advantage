@@ -1,9 +1,70 @@
 \section{Risultati}\label{sec:results}
 
-\input{results_within_country}
+Quattordici paesi su sedici hanno mostrato un effetto ospitalità statisticamente
+significativo (p < 0.05). Tuttavia, due paesi (Grecia e Messico) non
+soddisfacevano le assunzioni del test chi-quadrato a causa di partecipazioni
+limitate e basso numero di medaglie totali (frequenze attese = 3.12 < 5). Questi
+risultati sono stati esclusi dall'analisi principale per non compromettere la
+validità statistica delle conclusioni.
 
-\input{results_correlation}
+\newcolumntype{C}{>{\centering\arraybackslash}X}
 
-\input{results_bayesian}
+\begin{table}[H]
+\centering
+\caption{Analisi e risultati per ogni nazione}
+\label{tab:medaglie_chi2}
+\small 
+\setlength{\tabcolsep}{2pt} 
+\begin{tabularx}{\textwidth}{@{} l *{9}{C} @{}}
+\toprule
+\textbf{Paese} & \textbf{Nr. host} & \textbf{Nr. non host} & \textbf{tot
+medaglie} & \textbf{Med host} & \textbf{Med attese host} & \textbf{Med non host}
+& \textbf{Med attese non host} & \textbf{P Value} & \textbf{Risultati} \\
+\midrule
+AUS & 2 & 22 & 586  & 93  & 48.83  & 493  & 537.17 & 0.0000 & True  \\
+BRA & 1 & 22 & 166  & 19  & 7.22   & 147  & 158.78 & 0.0000 & True  \\
+CHN & 1 & 13 & 722  & 100 & 51.57  & 622  & 670.43 & 0.0000 & True  \\
+ESP & 1 & 22 & 180  & 22  & 7.83   & 158  & 172.17 & 0.0000 & True  \\
+GBR & 2 & 22 & 716  & 92  & 59.67  & 624  & 656.33 & 0.0000 & True  \\
+FRA & 2 & 22 & 635  & 104 & 52.92  & 531  & 582.08 & 0.0000 & True  \\
+GRE & 1 & 23 & 75   & 16  & 3.12*  & 59   & 71.88  & 0.0000 & True  \\
+GER & 1 & 15 & 755  & 101 & 47.19  & 654  & 707.81 & 0.0000 & True  \\
+USA & 3 & 20 & 2253 & 384 & 293.87 & 1869 & 1959.13& 0.0000 & True  \\
+KOR & 1 & 18 & 315  & 33  & 16.58  & 282  & 298.42 & 0.0000 & True  \\
+JPN & 2 & 20 & 538  & 87  & 48.91  & 451  & 489.09 & 0.0000 & True  \\
+FIN & 1 & 22 & 243  & 22  & 10.57  & 221  & 232.43 & 0.0003 & True  \\
+MEX & 1 & 23 & 75   & 9   & 3.12*  & 66   & 71.88  & 0.0007 & True  \\
+NED & 1 & 23 & 341  & 23  & 14.21  & 318  & 326.79 & 0.0172 & True  \\
+ITA & 1 & 23 & 630  & 36  & 26.25  & 594  & 603.75 & 0.0519 & False \\
+CAN & 1 & 22 & 313  & 11  & 13.61  & 302  & 299.39 & 0.4696 & False \\
+\bottomrule
+\end{tabularx}
+\vspace{2pt} 
+\raggedright 
+\scriptsize 
+\textit{* = Questi risultati non soddisfano le assunzioni del test del $\chi^2$}
+\end{table}
 
-\input{results_regression}
+\subsection{Risultati significativi}
+Risultati significativi con un p-value <0.0001 sono AUS, BRA, CHN, ESP, GBR,
+FRA, GER, USA, KOR, JPN, FIN, per un totale di 11 stati. Per NED, invece, ha
+comunque un valore molto basso di 0.0172.\\
+Le frequenze attese di Grecia e Messico, per quanto diano un p-value molto
+basso, come abbiamo detto non sono considerabili valide perchè non rispettano le
+assunzioni del test del $\chi$ quadro.
+
+\subsection{Risultati non significativi}
+
+ITALIA --- P value: 0.0519\\
+24 partecipazioni (di cui in 1 ospita), per un totale di 630 medaglie \\
+Frequenza attesa quando ospita di 26.25 e 36 medaglie reali, con una differenza
+di +9.75 medaglie.\\
+L'effetto positivo è debole e non statisticamente significativo, dimostrando un
+trend positivo (+36.9\%) tale che non possiamo escludere il caso con certezza
+statistica.\\
+CANADA --- P value: 0.4696\\
+23 partecipazioni (di cui in 1 ospita), per un totale di 313 medaglie\\
+Frequenza attesa quando ospita di 13.61 e 11 medaglie reali, con una differenza
+di -2.61 medaglie.\\
+Il trend negativo (-15.38\%) è l'unico riscontrato nei 16 stati analizzati, con
+il P value più alto trovato. 

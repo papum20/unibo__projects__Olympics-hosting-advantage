@@ -3,7 +3,7 @@ import numpy as np
 from scipy.stats import chisquare
 
 # Caricamento dati
-df = pd.read_csv('generated_olympic-panel-dataset.csv')
+df = pd.read_csv('dataset/generated_olympic-panel-dataset.csv')
 
 # Filtra anni rilevanti e pulisci dati mancanti
 df_filtered = df[(df['Year'] >= 1924) & (df['Year'] <= 2024)].copy()

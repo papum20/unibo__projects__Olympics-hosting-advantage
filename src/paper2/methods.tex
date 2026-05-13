@@ -26,6 +26,7 @@ edizioni.\\
 
 
 \subsection{Il metodo}
+
 Il test chi-quadrato di Pearson è stato utilizzato per testare l'indipendenza
 tra due variabili categoriche: ospitalità (sì/no) e numero di medaglie.\\
 Il test è stato applicato individualmente a ognuno dei 18 Paesi che abbiano
@@ -41,7 +42,7 @@ Il risultato aggregato fornirà una valutazione generale dell'effetto host,
 mentre quelli individuali delle singole Nazioni permetteranno di comprendere
 quanti e quali, di preciso, ne abbiano beneficiato.\\
 Seguono le formule usate, prima per ogni Paese, poi per tutti in maniera
-aggregata:\\
+aggregata:
 \begin{itemize}
 	\item $O_i$ = frequenza osservata, di medaglie, rispettivamente in casa
 	(``Host'') e fuori (``Away'')
@@ -70,4 +71,26 @@ che l'altro ha vinto molte più medaglie del solito: 195 per l'URS nel 1980
 del totale disponibile quell'anno).\\
 Di preciso, gli Stati selezionati che non hanno partecipato in una di queste due
 edizioni sono: CHN, JPN, KOR, USA, FRG, CAN nel 1980; URS nel 1984; si ricorda
-che, in quel periodo, non esisteva la Germania (GER) ma la Germania Ovest (FRG).
+che, in quel periodo, non esisteva la Germania (GER) ma la Germania Ovest
+(FRG).\\
+\\
+Il metodo appena descritto, quindi, testa, per un Paese, come siano distribuite
+le medaglie vinte in casa rispetto a quelle vinte fuori. Invece, applicando il
+test chi-quadrato per edizione ospitata, abbiamo testato la distribuzione delle
+medaglie vinte dall'host rispetto a quelle disponibili negli stessi Giochi, come
+di seguito:
+\begin{itemize}
+	\item $O_{host}$ = frequenza osservata di medaglie vinte in casa dall'host
+	\item $O_{others}$ = frequenza osservata di medaglie non vinte dall'host,
+	cioè vinte dagli altri team, nelle stesse edizioni ospitate ($O_{tot} -
+	O_{host}$)
+	\item $E_i$ = frequenza attesa sotto ipotesi nulla (in base alla media
+	storica di medaglie)
+	\item Frequenze attese:
+\end{itemize}
+\[
+	E_{host}=\text{Medaglie\_Storiche\_Totali} \times \frac{n_{ospita}}{n_{totale}}
+\]
+\[
+	E_{others}=\text{Medaglie\_Disponibili} - E_{host}
+\]

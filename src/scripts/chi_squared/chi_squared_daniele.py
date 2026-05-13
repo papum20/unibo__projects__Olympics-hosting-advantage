@@ -370,6 +370,11 @@ if __name__ == "__main__":
 			action='store_true',
 			help='Consider only years up until the country\'s first time hosting (inclusive) (flag, no value needed)'
 		)
+		parser.add_argument(
+			'--post-host',
+			action='store_true',
+			help='Consider only years from the country\'s last time hosting (pre-host has priority) (inclusive) (flag, no value needed)'
+		)
 
 		parser.add_argument(
 			'--min-events',
@@ -469,6 +474,7 @@ if __name__ == "__main__":
 		
 		exclude_boycott		= args.exclude_boycott
 		use_pre_host		= args.pre_host
+		use_from_last_host	= args.post_host
 		use_gdp_mean		= args.gdp_avg
 		use_gdp_tot			= args.gdp_tot
 		use_population_mean	= args.pop_avg
@@ -565,6 +571,7 @@ if __name__ == "__main__":
 				min_events_n			= min_events,
 				remove_boycott			= exclude_boycott,
 				until_first_host		= use_pre_host,
+				from_last_host			= use_from_last_host,
 				medals_data_type		= medals_data_type,
 				medals_aggr_type		= DsMedalsAggrType.SUM,
 				is_verbose				= verbose
@@ -654,6 +661,7 @@ if __name__ == "__main__":
 					min_events_n			= min_events,
 					remove_boycott			= exclude_boycott,
 					until_first_host		= use_pre_host,
+					from_last_host			= use_from_last_host,
 					medals_data_type		= medals_data_type,
 					medals_aggr_type		= DsMedalsAggrType.SUM,
 					is_verbose				= verbose

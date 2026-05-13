@@ -720,6 +720,7 @@ def load_medals_homeDiff(
 	medals_season			: str				= 'S',
 	remove_boycott			: bool				= False,
 	until_first_host		: bool				= False,
+	from_last_host			: bool				= False,
 	medals_data_type		: DsMedalsDataType	= DsMedalsDataType.DEFAULT,
 	medals_aggr_type		: DsMedalsAggrType	= DsMedalsAggrType.AVG,
 	medals_dataset_path		: str				= DS_MEDALS_FULL_PATH,
@@ -731,6 +732,7 @@ def load_medals_homeDiff(
 	@param medals_season: Season of medals to include (S for Summer, W for Winter, B for Both).
 	@param remove_boycott: Whether to exclude years with boycotts from the calculation.
 	@param until_first_host: Whether to only consider years up until the country's first time hosting (inclusive).
+	@param from_last_host: Whether to only consider years from the country's last time hosting (inclusive) (first host has priority).
 	@param medals_data_type: Type of transformation to apply to the medals series (DEFAULT, LN_DIFF, PERCENTAGE)
 	@param medals_aggr_type: Whether to calculate the average (AVG) or total (SUM) medals for home and away.
 	@param medals_dataset_path: Path to the medals dataset CSV file
@@ -763,6 +765,9 @@ def load_medals_homeDiff(
 		if until_first_host:
 			first_host_year = medals_df[medals_df[DF_COL_IS_HOST] == True].index.min()
 			medals_df = medals_df[medals_df.index <= first_host_year]
+		elif from_last_host:
+			last_host_year = medals_df[medals_df[DF_COL_IS_HOST] == True].index.max()
+			medals_df = medals_df[medals_df.index >= last_host_year]
 
 		events_home_n	= medals_df[medals_df[DF_COL_IS_HOST] == True].shape[0]
 		events_n		= medals_df.shape[0]

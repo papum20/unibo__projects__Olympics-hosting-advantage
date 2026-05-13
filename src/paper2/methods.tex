@@ -2,7 +2,7 @@
 
 \subsection{I dati}
 Nel repository del progetto\cite{our-repo} sono disponibili sorgenti, risultati,
-riferimenti e i dataset.\\
+riferimenti, nonché i dataset usati.\\
 I dati sono stati estratti da un dataset storico completo delle Olimpiadi
 moderne presente su Kaggle\cite{120YearsOlympic}, integrato dal 2017 in poi dai
 dati presenti su
@@ -34,18 +34,17 @@ soddisfacevano l'assunzione $\textit{frequenze\_attese} \ge 5$ (Grecia e
 Messico), i risultati sono riportati nelle ultime righe delle tabelle con un
 avviso di cautela (*), in quanto non statisticamente affidabili secondo gli
 standard della regola di Cochran\cite{kroonenbergTaleCochransRule2018}.\\
-\\
-Inoltre, è stato applicato in maniera aggregata (per somma) a tutti i Paesi così
-selezionati e che soddisfacessero la regola di Cochran (16 in totale).\\
+Inoltre, il test è stato applicato in maniera aggregata (per somma) a tutti i
+Paesi così selezionati e che soddisfacessero la regola di Cochran (16 in
+totale).\\
 Il risultato aggregato fornirà una valutazione generale dell'effetto host,
 mentre quelli individuali delle singole Nazioni permetteranno di comprendere
-quali, di preciso, ne abbiano beneficiato.\\
-\\
+quanti e quali, di preciso, ne abbiano beneficiato.\\
 Seguono le formule usate, prima per ogni Paese, poi per tutti in maniera
 aggregata:\\
 \begin{itemize}
-	\item $O_i$ = frequenza osservata, di medaglie, rispettivamente in casa e
-	fuori
+	\item $O_i$ = frequenza osservata, di medaglie, rispettivamente in casa
+	(``Host'') e fuori (``Away'')
 	\item $E_i$ = frequenza attesa sotto ipotesi nulla (in base alla media
 	storica di medaglie)
 	\item Frequenze attese:

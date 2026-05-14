@@ -12,6 +12,7 @@
     textwidth=.9\marginparwidth, colorinlistoftodos, prependcaption,
     linecolor=green,backgroundcolor=green!25,bordercolor=green ]{todonotes}
 \usepackage{amsfonts}
+\usepackage{anyfontsize}
 \usepackage{mathtools}
 \usepackage[bookmarks=false, hidelinks, linktocpage=false,
     breaklinks=false,draft]{hyperref}
@@ -45,6 +46,7 @@ todos}}\)}}
 \usepackage{orcidlink}
 
 \begin{document}
+\fontsize{11}{12.6}\selectfont
 %
 \title{Significatività dell'effetto Host nelle Olimpiadi\\
 [0.5ex] \large Progetto di Human Data Science, Università di Bologna,
@@ -53,7 +55,7 @@ todos}}\)}}
 % IEEE format doesn't use running titles
 
 \author{
-  \small
+  \footnotesize
   \begin{tabular}{c c c}
     \begin{minipage}[t]{0.3\textwidth}\centering \IEEEauthorblockN{Daniele
       D'Ugo}\\
@@ -77,6 +79,7 @@ todos}}\)}}
 %
 %TC:ignore
 \begin{abstract}
+\small
 Giornali e opinioni comuni associano spesso l'ospitare le Olimpiadi a un
 vantaggio competitivo (\textit{home advantage}): è ragionevole pensare che gli
 atleti performino meglio nell'ambiente a loro più noto e senza limiti
@@ -93,6 +96,7 @@ tra USA e URSS (1980 e 1984).
 
 % IEEE uses different keywords format
 \begin{IEEEkeywords}
+\footnotesize
 Olimpiadi, Ospitare, Vantaggio
 \end{IEEEkeywords}
 
@@ -108,6 +112,8 @@ Olimpiadi, Ospitare, Vantaggio
 \input{conclusion}
 
 \input{figures}
+
+\newpage
 
 % IEEE bibliography style
 \bibliographystyle{IEEEtran}

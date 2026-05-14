@@ -10,9 +10,9 @@ Wikipedia\cite{WikipediaOlympics,WikipediaW2018,WikipediaS2020,WikipediaW2022,Wi
 (1924--2024), con informazioni su:
 \begin{itemize}
 	\item Paese partecipante (codice NOC --- National Olympic Committee)
-	\item Anno dell'evento olimpico
-	\item Status di ospitalità (binario) --- ottenuto da Wikipedia
-	\item Numero totale di medaglie vinte (d'oro, d'argento e di bronzo sommate)
+	\item anno dell'evento olimpico
+	\item status di ospitalità (binario) --- ottenuto da Wikipedia
+	\item numero totale di medaglie vinte (d'oro, d'argento e di bronzo sommate)
 \end{itemize}
 Le medaglie vengono contate per evento, vale a dire che gli sport di squadra
 possono fornirne una per team, piuttosto che una per ogni suo membro.\\
@@ -34,7 +34,7 @@ ospitato almeno un'edizione nel periodo selezionato. Per i Paesi che non
 soddisfacevano l'assunzione $\textit{frequenze\_attese} \ge 5$ (Grecia e
 Messico), i risultati sono riportati nelle ultime righe delle tabelle con un
 avviso di cautela (*), in quanto non statisticamente affidabili secondo gli
-standard della regola di Cochran\cite{kroonenbergTaleCochransRule2018}.\\
+standard della regola di Cochran\cite{kroonenbergTaleCochransRule2018}.
 Inoltre, il test è stato applicato in maniera aggregata (per somma) a tutti i
 Paesi così selezionati e che soddisfacessero la regola di Cochran (16 in
 totale).\\
@@ -94,3 +94,6 @@ di seguito:
 \[
 	E_{others}=\text{Medaglie\_Disponibili} - E_{host}
 \]
+La diversa prospettiva di questo secondo metodo permette anche di affrontare il
+problema della quantità variabile di medaglie disponibili in ogni edizione,
+tenendone conto direttamente come parametro nelle formule.

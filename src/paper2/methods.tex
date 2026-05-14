@@ -11,8 +11,8 @@ Wikipedia\cite{WikipediaOlympics,WikipediaW2018,WikipediaS2020,WikipediaW2022,Wi
 \begin{itemize}
 	\item Paese partecipante (codice NOC --- National Olympic Committee)
 	\item Anno dell'evento olimpico
-	\item Status di ospitalità (binario)
-	\item Numero totale di medaglie vinte (oro, argento, bronzo sommate)
+	\item Status di ospitalità (binario) --- ottenuto da Wikipedia
+	\item Numero totale di medaglie vinte (d'oro, d'argento e di bronzo sommate)
 \end{itemize}
 Le medaglie vengono contate per evento, vale a dire che gli sport di squadra
 possono fornirne una per team, piuttosto che una per ogni suo membro.\\
@@ -30,7 +30,7 @@ edizioni.\\
 Il test chi-quadrato di Pearson è stato utilizzato per testare l'indipendenza
 tra due variabili categoriche: ospitalità (sì/no) e numero di medaglie.\\
 Il test è stato applicato individualmente a ognuno dei 18 Paesi che abbiano
-ospitato almeno un'edizione nel periodo selezionato. Per i paesi che non
+ospitato almeno un'edizione nel periodo selezionato. Per i Paesi che non
 soddisfacevano l'assunzione $\textit{frequenze\_attese} \ge 5$ (Grecia e
 Messico), i risultati sono riportati nelle ultime righe delle tabelle con un
 avviso di cautela (*), in quanto non statisticamente affidabili secondo gli
@@ -51,10 +51,10 @@ aggregata:
 	\item Frequenze attese:
 \end{itemize}
 \[
-	E_{ospita}=\text{Medaglie\_Totali} \times \frac{n_{ospita}}{n_{totale}}
+	E_{ospita}=\text{Medaglie\_Vinte\_Totali} \times \frac{n_{ospita}}{n_{totale}}
 \]
 \[
-	E_{\text {non\_ospita}}=\text{Medaglie\_Totali} \times \frac{n_{non\_ospita}}{n_{totale}}
+	E_{\text {non\_ospita}}=\text{Medaglie\_Vinte\_Totali} \times \frac{n_{non\_ospita}}{n_{totale}}
 \]
 \begin{itemize}
 	\item Chi quadro:
@@ -89,7 +89,7 @@ di seguito:
 	\item Frequenze attese:
 \end{itemize}
 \[
-	E_{host}=\text{Medaglie\_Storiche\_Totali} \times \frac{n_{ospita}}{n_{totale}}
+	E_{host}=\text{Medaglie\_Vinte\_Totali} \times \frac{n_{ospita}}{n_{totale}}
 \]
 \[
 	E_{others}=\text{Medaglie\_Disponibili} - E_{host}

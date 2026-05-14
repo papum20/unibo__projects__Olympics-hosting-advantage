@@ -29,6 +29,21 @@ edizioni.\\
 
 Il test chi-quadrato di Pearson è stato utilizzato per testare l'indipendenza
 tra due variabili categoriche: ospitalità (sì/no) e numero di medaglie.\\
+				
+				% In questo caso non stiamo effettuando un test d'indipendenza 
+				% ma un test di bontà dell'adattamento. 
+				% Il test d'indipendenza verifica se due variabili sono indipendenti:
+				% è quello che abbiamo fatto con la tabella di contingenza
+				% dove avevamo una variabile che poteva assumere i valori "Host" e "Away"
+				% e una variabile che assumeva i valori "Medaglie Vinte" o "Medaglie Perse".
+				% Così verifichiamo se c'è una correlazione tra le due variabili; 
+				% nel nostro caso, vogliamo osservare la relazione tra Host e Medaglie Vinte
+				
+				% Con il test di bontà dell'adattamento, invece, ci chiediamo se l'andamento in casa
+				% sia simile a quello fuori casa, proporzionalmente a quanti eventi in casa e fuori si è preso parte
+
+
+
 Il test è stato applicato individualmente a ognuno dei 18 Paesi che abbiano
 ospitato almeno un'edizione nel periodo selezionato. Per i Paesi che non
 soddisfacevano l'assunzione $\textit{frequenze\_attese} \ge 5$ (Grecia e
@@ -56,6 +71,16 @@ aggregata:
 \[
 	E_{\text {non\_ospita}}=\text{Medaglie\_Vinte\_Totali} \times \frac{n_{non\_ospita}}{n_{totale}}
 \]
+
+
+
+
+
+					% Specificare cos'è n_ospita, n_non_ospita
+
+
+
+					
 \begin{itemize}
 	\item Chi quadro:
 \end{itemize}
@@ -75,10 +100,18 @@ che, in quel periodo, non esisteva la Germania (GER) ma la Germania Ovest
 (FRG).\\
 \\
 Il metodo appena descritto, quindi, testa, per un Paese, come siano distribuite
-le medaglie vinte in casa rispetto a quelle vinte fuori. Invece, applicando il
-test chi-quadrato per edizione ospitata, abbiamo testato la distribuzione delle
+le medaglie vinte in casa rispetto a quelle vinte fuori. 
+Invece, applicando il test chi-quadrato per edizione ospitata, abbiamo testato la distribuzione delle
 medaglie vinte dall'host rispetto a quelle disponibili negli stessi Giochi, come
 di seguito:
+
+			% Qui, invece di fare di nuovo il test della bontà di adattamento, si potrebbe
+			% presentare il test d'indipendenza e la tabella di contingenza.
+			% Con la tabella di contingenza si usano dati reali (medaglie effettivamente vinte o non vinte) e 
+			% non la media storica di medaglie.
+			% Risultato del test d'indipendenza è valutare se due variabili sono correlate.
+			% Bisogna poi analizzare i risultati per capire in che verso va la correlazione
+
 \begin{itemize}
 	\item $O_{host}$ = frequenza osservata di medaglie vinte in casa dall'host
 	\item $O_{others}$ = frequenza osservata di medaglie non vinte dall'host,

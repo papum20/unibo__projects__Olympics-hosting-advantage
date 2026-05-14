@@ -27,40 +27,38 @@ edizioni.\\
 
 \subsection{Il metodo}
 
-Il test chi-quadrato di Pearson è stato utilizzato per testare l'indipendenza
-tra due variabili categoriche: ospitalità (sì/no) e numero di medaglie.\\
-				
-				% In questo caso non stiamo effettuando un test d'indipendenza 
-				% ma un test di bontà dell'adattamento. 
-				% Il test d'indipendenza verifica se due variabili sono indipendenti:
-				% è quello che abbiamo fatto con la tabella di contingenza
-				% dove avevamo una variabile che poteva assumere i valori "Host" e "Away"
-				% e una variabile che assumeva i valori "Medaglie Vinte" o "Medaglie Perse".
-				% Così verifichiamo se c'è una correlazione tra le due variabili; 
-				% nel nostro caso, vogliamo osservare la relazione tra Host e Medaglie Vinte
-				
-				% Con il test di bontà dell'adattamento, invece, ci chiediamo se l'andamento in casa
-				% sia simile a quello fuori casa, proporzionalmente a quanti eventi in casa e fuori si è preso parte
+% In questo caso non stiamo effettuando un test d'indipendenza ma un test di
+% bontà dell'adattamento. Il test d'indipendenza verifica se due variabili sono
+% indipendenti: è quello che abbiamo fatto con la tabella di contingenza dove
+% avevamo una variabile che poteva assumere i valori "Host" e "Away" e una
+% variabile che assumeva i valori "Medaglie Vinte" o "Medaglie Perse". Così
+% verifichiamo se c'è una correlazione tra le due variabili; nel nostro caso,
+% vogliamo osservare la relazione tra Host e Medaglie Vinte
 
+% Con il test di bontà dell'adattamento, invece, ci chiediamo se l'andamento in
+% casa sia simile a quello fuori casa, proporzionalmente a quanti eventi in casa
+% e fuori si è preso parte
 
-
+Il test chi-quadrato di Pearson è stato utilizzato per testare la distribuzione
+di medaglie rispetto alla variabile categorica di ospitalità (sì/no), ovvero se
+ci sia una sproporzione tra quelle vinte in casa e fuori.\\
 Il test è stato applicato individualmente a ognuno dei 18 Paesi che abbiano
 ospitato almeno un'edizione nel periodo selezionato. Per i Paesi che non
 soddisfacevano l'assunzione $\textit{frequenze\_attese} \ge 5$ (Grecia e
 Messico), i risultati sono riportati nelle ultime righe delle tabelle con un
 avviso di cautela (*), in quanto non statisticamente affidabili secondo gli
-standard della regola di Cochran\cite{kroonenbergTaleCochransRule2018}.
-Inoltre, il test è stato applicato in maniera aggregata (per somma) a tutti i
-Paesi così selezionati e che soddisfacessero la regola di Cochran (16 in
-totale).\\
+standard della regola di Cochran\cite{kroonenbergTaleCochransRule2018}. Inoltre,
+il test è stato applicato in maniera aggregata (per somma) a tutti i Paesi così
+selezionati e che soddisfacessero la regola di Cochran (16 in totale).\\
 Il risultato aggregato fornirà una valutazione generale dell'effetto host,
 mentre quelli individuali delle singole Nazioni permetteranno di comprendere
 quanti e quali, di preciso, ne abbiano beneficiato.\\
 Seguono le formule usate, prima per ogni Paese, poi per tutti in maniera
 aggregata:
 \begin{itemize}
-	\item $O_i$ = frequenza osservata, di medaglie, rispettivamente in casa
-	(``Host'') e fuori (``Away'')
+	\item $O_i$ = frequenza osservata, di medaglie, rispettivamente nelle
+	$n_{ospita}$ edizioni in casa (``Host'') e nelle $n_{non\_ospita}$ fuori
+	(``Away'')
 	\item $E_i$ = frequenza attesa sotto ipotesi nulla (in base alla media
 	storica di medaglie)
 	\item Frequenze attese:
@@ -72,21 +70,14 @@ aggregata:
 	E_{\text {non\_ospita}}=\text{Medaglie\_Vinte\_Totali} \times \frac{n_{non\_ospita}}{n_{totale}}
 \]
 
-
-
-
-
-					% Specificare cos'è n_ospita, n_non_ospita
-
-
-
-					
 \begin{itemize}
 	\item Chi quadro:
 \end{itemize}
 \[
 	\chi^2= \sum_{i=1}^{2} \frac{(O_i - E_i)^2}{E_{i}}
 \]
+
+% Specificare cos'è n_ospita, n_non_ospita
 
 In un'analisi aggiuntiva, abbiamo escluso per tutti le edizioni di 1980 e 1984.
 In esse, infatti, in piena Guerra Fredda, i due ospitanti URS e USA --- tra i
@@ -100,18 +91,10 @@ che, in quel periodo, non esisteva la Germania (GER) ma la Germania Ovest
 (FRG).\\
 \\
 Il metodo appena descritto, quindi, testa, per un Paese, come siano distribuite
-le medaglie vinte in casa rispetto a quelle vinte fuori. 
-Invece, applicando il test chi-quadrato per edizione ospitata, abbiamo testato la distribuzione delle
+le medaglie vinte in casa rispetto a quelle vinte fuori. Invece, applicando il
+test chi-quadrato per edizione ospitata, abbiamo testato la distribuzione delle
 medaglie vinte dall'host rispetto a quelle disponibili negli stessi Giochi, come
 di seguito:
-
-			% Qui, invece di fare di nuovo il test della bontà di adattamento, si potrebbe
-			% presentare il test d'indipendenza e la tabella di contingenza.
-			% Con la tabella di contingenza si usano dati reali (medaglie effettivamente vinte o non vinte) e 
-			% non la media storica di medaglie.
-			% Risultato del test d'indipendenza è valutare se due variabili sono correlate.
-			% Bisogna poi analizzare i risultati per capire in che verso va la correlazione
-
 \begin{itemize}
 	\item $O_{host}$ = frequenza osservata di medaglie vinte in casa dall'host
 	\item $O_{others}$ = frequenza osservata di medaglie non vinte dall'host,
@@ -130,3 +113,12 @@ di seguito:
 La diversa prospettiva di questo secondo metodo permette anche di affrontare il
 problema della quantità variabile di medaglie disponibili in ogni edizione,
 tenendone conto direttamente come parametro nelle formule.
+
+
+% Qui, invece di fare di nuovo il test della bontà di adattamento, si potrebbe
+% presentare il test d'indipendenza e la tabella di contingenza. Con la tabella
+% di contingenza si usano dati reali (medaglie effettivamente vinte o non vinte)
+% e non la media storica di medaglie. Risultato del test d'indipendenza è
+% valutare se due variabili sono correlate. Bisogna poi analizzare i risultati
+% per capire in che verso va la correlazione
+

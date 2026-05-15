@@ -42,7 +42,7 @@ edizioni.\\
 Il test chi-quadrato di Pearson è stato utilizzato per testare la distribuzione
 di medaglie rispetto alla variabile categorica di ospitalità (sì/no), ovvero se
 ci sia una sproporzione tra quelle vinte in casa e fuori.\\
-Il test è stato applicato individualmente a ognuno dei 18 Paesi che abbiano
+Il test è stato applicato individualmente a ognuno dei 18 Paesi che abbia
 ospitato almeno un'edizione nel periodo selezionato. Per i Paesi che non
 soddisfacevano l'assunzione $\textit{frequenze\_attese} \ge 5$ (Grecia e
 Messico), i risultati sono riportati nelle ultime righe delle tabelle con un
@@ -76,6 +76,8 @@ aggregata:
 \[
 	\chi^2= \sum_{i=1}^{2} \frac{(O_i - E_i)^2}{E_{i}}
 \]
+Il metodo appena descritto, quindi, permette di testare, per un Paese, come siano distribuite
+le medaglie vinte in casa rispetto a quelle vinte fuori.\\
 
 % Specificare cos'è n_ospita, n_non_ospita
 
@@ -88,31 +90,31 @@ del totale disponibile quell'anno).\\
 Di preciso, gli Stati selezionati che non hanno partecipato in una di queste due
 edizioni sono: CHN, JPN, KOR, USA, FRG, CAN nel 1980; URS nel 1984; si ricorda
 che, in quel periodo, non esisteva la Germania (GER) ma la Germania Ovest
-(FRG).\\
-\\
-Il metodo appena descritto, quindi, testa, per un Paese, come siano distribuite
-le medaglie vinte in casa rispetto a quelle vinte fuori. Invece, applicando il
-test chi-quadrato per edizione ospitata, abbiamo testato la distribuzione delle
-medaglie vinte dall'host rispetto a quelle disponibili negli stessi Giochi, come
-di seguito:
-\begin{itemize}
-	\item $O_{host}$ = frequenza osservata di medaglie vinte in casa dall'host
-	\item $O_{others}$ = frequenza osservata di medaglie non vinte dall'host,
-	cioè vinte dagli altri team, nelle stesse edizioni ospitate ($O_{tot} -
-	O_{host}$)
-	\item $E_i$ = frequenza attesa sotto ipotesi nulla (in base alla media
-	storica di medaglie)
-	\item Frequenze attese:
-\end{itemize}
-\[
-	E_{host}=\text{Medaglie\_Vinte\_Totali} \times \frac{n_{ospita}}{n_{totale}}
-\]
-\[
-	E_{others}=\text{Medaglie\_Disponibili} - E_{host}
-\]
-La diversa prospettiva di questo secondo metodo permette anche di affrontare il
-problema della quantità variabile di medaglie disponibili in ogni edizione,
-tenendone conto direttamente come parametro nelle formule.
+(FRG).
+
+%Il metodo appena descritto, quindi, testa, per un Paese, come siano distribuite
+%le medaglie vinte in casa rispetto a quelle vinte fuori. Invece, applicando il
+%test chi-quadrato per edizione ospitata, abbiamo testato la distribuzione delle
+%medaglie vinte dall'host rispetto a quelle disponibili negli stessi Giochi, come
+%di seguito:
+%\begin{itemize}
+%	\item $O_{host}$ = frequenza osservata di medaglie vinte in casa dall'host
+%	\item $O_{others}$ = frequenza osservata di medaglie non vinte dall'host,
+%	cioè vinte dagli altri team, nelle stesse edizioni ospitate ($O_{tot} -
+%	O_{host}$)
+%	\item $E_i$ = frequenza attesa sotto ipotesi nulla (in base alla media
+%	storica di medaglie)
+%	\item Frequenze attese:
+%\end{itemize}
+%\[
+%	E_{host}=\text{Medaglie\_Vinte\_Totali} \times \frac{n_{ospita}}{n_{totale}}
+%\]
+%\[
+%	E_{others}=\text{Medaglie\_Disponibili} - E_{host}
+%\]
+%La diversa prospettiva di questo secondo metodo permette anche di affrontare il
+%problema della quantità variabile di medaglie disponibili in ogni edizione,
+%tenendone conto direttamente come parametro nelle formule.
 
 
 % Qui, invece di fare di nuovo il test della bontà di adattamento, si potrebbe

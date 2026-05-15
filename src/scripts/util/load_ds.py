@@ -1418,6 +1418,88 @@ def load_stacked_countries(
 
 
 
+def load_stacked_countries_medals(
+	countries_list			: list[str]|None	= None,
+	year_start				: int				= MEDALS_FULL_YEAR_FIRST,
+	year_end				: int				= MEDALS_FULL_YEAR_LAST,
+	medals_season			: str				= 'S',
+	remove_boycott			: bool				= False,
+	medals_data_type		: DsMedalsDataType	= DsMedalsDataType.DEFAULT,
+	medals_dataset_path		: str				= DS_MEDALS_FULL_PATH,
+	is_verbose				: bool				= True
+) -> pd.DataFrame:
+	"""Load Olympic medals, GDP per capita, and population data with year alignment/shift.
+	@param countries_list: List of country codes to filter (None or [] means all countries in the medals dataset)
+	@param year_start: Starting year for medals data
+	@param year_end: Ending year for medals data
+	@param medals_season: Season of medals ('S' for Summer, 'W' for Winter, 'B' for Both)
+	@param remove_boycott: Whether to remove years affected by boycotts (1980 and 1984)
+	@param medals_data_type: Type of transformation for medals (DEFAULT, LN_DIFF, PERCENTAGE)
+	@param medals_dataset_path: Path to medals CSV
+	@return: DataFrame
+	"""
+
+	
+	# In a panel regression, the DataFrame of each country is stacked on top of each other
+	
+	if is_verbose:
+		print("\n--- Building Global Panel Dataset ---")
+	all_countries_data	= []
+
+	if countries_list is None or len(countries_list) == 0:
+		countries_list = _get_all_countries_list(year_start, year_end)
+		if is_verbose:
+			print(f"Using all countries from medals dataset: {', '.join(countries_list)}")
+
+	skipped_teams = []
+	for noc in countries_list:
+		try:
+			country_df = load_medals(
+				country=noc,
+				year_start=year_start,
+				year_end=year_end,
+				medals_season=medals_season,
+				dataset_path=medals_dataset_path,
+				data_type=medals_data_type
+			)
+			
+			# Add the NOC column so we know who is who when we stack them
+			country_df['NOC'] = noc
+			
+			# Add the DataFrame to our list
+			all_countries_data.append(country_df)
+			if is_verbose:
+				print(f"Added {noc} to panel.")
+
+		except Exception as e:
+			# Some small countries might not have GDP data in Maddison, skip them safely
+			skipped_teams.append(noc)
+			if is_verbose:
+				print(f"Skipped {noc}: {e}")
+		
+	print(f"\nFinished loading data for {len(all_countries_data)} teams. Skipped {len(skipped_teams)} teams with missing data: {', '.join(skipped_teams)}")
+
+	# Stack them all together into one giant "Long Format" DataFrame
+	global_df = pd.concat(all_countries_data)
+
+	# Reset index to convert Year from index to column (otherwise can't sort rows later)
+	global_df = global_df.reset_index()
+	if 'index' in global_df.columns:
+		global_df = global_df.rename(columns={'index': 'Year'})
+
+	# Sort by Country, then by Year (Crucial for the Pre/Post shift to work correctly)
+	global_df = global_df.sort_values(by=['NOC', 'Year'])
+
+	if is_verbose:
+		print("\n--- Calculating Pre and Post Host Dummies ---")
+
+	# Clean up any remaining NaNs
+	global_df = global_df.dropna()
+
+	return global_df
+
+
+
 def save_stacked_countries_to_csv(
 	output_path				: str,
 	countries_list			: list[str]|None	= None,

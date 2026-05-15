@@ -87,8 +87,11 @@ P_VALUE_SIGNIFICANCE_LEVEL = 0.05
 
 DF_COL_EVENTS_AWAY		= 'Events_Away'
 
+DF_COL_MEDALS_HOME_AVG		= 'Medals_Home_Average'
+DF_COL_MEDALS_AWAY_AVG		= 'Medals_Away_Average'
 DF_COL_MEDALS_HOME_EXPECTED	= 'Medals_Home_Expected'
 DF_COL_MEDALS_AWAY_EXPECTED	= 'Medals_Away_Expected'
+DF_COL_MEDALS_EXPECTED		= 'Medals_Expected'
 DF_COL_MEDAL_WON			= 'Medal_Won'
 DF_COL_MEDAL_NOT_WON		= 'Medal_Not_Won'
 
@@ -279,6 +282,42 @@ def perform_chiSquared_goodnessOfFit_own(medal_diff_df, is_verbose=False) -> tup
 	expected = [
 		won_tot / medal_diff_df[DF_COL_EVENTS].sum() * medal_diff_df[DF_COL_EVENTS_HOME].sum(),
 		won_tot / medal_diff_df[DF_COL_EVENTS].sum() * (medal_diff_df[DF_COL_EVENTS].sum() - medal_diff_df[DF_COL_EVENTS_HOME].sum())
+	]
+
+	if is_verbose:
+		print("\n--- Observed vs Expected ---")
+		print(f"Observed (Home, Away): {observed}")
+		print(f"Expected (Home, Away): {expected}")
+		print("\n")
+
+	# Perform Chi-Squared Goodness of Fit test
+	chi2_stat, p_value = stats.chisquare(f_obs=observed, f_exp=expected)
+
+	print(f"Chi-Squared Statistic: {chi2_stat:.4f}")
+	print(f"P-value: {p_value:.6f}")
+
+	if is_verbose:
+		if p_value < 0.05:
+			print("\nConclusion: Reject the null hypothesis.")
+			print("The country won a significantly different amount of medals than expected (Home Advantage confirmed).")
+		else:
+			print("\nConclusion: Fail to reject the null hypothesis.")
+			print("The medal count is in line with historical expectations.")
+
+	return chi2_stat, p_value
+
+
+#Attese = Somma di tutte le medaglie vinte da una data nazione fuori casa diviso numero numero di partecipazioni fuori casa
+# Osservate = Somma di tutte di tutte le medaglie vinte da una data nazione in casa / diviso numero di partecipazioni in casa
+def perform_chiSquared_goodnessOfFit_prof(medal_diff_df, is_verbose=False) -> tuple[float, float]:
+	won_tot		= medal_diff_df[DF_COL_MEDALS_HOME].sum() + medal_diff_df[DF_COL_MEDALS_AWAY].sum()
+
+	# [Won Home, Won Away]
+	observed = [
+		medal_diff_df[DF_COL_MEDALS_HOME].sum() / medal_diff_df[DF_COL_EVENTS_HOME].sum()
+	]
+	expected = [
+		medal_diff_df[DF_COL_MEDALS_AWAY].sum() / medal_diff_df[DF_COL_EVENTS_AWAY].sum()
 	]
 
 	if is_verbose:
@@ -561,6 +600,21 @@ if __name__ == "__main__":
 			DF_COL_P_SIGNIFICANT
 		])
 
+		res_chi_squared_goodnessOfFit_prof = pd.DataFrame(columns=[
+			DF_COL_NOC,
+			DF_COL_EVENTS_HOME,
+			DF_COL_EVENTS_AWAY,
+			DF_COL_MEDALS,
+			DF_COL_MEDALS_HOME,
+			DF_COL_MEDALS_EXPECTED,
+			DF_COL_MEDALS_AWAY,
+			DF_COL_MEDALS_HOME_AVG,
+			DF_COL_MEDALS_AWAY_AVG,
+			DF_COL_CHI_STAT,
+			DF_COL_CHI_P,
+			DF_COL_P_SIGNIFICANT
+		])
+
 		# Aggregated
 
 		medal_diff_df, country_name = load_medals_homeDiff(
@@ -638,6 +692,22 @@ if __name__ == "__main__":
 				DF_COL_MEDALS_HOME_EXPECTED: expected_home_row,
 				DF_COL_MEDALS_AWAY: medal_diff_df[DF_COL_MEDALS_AWAY].sum(),
 				DF_COL_MEDALS_AWAY_EXPECTED: expected_away_row,
+				DF_COL_CHI_STAT: stat,
+				DF_COL_CHI_P: round(pval, 4),
+				DF_COL_P_SIGNIFICANT: pval < P_VALUE_SIGNIFICANCE_LEVEL	# type: ignore
+			}])
+		])
+
+		res_chi_squared_goodnessOfFit_prof = pd.concat([res_chi_squared_goodnessOfFit_prof, pd.DataFrame([{
+				DF_COL_NOC: 'ALL',
+				DF_COL_EVENTS_HOME: medal_diff_df[DF_COL_EVENTS_HOME].sum(),
+				DF_COL_EVENTS_AWAY: medal_diff_df[DF_COL_EVENTS].sum() - medal_diff_df[DF_COL_EVENTS_HOME].sum(),
+				DF_COL_MEDALS: won_tot,
+				DF_COL_MEDALS_HOME: medal_diff_df[DF_COL_MEDALS_HOME].sum(),
+				DF_COL_MEDALS_AWAY: medal_diff_df[DF_COL_MEDALS_AWAY].sum(),
+				DF_COL_MEDALS_EXPECTED: medal_diff_df[DF_COL_MEDALS_AWAY].sum() / (medal_diff_df[DF_COL_EVENTS].sum() - medal_diff_df[DF_COL_EVENTS_HOME].sum()),
+				DF_COL_MEDALS_HOME_AVG: medal_diff_df[DF_COL_MEDALS_HOME].sum() / medal_diff_df[DF_COL_EVENTS_HOME].sum(),
+				DF_COL_MEDALS_AWAY_AVG: medal_diff_df[DF_COL_MEDALS_AWAY].sum() / (medal_diff_df[DF_COL_EVENTS].sum() - medal_diff_df[DF_COL_EVENTS_HOME].sum()),
 				DF_COL_CHI_STAT: stat,
 				DF_COL_CHI_P: round(pval, 4),
 				DF_COL_P_SIGNIFICANT: pval < P_VALUE_SIGNIFICANCE_LEVEL	# type: ignore
@@ -732,9 +802,26 @@ if __name__ == "__main__":
 				}])
 			])
 
+			res_chi_squared_goodnessOfFit_prof = pd.concat([res_chi_squared_goodnessOfFit_prof, pd.DataFrame([{
+					DF_COL_NOC: noc,
+					DF_COL_EVENTS_HOME: medal_diff_df[DF_COL_EVENTS_HOME].sum(),
+					DF_COL_EVENTS_AWAY: medal_diff_df[DF_COL_EVENTS].sum() - medal_diff_df[DF_COL_EVENTS_HOME].sum(),
+					DF_COL_MEDALS: won_tot,
+					DF_COL_MEDALS_HOME: medal_diff_df[DF_COL_MEDALS_HOME].sum(),
+					DF_COL_MEDALS_EXPECTED: medal_diff_df[DF_COL_MEDALS_AWAY].sum() / (medal_diff_df[DF_COL_EVENTS].sum() - medal_diff_df[DF_COL_EVENTS_HOME].sum()),
+					DF_COL_MEDALS_AWAY: medal_diff_df[DF_COL_MEDALS_AWAY].sum(),
+					DF_COL_MEDALS_HOME_AVG: medal_diff_df[DF_COL_MEDALS_HOME].sum() / medal_diff_df[DF_COL_EVENTS_HOME].sum(),
+					DF_COL_MEDALS_AWAY_AVG: medal_diff_df[DF_COL_MEDALS_AWAY].sum() / (medal_diff_df[DF_COL_EVENTS].sum() - medal_diff_df[DF_COL_EVENTS_HOME].sum()),
+					DF_COL_CHI_STAT: stat,
+					DF_COL_CHI_P: round(pval, 4),
+					DF_COL_P_SIGNIFICANT: pval < P_VALUE_SIGNIFICANCE_LEVEL	# type: ignore
+				}])
+			])
+
 		res_chi_squared						= res_chi_squared.sort_values(by=[DF_COL_CHI_P, DF_COL_NOC], na_position='last').reset_index(drop=True)
 		res_chi_squared_goodnessOfFit_own	= res_chi_squared_goodnessOfFit_own.sort_values(by=[DF_COL_CHI_P, DF_COL_NOC], na_position='last').reset_index(drop=True)
 		res_chi_squared_goodnessOfFit_ROW	= res_chi_squared_goodnessOfFit_ROW.sort_values(by=[DF_COL_CHI_P, DF_COL_NOC], na_position='last').reset_index(drop=True)
+		res_chi_squared_goodnessOfFit_prof	= res_chi_squared_goodnessOfFit_prof.sort_values(by=[DF_COL_CHI_P, DF_COL_NOC], na_position='last').reset_index(drop=True)
 
 		print("\n\n=== Final Results: Chi-Squared Test of Independence ===")
 		print(res_chi_squared.to_string(float_format=lambda x: f'{x:.4f}'))
@@ -744,6 +831,9 @@ if __name__ == "__main__":
 
 		print("\n\n=== Final Results: Chi-Squared Goodness of Fit (Host vs Rest of the World) ===")
 		print(res_chi_squared_goodnessOfFit_ROW.to_string(float_format=lambda x: f'{x:.4f}'))
+
+		print("\n\n=== Final Results: Chi-Squared Goodness of Fit (Own vs Own Expected) ===")
+		print(res_chi_squared_goodnessOfFit_prof.to_string(float_format=lambda x: f'{x:.4f}'))
 		
 	except Exception as e:
 		# so will also print to log
